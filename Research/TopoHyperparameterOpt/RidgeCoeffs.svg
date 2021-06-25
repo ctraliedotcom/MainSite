@@ -10,13 +10,13 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   height="407.9953pt"
+   height="623.26636pt"
    version="1.1"
-   viewBox="0 0 727.41375 407.9953"
-   width="727.41376pt"
+   viewBox="0 0 507.97097 623.26636"
+   width="507.97098pt"
    id="svg2022"
    sodipodi:docname="RidgeCoeffs.svg"
-   inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)">
   <metadata
      id="metadata2026">
     <rdf:RDF>
@@ -38,17 +38,17 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1388"
+     inkscape:window-width="1712"
      inkscape:window-height="677"
      id="namedview2024"
      showgrid="false"
-     inkscape:zoom="0.61744914"
-     inkscape:cx="484.52976"
-     inkscape:cy="308.50213"
+     inkscape:zoom="1.2348983"
+     inkscape:cx="184.77272"
+     inkscape:cy="626.28351"
      inkscape:window-x="2324"
      inkscape:window-y="343"
      inkscape:window-maximized="0"
-     inkscape:current-layer="patch_1"
+     inkscape:current-layer="figure_1"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
@@ -65,7 +65,7 @@
   <g
      id="figure_1"
      style="stroke-linecap:butt;stroke-linejoin:round"
-     transform="translate(-7.2000005,-7.2)">
+     transform="translate(-226.64277,208.07107)">
     <g
        id="patch_1"
        style="stroke-linecap:butt;stroke-linejoin:round" />
@@ -6049,7 +6049,8 @@
     </g>
     <g
        id="axes_7"
-       style="stroke-linecap:butt;stroke-linejoin:round">
+       style="stroke-linecap:butt;stroke-linejoin:round"
+       transform="translate(375.55719,-207.05784)">
       <g
          id="patch_32"
          style="stroke-linecap:butt;stroke-linejoin:round">
