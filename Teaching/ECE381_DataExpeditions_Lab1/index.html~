@@ -1,0 +1,315 @@
+<html>
+<head>
+<SCRIPT SRC="../../jsMath/easy/load.js"></SCRIPT>
+<!--Syntax highlighting in Javascript!-->
+<script type="text/javascript" src="../../syntaxhighlighter/scripts/shCore.js"></script>
+<script type="text/javascript" src="../../syntaxhighlighter/scripts/shBrushJScript.js"></script>
+<script type="text/javascript" src="../../syntaxhighlighter/scripts/shBrushCpp.js"></script>
+<script type="text/javascript" src="../../syntaxhighlighter/scripts/shBrushMatlabSimple.js"></script>
+<script type="text/javascript" src="../../syntaxhighlighter/scripts/shBrushPython.js"></script>
+<link type="text/css" rel="stylesheet" href="../../syntaxhighlighter/styles/shCoreDefault.css"/>
+<script type="text/javascript">SyntaxHighlighter.all();</script>
+
+<!--Do wrapping with preformatted text!-->
+<style>
+pre
+{
+white-space: -moz-pre-wrap; /* Mozilla, supported since 1999 */
+white-space: -pre-wrap; /* Opera 4 - 6 */
+white-space: -o-pre-wrap; /* Opera 7 */
+white-space: pre-wrap; /* CSS3 - Text module (Candidate Recommendation) http://www.w3.org/TR...xt/#white-space */
+word-wrap: break-word; /* IE 5.5+ */
+}
+</style>
+
+</head>
+<body>
+<center>
+
+<h1>ECE 381 Data Expeditions Lab 1</h1>
+<h1><b>Musical Pitches and Chroma Features</b></h1>
+<h2>Chris Tralie</h2>
+</center>
+Special thanks to <a href = "http://labrosa.ee.columbia.edu/matlab/chroma-ansyn/">Dan Ellis</a> at Columbia University for inspiration and sound snippets.
+
+<hr>
+<h1>Overview</h1>
+In this lab you will explore an important representation of musical audio known as <b>chroma</b>, which is a octave-independent measure of the strength of all possible notes in the western 12 note scale at different points in time, based on the Short-Time Fourier Transform (STFT).  The goal is to come up with a set of musical features that discriminate between different scales and different note progressions between pairs of songs.  Chroma is an example of a <i>lossy feature</i>, which means that it is impossible to go back to a unique audio file once the chroma has been extracted, and part of this lab will explore what is retained in this feature set.
+
+<hr>
+<h1>Background</h1>
+
+<p>
+Every pitch that we percieve corresponds to a particular frequency <b>f</b> of a sinusoid in a sound signal.  The most well-known example is perhaps <b>A4</b>, or the A note that an orchestra tunes to,  which is <b>440hz</b>.  By now you have experimented with comb filters and Karplus Strong, so this should be fairly familiar.  Below is some more background about frequency representations of musical notes and sampled audio to help get you up to speed.
+</p>
+
+<h2>Octaves</h2>
+<p>
+One particular concept that's important for this lab is the notion of an <b>octave</b>.  Given a frequency <b>f</b> corresponding to a note, the k<SUP>th</SUP> octave of that note corresponds to the frequency <b>f<SUP>k</SUP></b>
+
+<h3>Equation 1 \[ f^k = 2^k f \]</h3>
+</p>
+
+where <b>k</b> is an integer, positive or negative.  In other words, all frequencies that are doubles or halves of each other are octaves.  For instance, if <b>f = 440hz</b>, then 220hz is an octave one below (k = -1), 880hz is an octave 1 above (k = 1), 1760hz is an octave two above (k = 2), 3520 is an octave 3 above (k = 3), etc.<BR>
+The amazing fact about octaves is that <i>the perceived pitch of every octave is exactly the same</i>, it's just higher or lower, corresponding to whether it's a a higher or lower frequency.  In this lab you will search for a particular note by checking for it around all of its possible octaves.
+</p>
+
+<h2>The 12-Halfstep Chromatic Scale and Western Approximations</h2>
+
+<p>
+In the Western scale, there are 12 notes in an octave, which then repeat in the same sequence in the next octave.  The figure below shows these notes (<sup>b</sup> is flat and <sup>#</sup> is sharp).  The figure is drawn in a circle to highlight the fact that after 12 notes, an octave has been reached, and those same notes repeat in the next octave:<BR><BR>
+<img src = "Figures/NotesCircle.png"><BR><BR>
+The distance between two adjacent notes is known as a <b>halfstep</b>, and the distance we perceive as a halfstep is always the same.  For instance, the interval between A and B<SUP>b</SUP> sounds like the same distance as the interval between E and F.  Note, however, that because of the way we percieve octaves in an exponentially doubling way, the frequency interval between halfsteps is not constant.  In fact, given a note that corresponds to frequency <b>f</b>, the note <b>m</b> halfsteps above this note is at a frequency <b>f<SUB>m</SUB></b> is given by the equation
+
+<h3><a name = "eq2">Equation 2</a>
+\[ f_m = f 2^{m/12}\]
+</h3>
+
+Hence, the frequency interval between halfsteps is a <b>multiplicative factor</b> of <b>2<SUP>1/12</SUP></b>.  Note that when a full octave (12 halfsteps) have been cycled through, <b>f<SUB>12</SUB> = 2f</b>.  Similarly, for 2 octaves (24 halfsteps), <b>f<SUB>24</SUB> = 4f</b>.
+</p>
+
+<p>
+The assumption that the distance between halfsteps is exactly the same does not quite match physical reality.  Due to the boundary conditions of vibrating strings and vibrating cavities, notes that are 4 halfsteps and 7 halfsteps apart go very well together and are said to be <b>harmonious</b> (they are <i>overtones</i> of the note corresponding to the base frequency).  Their frequencies should occur in integer ratios, for similar reasons that comb filters are evenly spaced in the frequency domain, as you saw in a previous lab.  However, Equation 2 deals with fractional powers of 2, which are irrational, so they can never perfectly match physical reality.  But they are close.  In particular
+
+<h3>
+\[ 2^{7/12} \approx 1.4983 \approx \frac{3}{2} \]
+\[ 2^{4/12} \approx 1.2599 \approx \frac{5}{4} \]
+</h3>
+
+For our purposes, equation 2 will be fine
+</p>
+
+<h2>Sampled Audio, the STFT, and Spectrograms</h2>
+
+<p>
+Working with a discrete signal, it is important to keep in mind the <a href = "http://en.wikipedia.org/wiki/Nyquist%E2%80%93Shannon_sampling_theorem">Shannon-Nyquist sampling theorem</a>.  That is, to represent a frequency <b>f</b> without aliasing in a sample version of a continuous signal, one needs to sample at a rate at least <b>2f</b>.  Human hearing goes up to a range of about <b>20,000hz</b>.  Thus, one common sampling rate is <b>44010hz</b>, which is more than twice the upper frequency limit of our hearing.  However, it is possible to represent audio well with a sampling rate of half that, or <b>22050hz</b>, which is what will be used in this assignment.  This means that frequencies up to about 11000 hz can be represented faithfully, which is more than enough.
+</p>
+
+<p>
+Once the sampled audio for a song is in the computer, it is important to recognize that the frequency statistics of a signal are not constant throughout a song.  Hence, it makes sense to take the Fourier Transform in little snippets at a time, rather than over the whole song.  This leads to what is known as the <b>Short-Time Fourier Transform (STFT)</b>.  Given a signal <b>X</b>, a hop size <b>h</b>, and a "window" <b>W</b> which is a signal of length <b>N</b>, the STFT is defined as follows
+
+<h3>
+Equation 3
+</h3>
+<h2>
+\[ F_{\tau}[k] = \sum_{n = 0}^{N} X[h\tau + n]W[n] e^{-j 2 \pi k n / N} \]
+</h2>
+
+where <b>Tau</b> chooses the chunk number and <b>k</b> chooses the frequency index.
+This is simply the discrete Fourier transform taken over a "window" (chunk) of length <b>N</b>, at an offset of <b>h*Tau</b> from the beginning of the song.  <b>X[hTau + n]</b> is point multiplied by the "window function" <b>W[n]</b> to prevent sidelobe artifacts from taking rectangular chunks out of the original signal (see <a href = "http://en.wikipedia.org/wiki/Window_function">Wikipedia</> for more info</a>).
+
+</p>
+
+<p>
+If the signal <B>X</b> is a real signal (which all music audio is), then there is a lot of redundancy in each complex short-time fourier spectrum.  Specifically, for even window size <b>N</b>, frequency indices [1, 2, 3, .., N/2] are the complex conjugates of the frequency indices [N, N-1, N-2, ..., N/2+2].  Hence, it makes sense to only consider frequency indices [1, 2, 3, ..., N/2+1] in each STFT chunk for musical audio.  This leads to what's known as the <b>spectrogram</b>, which <i>is what will be the starting point for computing chroma in this lab</i>.  To compute the spectrogram in Matlab, use the <a href = "http://www.mathworks.com/help/signal/ref/spectrogram.html">spectrogram</a> function.  Below is a code example of the spectrogram of a linear chirp over two seconds, which you can try out in Matlab<BR><BR>
+
+<script type="syntaxhighlighter" class="brush: matlabkey"><![CDATA[
+%Step 1: Generate a sample chirp sound
+Fs = 8000;%Sampling rate
+T = 1/Fs;%Sampling interval/period
+t = 0:T:2;%Two seconds of audio
+X = chirp(t,440,2,880);%Increase frequency linearly from 440hz to 880hz (one octave)
+sound(X, Fs);%Play the sound
+
+%Step 2: Compute and plot the magnitude of the spectrogram
+N = 1024;%The window size
+S = spectrogram(X,N);%Compute the spectrogram
+S = abs(S);%Take the absolute value and plot
+imagesc(S);
+xlabel('Short Time Window Index (Tau)');
+ylabel('Frequency Bin (k)');
+title('Spectrogram of a Chirp');
+]]></script>
+<BR><BR>
+
+By default, the spectrogram function takes a hop size <b>h</b> of half the window size, so each window overlaps the previous window by 50%.  This is fine for our purposes.  The plot that's generated by running the above code snippet is shown below:<BR><BR>
+
+<img src = "Figures/STFTChirp.png">
+<BR><BR>
+
+One of your first tasks for computing chroma will be to figure out what notes the frequency bins correspond to.
+
+</p>
+
+<hr>
+<h1>Part 1: Designing the Chroma Matrix</h1>
+<!--TODO: Code link!-->
+
+Now we are finally ready to jump into the lab.  The first part of the lab will walk you through the process of computing chroma features.  Please go through all of the steps below in order.  <font color = "red">Everything that you must submit in your report is highlighted in red</font>.
+
+<ol>
+<li>Given 440hz A as a base frequency, compute the frequency of the rest of the 11 halfsteps in an octave using <a href = "#eq2">Equation 2</a>.  <font color = "red">Fill in the following table (you can copy and paste from a column in matlab)</font>
+
+<table border = "1">
+<tr><td>Note</td><td>Halfstep Offset</td><td>Frequency from Equation 2 (hz)</td></tr>
+<tr><td>A</td><td>0</td><td>440</td></tr>
+<tr><td>A#</td><td>1</td><td></td></tr>
+<tr><td>B</td><td>2</td><td></td></tr>
+<tr><td>C</td><td>3</td><td></td></tr>
+<tr><td>C#</td><td>4</td><td></td></tr>
+<tr><td>D</td><td>5</td><td></td></tr>
+<tr><td>D#</td><td>6</td><td></td></tr>
+<tr><td>E</td><td>7</td><td></td></tr>
+<tr><td>F</td><td>8</td><td></td></tr>
+<tr><td>F#</td><td>9</td><td></td></tr>
+<tr><td>G</td><td>10</td><td></td></tr>
+<tr><td>G#</td><td>11</td><td></td></tr>
+</table><BR><BR>
+</li>
+
+<li>Now write a Matlab function that accepts an integer <b>m</b>, a sampling rate <b>Fs</b>, and a length of time in sections <b>T</b>, and returns a signal <b>X</b> which contains a pure tone (single cosine) of the note that is <b>m</b> halfsteps away from a 440hz <b>A</b>
+
+<script type="syntaxhighlighter" class="brush: matlabkey"><![CDATA[
+function [X] = getPureTone(m, Fs, T)
+	fBase = 440;
+	%Fill in the rest to compute X
+end
+]]></script>
+
+You can play this sound by typing in 
+
+<script type="syntaxhighlighter" class="brush: matlabkey"><![CDATA[
+sound(X, Fs);
+]]></script>
+
+Recall that 4 halfsteps above a base note and 7 halfsteps above a base note mix well.  Now that you've written the <code>getPureTone</code> function, try the following code to create and listen to a harmonious 2 second triad chord
+
+<script type="syntaxhighlighter" class="brush: matlabkey"><![CDATA[
+Fs = 22050;
+X = 0.2*getPureTone(0, Fs, 2) + 0.2*getPureTone(4, Fs, 2) + 0.2*getPureTone(7, Fs, 2);
+sound(X, Fs);
+]]></script>
+
+Now try the code
+
+<script type="syntaxhighlighter" class="brush: matlabkey"><![CDATA[
+Fs = 22050;
+X = 0.2*getPureTone(2, Fs, 2) + 0.2*getPureTone(6, Fs, 2) + 0.2*getPureTone(9, Fs, 2);
+sound(X, Fs);
+]]></script>
+
+<font color = "red">What notes form up the chord in each of these two examples, based on the table in question 1?  What is the same between these two examples?</font><BR><BR>
+
+</li>
+
+<li>
+Now let's take a look at some audio from a real instrument.  <a href = "piano-chrom.wav">piano-chrom.wav</a> (courtesy of <a href = "http://labrosa.ee.columbia.edu/matlab/chroma-ansyn/">Dan Ellis</a>) contains the "chromatic scale" played on a piano, which is all of the halfsteps in one octave played in sequence.  Load this sound sequence into Matlab and compute its spectrogram with the following code:<BR><BR>
+
+<script type="syntaxhighlighter" class="brush: matlabkey"><![CDATA[
+%Load in the audio signal, where X
+%is the signal and Fs is the sampling rate
+[X, Fs] = audioread('piano-chrom.wav'); 
+
+N = 1024;%Window size of STFT
+ 
+S = spectrogram(X,N);%Compute the spectrogram
+S = abs(S);
+imagesc(S);
+xlabel('Short Time Window Index (Tau)');
+ylabel('Frequency Bin (k)');
+title('Spectrogram of a Chromatic Scale');
+ylim([0, 200]);%Zoom in on the first 200 bins
+]]></script>
+<BR><BR>
+
+<font color = "red">What do you notice about the spectrogram?  What happens to the dominant frequencies as time goes on and the player cycles through notes?</font><BR><BR>
+
+Motivated by this example, we will look for notes in regions of the spectrogram around the frequencies of those notes.
+
+<BR><BR>
+</li>
+
+
+<li>Now that you've seen and heard some examples of how notes can exist in an audio signal and you have seen how to compute a spectrogram, it's time to put this all together to figure out how to find notes in the audio without any prior knowledge of the signal.
+
+<BR><BR><font color = "red">As a prerequisite step, given a window size of <b>N</b> for the spectrogram, a sampling rate of <b>Fs</b>, and a frequency <b>f</b> in hz, write down the formula to find the frequency bin number <b>k</b> that corresponds to the frequency <b>f</b></font>.<BR><BR>
+
+You can use this formula to find out which Fourier bin contains a note of a given frequency.  Note that this number may not be an integer.  We will deal with this in the next section.<BR><BR></li>
+
+
+<li>Now it's finally time to compute the chroma features.  For this, you will search for every note in every octave that it can possibly occur, in each window of the spectrogram.  Note that a spectrogram <b>S</b> can be viewed as a <b>N x M</b> matrix (and is explicitly stored as such in Matlab), where the rows of S correspond to each of the <b>N</b> frequency indices <b>k</b> and the columns correspond to each of <b>M</b> windows in time.  Your task is to create a <b>12 x N</b> <i>chroma matrix</i> <b>C</b>, so that when <b>S</b> is multiplied by <b>C</b> on the left, it replaces the spectrogram with a <b>Chromagram</b>.  The chromagram is a <b>12xM</b> matrix which contains a measure of the strength of the 12 possible notes in each of the <b>M</b> spectrogram windows, over all octaves.  The picture below shows this matrix equation<BR><BR>
+
+<img src = "Figures/ChromaMatrix.png" width = "100%"><BR><BR>
+
+Your job is to fill in each row of <b>C</b> (drawn as lines in the above picture).  When each row of <b>C</b> is multiplied by each column of the spectrogram, it integrates all frequency bins close to the note that corresponds to that row.  Actually, since it is unlikely that the exact bin index of the note we're looking for is an integer, we will take a weighted sum of the bins nearby.  For example, if we determine that we're looking for a note whose frequency bin k = 15.7, we might take a weighted average of bins 13, 14, 15, and 16.  Below is some skeleton code for computing <b>C</b>.  Lines 21-24 take care of the fractional bin problem by putting a Gaussian bump over where the note should be.  Your job is to fill in the rest
+<BR><BR>
+
+<script type="syntaxhighlighter" class="brush: matlabkey"><![CDATA[
+%Fs: Sampling rate of audio (cycles/second)
+%N: The window size of the short-time Fourier Transform
+function [C] = getCMatrix(Fs, N)
+    NSpec = N/2 + 1;%The number of bins in the spectrogram
+    C = zeros(12, NSpec);%Allocate space for the C matrix
+    A0 = 440.0/4;%The lowest octave range to search
+    FMax = Fs/2;%Maximum frequency supported by this sampling rate
+    
+    %For each note
+        row = zeros(1, NSpec);%This row of the C matrix
+        %Compute the base frequency for this note, in relation to A0, save
+        %in variable "fBase"
+        maxOctave = floor(log(FMax/fBase)/log(2));%The maximum octave index
+        %For each octave from 0 to the max octave
+            f = fBase*2^octave;
+            %Find the fractional bin index "k" of the frequency corresponding
+            %to this halfstep and this octave
+            
+            %Create an exponential gaussian bump around k in the frequency
+            %domain
+            bump = 0:NSpec-1;
+            bump = exp(-15*abs(log(bump/k)/log(2)));
+            bump = bump/norm(bump);
+            row = row + bump;
+        %end for
+        C(ii, :) = row;
+    %End for
+end
+]]></script>
+
+<font color = "red">Now plot C and include this figure in your writeup.
+
+<script type="syntaxhighlighter" class="brush: matlabkey"><![CDATA[
+C = getCMatrix(22050, 4096);%Example: 0.185 second window size
+imagesc(C);
+]]></script>
+
+Explain in your own words what each row of C is doing when it's multiplied on the right by the spectrogram, and explain the general shape of the matrix based on what you know about octaves and halfsteps
+
+</font>
+
+<BR><BR></li>
+
+<li>Now you're going to use the matrix you generated to compute the chromagram for the piano scale we examined earlier.  Run the following code<BR><BR>
+
+<script type="syntaxhighlighter" class="brush: matlabkey"><![CDATA[
+[X, Fs] = audioread('piano-chrom.wav'); 
+
+N = 1024;%Window size of STFT
+ 
+S = spectrogram(X,N);%Compute the spectrogram
+S = abs(S);
+
+C = getCMatrix(Fs, N);%Call your code for computing the chroma conversion matrix
+
+Y = C*S;%Perform the multiplication by the chromagram matrix
+%Plot the chromagram with note labels
+imagesc(Y);
+notes = {'A', 'A^#/B^b', 'B', 'C', 'C^#/D^b', 'D', 'D^#/E^b', 'E', 'F', 'F^#/G^b', 'G', 'G^#/A^b'};
+set(gca, 'YTick', 1:12);
+set(gca, 'YTickLabel', notes);
+]]></script>
+<BR><BR>
+
+<font color = "red">Include the resulting plot with your writeup.  Explain what you see in the output  (Note that the chromatic scale in this example starts on an E flat)</font><BR><BR>
+
+</li>
+
+<li>
+Repeat the last step, but change the STFT window size on line 3 to other powers of 2.  At the very least, try N = 256, N = 512, N = 16384, and N = 32768, to look at the two extremes of very small windows and very large windows.  Have a look at the C matrix that's generated for these different window sizes.  <font color = "red">Based on what you see looking at the C matrix and the chromagrams, can you explain the tradeoff that happens when you increase the window size?</font>
+</li>
+</ol>
+
+<!--Look at piano chromatic scale, compute scale of songs!-->
+
+
+</body>
+</html>

@@ -1,0 +1,258 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<link rel="stylesheet" type="text/css" href="../main.css" />
+<link rel="icon" href="../favicon.ico" type="image/x-icon"/>
+<link rel="shortcut icon" href="../favicon.ico" type="image/x-icon"/>
+<title>Chris Tralie: Ph.D. Student in ECE at Duke University</title>
+</head>
+<body>
+
+
+
+<div id="wrapper">
+
+<!-- Start of MenuBar Code -->
+<div id="menu-bar">
+<ul class="menus-level0"> 
+<li><a href="../index.html" accesskey="1"><b>Chris Tralie</b></a></li>
+<li><a href="../Research" accesskey="2">Research</a></li>
+<li><a href="../Software" accesskey="3">Software</a></li>
+<li><a href="../Teaching" accesskey="4">Teaching</a></li>
+<li><a href="../Teaching/Tutorials.html" accesskey="5">Tutorials</a></li>
+<li><a href = "../Coursework" accesskey="6">Coursework</a></li>
+<li><a href = "../PrincetonUGRAD" accesskey="7">Undergrad</a></li>
+</ul>
+</div>
+<!-- End of MenuBar Code -->
+
+
+<div id="pagetitle"><center><h1>Graduate Coursework</h1></center></div>
+<div id="page-content">
+
+<center>
+
+
+<h1>Fall 2015</h1><BR>
+"I never teach my pupils, I only attempt to provide the conditions in which they can learn."
+<BR>
+-Albert Einstein<BR><BR>
+
+<table border = "2" cellpadding="10">
+<tr><td><center>Course Number</center></td><td><center>Course Title</center></td>
+<td><center>Instructor</center></td></tr>
+
+<tr><td><center>GS 760</center></td><td>College Teaching And Visual Communication</td><td><a href = "http://www.hughcrumley.com/">Hugh Crumley</a></td></tr>
+
+</table>
+<HR>
+
+<!--<h1>Fall 2015</h1><BR>-->
+
+<!--"Oh, he seems like an okay person, except for being a little strange in some ways. All day he sits at his desk and scribbles, scribbles, scribbles. Then, at the end of the day, he takes the sheets of paper he's scribbled on, scrunches them all up, and throws them in the trash can." <BR>-->
+<!---John Von Neumann's housekeeper<BR><BR>-->
+
+<!--<table border = "2" cellpadding="10">-->
+<!--<tr><td><center>Course Number</center></td><td><center>Course Title</center></td>-->
+<!--<td><center>Instructor</center></td></tr>-->
+
+<!--<tr><td><center>MATH 611 (Audit)</center></center></td><td>Algebraic Topology 1</td><td><a href = "http://fds.duke.edu/db/aas/math/faculty/john.harer">John Harer</a></td></tr>-->
+
+
+<!--</table>-->
+<!--<HR>-->
+<!--<h1>Fall 2014</h1><BR>
+
+<BR>
+"Didn't you take algebra back in 7th grade??"<BR>
+-Everyone
+
+<BR><BR>
+<table border = "2" cellpadding="10">
+<tr><td><center>Course Number</center></td><td><center>Course Title</center></td>
+<td><center>Instructor</center></td></tr>
+
+<tr><td><center>MATH 501</center></center></td><td>Algebraic Structures 1</td><td><a href = "http://www.math.duke.edu/~jgetz/">Jayce Getz</a></td></tr>
+
+</table>
+
+<BR>
+<hr>!-->
+
+
+
+<h1>Spring 2014</h1><BR>
+
+"Our quiz is on logarithms??  It thought it was on algorithms!"<BR>
+-Cookie on Ned's Declassified (Middle) School Survival Guide
+<BR><BR>
+"The separation between art and science is purely imaginary"<BR>
+-Unknown<BR><BR>
+
+<table border = "2" cellpadding="10">
+<tr><td><center>Course Number</center></td><td><center>Course Title</center></td>
+<td><center>Instructor</center></td></tr>
+
+<tr><td><center>COMPSCI 634</center></td><td><a href = "http://www.cs.duke.edu/courses/spring14/compsci634/">Geometric Algorithms</a></td><td><a href = "http://www.cs.duke.edu/~pankaj/">Pankaj K Agarwal</a></td></tr>
+
+<tr><td><center>ECE 590/VMS 590</center></td><td>3D Modeling and Design in Arts and Medicine</td><td><a href = "http://mjvo.com/">Mark Olson</a><BR><a href = "http://scholar.google.com/citations?user=4c0OPhgAAAAJ&hl=en">Mariano Tepper</a></td></tr>
+
+<tr><td><center>ECE 590-01</center></td><td>Optimization for Engineers<BR>(Short Course: 4 Weeks + Projects)</td><td><a href = "http://www.cs.technion.ac.il/~bron/">Alex Bronstein</a></td></tr>
+
+<!--<tr><td><center>ECE 590-05</center></td><td>Coding Theory / Error Correcting Codes</td><td><a href = "http://scholar.google.com/citations?user=4c0OPhgAAAAJ&hl=en">Mariano Tepper</a><BR><a href = "http://www.ee.duke.edu/faculty/robert-calderbank">Robert Calderbank</a></tr>!-->
+
+<!--<tr><td><center>MATH 421</center></td><td>Differential Geometry</td><td><a href = "http://www.math.duke.edu/~bray/main.html">Hubert Bray</a></td></tr>!-->
+
+</table>
+
+<BR>
+<hr>
+
+
+
+<h1>Fall 2013</h1><BR>
+
+<!--<strike>"A topologist is a person who doesn't know the difference between a coffee cup and a doughnut"</strike><BR>!-->
+"With me everything turns into mathematics"
+<BR>
+-Rene Descartes<BR><BR>
+
+<table border = "2" cellpadding="10">
+<tr><td><center>Course Number</center></td><td><center>Course Title</center></td>
+<td><center>Instructor</center></td></tr>
+
+<!--<tr><td><center>COMPSCI 570</center></td><td><center><a href = "http://www.cs.duke.edu/courses/fall13/compsci570/">Graduate Artificial Intelligence</a></center></td><td><a href ="http://www.cs.duke.edu/~parr/">Ron Parr</a></td></tr>!-->
+
+<!--<tr><td><center>ECE 587</center></td><td>Information Theory</td><td><a href = "http://reeves.ee.duke.edu/">Galen Reeves</a></td></tr>!-->
+
+<tr><td><center>ECE 495</center></td><td>Special Topics:<BR>Representation/Analysis of Images and Video</td><td><a href = "http://www.ee.duke.edu/faculty/guillermo-sapiro">Guillermo Sapiro</a></td></tr>
+
+<tr><td><center>MATH 412</center></td><td>Topology with Applications</td><td><a href = "http://fds.duke.edu/db/aas/math/faculty/john.harer">John Harer</a></td></tr>
+
+</table>
+
+
+<BR>
+<HR>
+
+
+<h1>Spring 2013</h1><BR>
+
+"Music is the arithmetic of sounds as optics is the geometry of light"<BR>
+-<a href = "http://duke.edu/web/orchestra/concertseason.htm">Claude Debussy</a><BR><BR>
+
+<table border = "2" cellpadding="10">
+<tr><td><center>Course Number</center></td><td><center>Course Title</center></td>
+<td><center>Instructor</center></td></tr>
+
+<!--<tr><td><center><a href = "http://www.cs.duke.edu/~kamesh/cps639.html">COMPSCI 639</a></center></a></center></td><td>Randomized Algorithms</td><td><a href = "http://www.cs.duke.edu/~kamesh/">Kamesh Munagala</a></td></tr>
+
+<tr><td><center>MATH 421</center></td><td>Differential Geometry</td><td><a href = "http://www.math.duke.edu/~bray/main.html">Hubert Bray</a></td></tr>!-->
+
+<tr><td><center>ECE 675 (Audit)</center></td><td><center><a href = "http://www.disp.duke.edu/courses/imageAndSpec/">Optical Imaging and Spectroscopy</a></center></td><td><a href ="http://www.ee.duke.edu/faculty/david-j-brady">David J Brady</a></td></tr>
+
+<tr><td><center>GS 765</center></td><td>College Teaching Practicum</td><td><a href = "http://www.hughcrumley.com/">Hugh Crumley</a></td></tr>
+
+</table>
+
+
+<BR>
+<HR>
+
+
+<h1>Fall 2012</h1>
+
+"Computer science is no more about computers than astronomy is about telescopes"<BR>
+-Edsger Dijsktra <a href = "http://en.wikiquote.org/wiki/Computer_science#Sourced">?</a><BR><BR>
+
+<table border = "2" cellpadding="10">
+<tr><td><center>Course Number</center></td><td><center>Course Title</center></td>
+<td><center>Instructor</center></td></tr>
+
+<tr><td><center>COMPSCI 530</center></center></td><td><a href = "http://www.cs.duke.edu/courses/fall12/compsci530/">Graduate Algorithms</a></td><td><a href = "http://www.cs.duke.edu/~pankaj/">Pankaj K Agarwal</a></td></tr>
+
+<tr><td><center>ECE 571</center></td><td>Advanced Engineering Electromagnetics</td><td><a href = "http://people.ee.duke.edu/~drsmith/">David Smith</a></td></tr>
+
+
+</table>
+
+
+<BR><BR><HR><BR><BR>
+
+
+<h1>Spring 2012</h1>
+
+"Sit in reverie and watch the changing color of the waves that break upon the idle seashore of the mind"<BR>
+-Henry Wadsworth Longfellow<BR><BR>
+
+<table border = "2" cellpadding="10">
+<tr><td><center>Course Number</center></td><td><center>Course Title</center></td>
+<td><center>Instructor</center></td></tr>
+
+<tr><td><center>ECE 279 (579)</center></a></center></td><td>Waves In Matter</td><td><a href = "http://people.ee.duke.edu/~cummer/">Steven A. Cummer</a></td></tr>
+
+<tr><td><center>ECE 282 (582)</center></td><td>Statistical Digital Signal Processing<td><a href = "http://people.ee.duke.edu/~willett/Rebecca_Willett/Welcome.html">Rebecca Willett</a></td></tr>
+
+<tr><td><center>ECE 285 (585)</center></td><td>Signal Detection and Extraction Theory</td><td><a href = "http://www.ee.duke.edu/fds/pratt/ECE/faculty/lwn">Loren W Nolte</a></td></tr>
+
+
+</table>
+<!--
+<h2>Final Projects</h2>
+
+<table border = "2"><tr><td>ECE 285 Final Project</td><td><a href = "ECE285_FinalProjectWriteup.pdf">Electromagnetic Source Detection and Localization in a Room with
+Uncertain Dimensions</a></td><td><img src = "285proj.png"></td></tr></table>
+!-->
+
+
+<BR><BR><HR><BR><BR>
+
+<h1>Fall 2011</h1>
+
+"If you can't do probability, you can't do science.  You might as well become a lawyer"<BR>
+-Bernard Chazelle (in my theory of computation class, fall 2009)<BR><BR>
+
+<table border = "2" cellpadding="10">
+<tr><td><center>Course Number</center></td><td><center>Course Title</center></td>
+<td><center>Instructor</center></td></tr>
+
+<tr><td><center><!--<a href = "http://www.duke.edu/~BCL15/class/class_ece252fall11.html">ECE 252</a>!-->ECE 252 (552)</center></td><td>Advanced Computer Architecture</td><td><a href = "http://www.duke.edu/~BCL15/index.html">Benjamin C. Lee</a></td></tr>
+
+<tr><td><center><!--<a href = "http://people.ee.duke.edu/~kst/ECE255/">ECE 255</a>!-->ECE 255 (555)</center></td><td>Graduate Probability with CS Applications</td><td><a href = "http://people.ee.duke.edu/~kst/">Kishor S. Trivedi</a></td></tr>
+
+<tr><td><center>&nbsp&nbspECE 281 (581)</center></td><td>Random Signals and Noise</td><td><a href = "http://www.ee.duke.edu/fds/pratt/ECE/faculty/lwn">Loren W Nolte</a></td></tr>
+
+
+</table>
+
+<BR><u><h1><a href = "../PrincetonUGRAD/Classes">Classes I took at Princeton</a></h1></u>
+
+<!--<BR><BR>-->
+<!--<HR>-->
+<!--<h1>Fall 2011 - Spring 2012</h1>-->
+
+<!--<table border = "2" cellpadding="10">-->
+<!--<tr><td><center>Sk8 180</center></td><td><a href = "https://www.facebook.com/DurhamSkatepark">Skateboarding Self-Study</a></td><td><a href = "http://www.ctralie.com">Chris Tralie</a>, <a href = "http://www.ece.ncsu.edu/people/jsbesnof">Jordan Bensoff</a></td></tr>-->
+<!--</table><BR>-->
+
+<!--<table>-->
+<!--<tr><td><img src = "sk86.jpg"></td><td><img src = "sk815.jpg"></td><td><img src = "sk88.jpg"></td></tr>-->
+<!--</table>-->
+
+</center>
+</div><!--Wrapper-->
+
+
+<!-- Start of StatCounter Code -->
+<script type="text/javascript">
+var sc_project=7309088; 
+var sc_invisible=1; 
+var sc_security="f655b56d"; 
+</script>
+<script type="text/javascript"
+src="http://www.statcounter.com/counter/counter.js"></script>
+<noscript><div class="statcounter"><a title="free hit counter"
+href="http://statcounter.com/" target="_blank"><img class="statcounter"
+src="http://c.statcounter.com/7309088/0/f655b56d/1/" alt="free hit
+counter"></a></div></noscript>
+<!-- End of StatCounter Code -->
+

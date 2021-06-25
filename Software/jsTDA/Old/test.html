@@ -1,0 +1,19 @@
+<html>
+<head>
+<script src = "ripser/ripser.js"></script>
+</head>
+<body>
+
+<!--https://github.com/scijs/ndarray-distance!-->
+
+<script>
+var arr = new Module.VectorFloat();
+var D = [1.176, 1.902, 1.902, 1.176, 1.176, 1.902, 1.902, 1.176, 1.902, 1.176];
+for (var i = 0; i < D.length; i++) {
+    arr.push_back(D[i]);
+}
+Module.ripserJS(arr, 5, 2.0, 2);
+</script>
+
+</body>
+</html>

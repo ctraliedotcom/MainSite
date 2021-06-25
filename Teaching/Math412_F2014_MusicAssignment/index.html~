@@ -1,0 +1,174 @@
+<html>
+<head>
+<!--Syntax highlighting in Javascript!-->
+<script type="text/javascript" src="../../syntaxhighlighter/scripts/shCore.js"></script>
+<script type="text/javascript" src="../../syntaxhighlighter/scripts/shBrushJScript.js"></script>
+<script type="text/javascript" src="../../syntaxhighlighter/scripts/shBrushCpp.js"></script>
+<script type="text/javascript" src="../../syntaxhighlighter/scripts/shBrushMatlabSimple.js"></script>
+<script type="text/javascript" src="../../syntaxhighlighter/scripts/shBrushPython.js"></script>
+<link type="text/css" rel="stylesheet" href="../../syntaxhighlighter/styles/shCoreDefault.css"/>
+<script type="text/javascript">SyntaxHighlighter.all();</script>
+
+<!--Do wrapping with preformatted text!-->
+<style>
+pre
+{
+white-space: -moz-pre-wrap; /* Mozilla, supported since 1999 */
+white-space: -pre-wrap; /* Opera 4 - 6 */
+white-space: -o-pre-wrap; /* Opera 7 */
+white-space: pre-wrap; /* CSS3 - Text module (Candidate Recommendation) http://www.w3.org/TR...xt/#white-space */
+word-wrap: break-word; /* IE 5.5+ */
+}
+</style>
+
+</head>
+<body>
+<center>
+
+<h1>Math 412: Music + Topology Assignment</h1>
+<h2>Chris Tralie</h2>
+<h2>Due on Wednesday November 5, 2014</h2>
+</center>
+
+<hr>
+<h2>Overview</h2>
+In this mini assignment you will explore an application of "sliding windows and persistence" on time series data (see <a href = "http://arxiv.org/pdf/1307.6188.pdf">Jose Perea's</a> paper for more theory).  Specifically, you will look at how to transform musical audio data into a high dimension point cloud/curve which can be probed with TDA methods.  You will make use of a visualization program called <a href = "http://www.loopditty.net">LoopDitty</a> to gain some intuition about what points in various persistence diagrams might mean.  Please follow the directions below and submit an electronic writeup to <a href = "chris.tralie@gmail.com">chris.tralie@gmail.com</a> with the answers to all of the questions and any observations you have.  Enjoy!
+
+<hr>
+<h2>Background</h2>
+<p>
+Musical audio is typically sampled at 22050hz (samples per second) or 44100hz.  In this assignment, we will be doing a "sliding window" to focus in on small chunks of musical data sampled this way.  Each chunk will be summarized with features that store information about pitches (chroma), spectral envelope (MFCC), and timbre of the sound in that chunk, and can be thought of as a point in 59-dimensional space (there are a few extra "timbre" features I didn't talk about in class).  Therefore, as we slide a window (mask) from left to right along the song and extract features, a point cloud forms in 59-D, with each chunk as a point.
+</p>
+
+<p>
+The terms below are related to this sliding window as follows (they will make more sense to you if you were in class, don't worry so much if you weren't and you don't follow...I'll provide some sample parameters in the problems):
+<ul>
+<li><b>hopSize (integer)</b>: The length of the "analysis window" I discussed in class, for analyzing small chunks of the audio (many analysis windows will be averaged together to get each full window).  This should generally be 512 for 22050hz audio, and 1024 for 44100hz audio, which corresponds to roughly 23 milliseconds of audio.  This is short enough for the frequency statistics to be roughly stationary, but long enough to get a reasonable number of frequency bins when doing the FFT</li>
+<li><b>skipSize (integer)</b>: The number of analysis windows to slide over to the next window.  Typically 1, but larger if we want to sample fewer windows for computational reasons</li>
+<li><b>windowSize (integer)</b>: The number of analysis windows whose means and variances are taken to form the full window.  For instance, if we had a hop size of 1024 for 44100hz audio, then a windowSize of 43 would lead to a sliding window with <code>1024*43 = 44032</code> samples, which is nearly 1 second of audio (44100 samples).</li>
+</ul>
+</p>
+
+<p>
+The figure below shows an example of what this all means.  In this example, the skipSize is 2 (the large window slides over by two analysis windows each time), and the windowSize is 6 (6 analysis windows are wrapped into one window)<BR>
+
+<img src = "analysistexture.png">
+</p>
+
+<hr>
+<h2>Getting Started</h2>
+<ul>
+<li><a href = "Code.zip">Click here</a> to download the code and audio files you will need for this assignment.  The code is wrapped with TDA tools, which you will need to compute persistence diagrams (<a href = "TDATools_UsersGuide.pdf">Click here</a> to see the user guide for TDA tools written by Paul.  The code is also wrapped with the <a href = "http://labrosa.ee.columbia.edu/matlab/rastamat/">rastamat</a> code package for computing MFCCs and the <a href = "http://labrosa.ee.columbia.edu/matlab/chroma-ansyn/">chroma-ansyn</a> package for computing chroma, both by <a href = "http://www.ee.columbia.edu/~dpwe/">Dan Ellis</a>. </li>
+
+<li>Be sure that you can load <a href = "http://www.loopditty.net/matlab.html">http://www.loopditty.net/matlab.html</a> in your web browser (you should see the words "loopditty" written in cursive).  If you get an error message, please e-mail <a href = "chris.tralie@gmail.com">chris.tralie@gmail.com</a>.  This should work in the most recent versions of Chroma and Firefox, and it should work on most of the cluster computers on campus</li>
+
+<li>Make sure you have access to Matlab.  Paul will be a better resource about this than me, so please e-mail him if you don't have access to a computer with Matlab, and he will be able to get you setup with a math account</li>
+
+</ul>
+<hr>
+
+<h2>What You Have To Do</h2>
+<font color = "red"><b>Note: Questions you have to answer are highlighted in red</b></font>
+
+<h3><u>Part 1: Creating and Visualizing Point Clouds with PCA</u></h3><BR>
+<ol>
+<li>Open Matlab in the directory where you extracted the code, and type "init".  This will setup TDA tools in your Matlab environment<BR><BR></li>
+<li>Run the following command:
+<script type="syntaxhighlighter" class="brush: matlabkey"><![CDATA[
+X = getDelaySeriesJavascriptPCA('rock.au', 512, 1, 43, 'rock');
+]]></script>
+</h2>
+
+This command creates the sliding window embedding point cloud for the song "<a href = "http://en.wikipedia.org/wiki/Crazy_Train">Crazy Train</a>" (22050hz audio) with an analysis window of size 512, a skip size of 1 analysis window (sliding the mask by about 23 milliseconds), and a total window size of 43 analysis windows (about a second of audio).  It saves the result in X, which is a 59 dimensional point cloud.  It then does PCA on that 59 dimensional point cloud to reduce it to 3 dimensions for visualization, and it outputs two files: <b>rock.ogg</b> (audio) and <b>rock.txt</b> (PCA on the point cloud).
+<BR><BR>
+</li>
+
+<li>Now go to <a href = "http://www.loopditty.net/matlab.html">http://www.loopditty.net/matlab.html</a>.  Load <b>rock.ogg</b> into the audio input bar, and load <b>rock.txt</b> into the "delay series PCA" input bar.  You should see something like the picture below:<BR><BR>
+<img src = "LoadingAudio.png" border = "1">
+<BR><BR>
+Now press the "Play" button to play the PCA point cloud, synchronized with the music (click and drag to rotate...also make sure your speakers or headphones are on).
+<BR><BR><font color = "red"><b>What do you observe?  What's going on in the song when the velocity along the curve is faster?  What's going on when it stays in one place?</b></font><BR><BR>
+
+<h3><b>NOTE: Every time you want to load a new song into LoopDitty or restart a song, you need to refresh your browser on <a href = "http://www.loopditty.net/matlab.html">http://www.loopditty.net/matlab.html</a> and reload both the audio file and the PCA file.  Even if the browser already displays the names files you want, you need to click and load them again (apologies for the bug)</b></h3><BR><BR>
+
+</li>
+
+<li>
+Repeat steps 2 and 3, changing the windowSize.  For instance, run the code
+
+<script type="syntaxhighlighter" class="brush: matlabkey"><![CDATA[
+X = getDelaySeriesJavascriptPCA('rock.au', 512, 1, 150, 'rock');
+]]></script>
+
+To get a sliding window of size (150*512 samples/(22050.0 samples/second)) = <b>3.48 seconds</b>.  Try smaller windows and larger windows.<BR><BR><font color = "red"><b>Visually, what appears to be the effect of the window size?  What happens when the window is too small?  What happens when the window is too large?  Do you have an explanation for this?</b></font>
+
+</li>
+
+</ol>
+
+<h3><u>Part 2: 1D Rips on a Song Clip</u></h3><BR>
+
+Now that you have a feel for what this point cloud embedding scheme looks like for the music data, it's time to start analyzing the data quantitatively with TDA tools.  The first thing to do is a straight up 1D rips filtration to look for loops.  For this we'll be running a small sliding window (512*10/44100 = 0.116 second) to make a few loops pop out.  Run the following code (this could take up to a minute depending on your computer):
+
+<script type="syntaxhighlighter" class="brush: matlabkey"><![CDATA[
+X = getDelaySeriesJavascriptPCA('rock.au', 512, 2, 10, 'rock');
+[I, J] = rca1pc(X, 100);%100 is the distance bound for edges, which I've made
+% much bigger than the largest edge so all edges will be included
+]]></script>
+
+<b>I</b> contains the 1D rips diagram, and <b>J</b> contains the 0D rips diagram.  The birth times are in the first column, and the death times are in the second column.  So go ahead and plot the 1D diagram with the following command:
+
+<script type="syntaxhighlighter" class="brush: matlabkey"><![CDATA[
+plotpersistencediagram(I)
+]]></script>
+
+Note that you can also plot it yourself like this:<BR>
+
+<script type="syntaxhighlighter" class="brush: matlabkey"><![CDATA[
+plot(I(:, 1), I(:, 2), '.');
+hold on;
+plot([min(I(:)) max(I(:))], [min(I(:)) max(I(:))], 'r');%Diagonal line
+]]></script>
+
+Now have a look back at loop ditty to visualize and "listen to" the point cloud we just ran through TDA tools (reload <b>rock.txt</b> and <b>rock.ogg</b>).<BR><BR>
+<font color = "red"><b>What do you think the high persistence points in the 1D diagram correspond to in the song?  Why do many of the high persistence points seem to have later birth times?</b></font><BR><BR>
+Note that the visualization is in 3D, and it only retains about 29% of the variance.  So there's a lot going on in higher dimensions that isn't captured by this visualization.  Still, I hope I've demonstrated that it's often helpful to look at this projected visualization for some intuition.  I would encourage you on your projects to do the same (look at matlab command <b>pca</b> for a point cloud, or at the command <b>cmdscale</b> for embedding a metric).
+
+<h3><u>Part 3: High Dimensional Morse Filtrations: Rock vs Classical</u></h3><BR>
+The next thing to try is slightly fancier.  In class I described doing Morse filtrations along equally space directions on a high dimensional sphere.  The idea is to do a 0D sublevelset filtration on a curve along many directions, which encodes critical points as births and deaths of connected components.  Since the music now needs to be treated as a connected curve, an edge is added for each adjacent point in time so that the point cloud turns into a path (the LoopDitty visualization already did this).  In fact, I've written some code in <b><code>getMorseFiltered0DDiagrams.m</code></b> to do this.  Check it out for more details, especially if you want to do something similar for your project (it uses <b>rca1mfscm</b> in the TDA Tools package).
+
+<BR><BR>
+Now you're going to run these Morse filtrations on 30 second clips from two different musical genres: rock and classical.  The code below is contained in the script <b>MorseProblem.m</b>, so simply type "MorseProblem" to run it.  The code computes morse filtrations in many different directions on a high dimensional sphere and concatenates the diagrams from each filtration.  It then sorts the points in descending order of persistence.  Have a look at the plots and also back at LoopDitty to visualize each song (load classical.ogg/classical.txt and rock.ogg/rock.txt)<BR>
+<BR><BR>
+<font color = "red"><b>What is the difference between the distribution of persistence values for each song?  Which song has more persistence points, and which song has more high persistence points?  Can you explain why based on the audio content of each song?</b></font><BR><BR>
+
+<script type="syntaxhighlighter" class="brush: matlabkey"><![CDATA[
+%Compute the feature embeddings of the rock and classical song
+XClassical = getDelaySeriesJavascriptPCA('classical.au', 512, 1, 43, 'classical');
+JClassical = getMorseFiltered0DDiagrams(XClassical);
+XRock = getDelaySeriesJavascriptPCA('rock.au', 512, 1, 43, 'rock');
+JRock = getMorseFiltered0DDiagrams(XRock);
+
+%Sort the points in descending order of persistence
+JClassical = sort(JClassical(:, 2) - JClassical(:, 1), 'descend');
+JRock = sort(JRock(:, 2) - JRock(:, 1), 'descend');
+
+%Plot and compare the sorted persistences
+plot(JClassical);
+hold on;
+plot(JRock);
+legend({'Classical', 'Rock'});
+xlabel('ith strongest Persistence Point');
+ylabel('Persistence');
+title('Sorted Persistence for Morse Filtrations');
+]]></script>
+
+<ol>
+
+</ol>
+
+<h3><u>Part 4: Extra Credit</u></h3>
+
+I've made a web site <a href = "http://www.loopditty.net">http://www.loopditty.net</a>, which allows you to visualize music for any song on <a href = "http://www.soundcloud.com">http://www.soundcloud.com</a>.  By default this makes a sliding window of size 5 seconds so that it emphasizes more global patterns.<BR>  <font color = "red"><b>See if you can find a song that has a large visual loop, or some other structure you think you could pick up on with TDA, and comment on it in the comments section of that web site</b></font>.<BR>  Also submit your observations as part of your writeup so I know to give you credit!
+</body>
+</html>

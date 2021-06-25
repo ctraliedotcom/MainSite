@@ -1,0 +1,9 @@
+[submodule "jsMath"]
+	path = jsMath
+	url = https://github.com/COMPSCI290-S2016/jsMath.git
+[submodule "syntaxhighlighter"]
+	path = syntaxhighlighter
+	url = https://github.com/COMPSCI290-S2016/syntaxhighlighter.git
+[submodule "Software/jsTDA/DREiMac"]
+	path = Software/jsTDA/DREiMac
+	url = https://github.com/ctralie/DREiMac.git

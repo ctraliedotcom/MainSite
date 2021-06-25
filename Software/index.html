@@ -1,0 +1,251 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<!-- Header !-->
+	<head>
+		<title>Christopher J. Tralie, Ph.D.</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<!--[if lte IE 8]><script src="../assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="../assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="../assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="../assets/css/ie8.css" /><![endif]-->
+        <style>
+        .image_off, #home:hover .image_on{
+           display:none
+        }
+        .image_on, #home:hover .image_off{
+           display:block
+        }
+        </style>
+	</head>
+	<body>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								<header id="header">
+									<a href="../index.html" class="logo"><strong>Christopher J. Tralie, Ph.D.</strong></a>
+								</header>
+<!-- End Header !-->
+
+							<!-- Content -->
+								<section>
+									<header class="main">
+										<h1>Software</h1>
+									</header>
+									<p>
+									<h3>Please visit <a href = "https://github.com/ctralie?tab=repositories">my Github page</a> for an extensive collection of software I have developed.  Below are a few highlights</h3>
+								</p>
+
+
+								<h2><a href = "https://github.com/scikit-tda/ripser.py">ripser.py</a></h2>
+								<div class="row">
+									<div class="6u 12u$(medium)">
+										<img src = "../Teaching/TDAPics/Cells.png" width = 400 height = 200>
+									</div>
+									<div class="6u 12u$(medium)">
+										<p>
+										I worked with <a href = "https://sauln.github.io/">Nathaniel Saul</a> and <a href = "https://math.duke.edu/people/rann-bar">Rann Bar-On</a> to create a user friendly Python interface to <a href = "http://ulrich-bauer.org/">Uli Bauer</a>'s <a href = "https://github.com/Ripser/ripser/">ripser</a> library for fast <a href = "https://en.wikipedia.org/wiki/Persistent_homology">persistent homology</a> computations.  We made this cross-platform and easy to install (<code>pip install ripser</code>), and we have <a href = "https://github.com/scikit-tda/ripser.py/tree/master/notebooks">a number of Python notebooks</a> showing usage and showcasing different applications of the software.  Please refer to our <a href = "https://www.theoj.org/joss-papers/joss.00925/10.21105.joss.00925.pdf">extended abstract</a>> in the <a href = "https://joss.theoj.org/">Journal of Open Source Software (JOSS)</a> for more info.
+										</p>
+									</div>
+								</div>
+								<BR><HR>
+
+
+
+								<h2><a href = "../Research/linmdtw">linmdtw</a></h2>
+								<div class="row">
+									<div class="6u 12u$(medium)">
+										<img src = "../Research/linmdtw/_static/logo.png" width = 300 height = 300>
+									</div>
+									<div class="6u 12u$(medium)">
+										<p>
+											With the help of one of my students Elizabeth Dempsey, I devised linear memory, parallelizable algorithm for Dynamic Time Warping (DTW), referred to as ``<a href = "../Research/linmdtw/paper.pdf">linmdtw</a>'' for short. This algorithm can be used to align multivarite time series that are re-parameterized version of each other, such as audio feature frames of different orchestral performances.
+
+											This repository contains a Python implementation of  efficient cython implementations of FastDTW and Memory-Restricted Multiscale DTW (MrMsDtw). Please refer to the background examples <a href ="../Research/linmdtw">in the documentation</a> for usage.
+										</p>
+									</div>
+								</div>
+								<BR><HR>
+	
+
+
+									<h2><a href = "http://www.covers1000.net">Covers 1000 Dataset/Demo</a></h2>
+									<div class="row">
+										<div class="6u 12u$(medium)">
+											<img src = "Covers1000.png">
+										</div>
+										<div class="6u 12u$(medium)">
+											<p>
+											As part of my <a href = "http://www.covers1000.net/ctralie2017_EarlyMFCC_HPCPFusion.pdf">paper on fusing features for automatic cover song identification</a>, I curated a new dataset of 1000 cover songs.  I've provided the features for this dataset at <a href = "http://www.covers1000.net/">http://www.covers1000.net/</a> in the hopes that they will be useful to others researching this problem.  Since the main contribution of my work is acurate beat-level alignment of cover songs across many different genres/styles, I also created an <a href = "http://www.covers1000.net/demo.html">interactive web GUI</a> to examine the alignments my algorithm produces with different feature sets.
+											</p>
+										</div>
+									</div>
+									<BR><HR>
+									
+
+
+									<h2><a href = "https://github.com/ctralie/GraphDitty">GraphDitty Music Structure Visualization</a></h2>
+									<div class="row">
+										<div class="6u 12u$(medium)">
+											<img src = "../Research/GraphDitty/Thumb.png">
+										</div>
+										<div class="6u 12u$(medium)">
+											<p>
+											As part of my research on automatic cover song identification, I designed a scheme to fuse different features (HPCP, MFCC) to improve self-similarity matrices (SSMs) for musical audio.  To showcase the algorithm and to visually show how much it cleans up the SSMs, I created a GUI where users can listen to music synchronized with the SSMs and with a <a href = "https://beta.observablehq.com/@mbostock/d3-force-directed-graph">d3-force-directed graph</a> derived from them.  <a href = "http://www.covers1000.net/GraphDitty/">Click here</a> for a live demo, and </a><a href = "https://github.com/ctralie/GraphDitty">click here</a> to run code to generate your own examples.
+											</p>
+										</div>
+									</div>
+									<BR><HR>
+
+									<h2><a href = "http://www.covers1000.net/LoopDitty">LoopDitty Geometric Music Visualizer</a></h2>
+									<div class="row">
+										<div class="6u 12u$(medium)">
+											<img src = "LoopDittyScreenshot.png">
+										</div>
+										<div class="6u 12u$(medium)">
+											<p>
+												As part of my research on geometric/topological time series analysis, I created a web interface with WebGL that can be used to view a projection of the high dimensional geometric curves I use to represent music, and I synchronize this projection with the music so that the curve is drawn as the music evolves.  I call this program "LoopDitty," and it can be used to visualize any song on <a href = "https://soundcloud.com/">Soundcloud</a>, in addition to custom songs users upload.  Watch as the curve goes to different regions of space for verses, choruses, and bridges, and notice how the curve varies locally for different types of music.
+											</p>
+										</div>
+									</div>
+									
+
+
+                                    <BR><HR>
+									<h2><a href = "https://github.com/ctralie/G-RFLCT">G-RFLCT</a></h2>
+									<div class="row">
+										<div class="6u 12u$(medium)">
+											<table><tr><td><img src = "GRFLCTPictures/HKS.png"></td><td><img src = "GRFLCTPictures/goodcutsymmetry.png"></td></tr><tr><td colspan = "2"><img src = "GRFLCTPictures/BeamTrace.png"></td></tr></table>
+										</div>
+										<div class="6u 12u$(medium)">
+											<p>
+												G-RFLCT stands for "Geometry Radio Frequency Library by Chris Tralie."  It started off as a library to do image source calculation and beam tracing for radar applications, but it turned into a more general purpose library for 3D geometry tasks and education.<BR>
+												<b><h3>Current Features</h3></b>
+												<ul><li>Support for 3D primitives and primitive transformations: Vectors, Points, Rays, Planes, etc</li>
+												<li>Support for 3D polygon meshes, including geometry methods (PCA, slice by plane) and some topology methods (triangle subdivision, basic no-frills hole filling). Can load and save .off or .obj files with color</li>
+												<li>Basic 3D mesh viewer with a polar camera and a vertex picker using PyOpenGL, which supports color, texture, and Phong illumination</li>
+												</ul>
+												<b><h3>Algorithms Implemented and Tested</h3></b>
+												<ul>
+												<li>Iterative closest points</li>
+												<li>Laplacian Mesh Editing and the Heat Kernel Signature</li>
+												<li>Image sources calculation for an arbitrary polygon mesh</li>
+												</ul>
+
+												<b><h3>Algorithms under development</h3></b>
+												<ul>
+												<li>Polygon beam tracing</li>
+												<li>3D Planar Reflective Symmetry Transform</li>
+												<li>Fast marching for geodesic distances</li>
+												<li>Generalized Multidimensional Scaling</li>
+												</ul>
+											</p>
+										</div>
+									</div>
+
+									<HR>
+									<h2><a href = "https://github.com/ctralie/LogbookOrganizer">Grad School Logbook Organizer</a></h2>
+									<div class="row">
+										<div class="6u 12u$(medium)">
+											<img src = "LogbookOrganizer.png">
+										</div>
+										<div class="6u 12u$(medium)">
+											<p>
+												This links to something on <a href = "http://www.github.com/ctralie">my Github Page</a> that's half program half tutorial.  It's a simple logbook program I created to help keep track of a lot of different projects going on at once during my Ph.D.  It's a very thin layer over HTML that allows the stitching together of many different entries as HTML files, which are organized by date and tagged.  I would highly recommend anyone in grad school to use this program or to do something similar in LaTeX!  It's very easy to get disorganized, and you want to document every little thing you do every day so you don't end up having to repeat any effort
+											</p>
+										</div>
+									</div>
+
+
+						</div>
+					</div>
+
+<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+							<!-- Menu -->
+								<nav id="menu">
+									<header class="major">
+										<h2>Menu</h2>
+									</header>
+									<ul>
+										<li><a href="../index.html">Homepage</a></li>
+										<li><a href = "../ctralie_cv.pdf">CV</a></li>
+										<li>
+											<span class="opener">Research</span>
+											<ul>
+												<li><a href="../Research/index.html">Projects</a></li>
+												<li><a href="../Research/statement.pdf">Research Statement</a></li>
+												<li><a href = "../Research/ctralie_dissertation.pdf">Dissertation</a></li>
+											</ul>
+										</li>
+										<li><a href="../Software">Software</a></li>
+										<li><a href = "../Teaching/index.html">Teaching</a></li>
+										<li>
+											<span class="opener">Archives</span>
+											<ul>
+												<li><a href="../Teaching/Tutorials.html">Tutorials</a></li>
+												<li><a href="../Coursework/index.html">Graduate Classes</a></li>
+												<li><a href="../PrincetonUGRAD">Princeton Undergraduate Portfolio</a></li>
+											</ul>
+										</li>
+									</ul>
+								</nav>
+
+							<!-- Section -->
+								<section>
+									<div class="mini-posts">
+									
+									
+									 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+									<a class="twitter-timeline" data-width="314" data-height="350" data-link-color="#f56a6a" data-chrome="transparent" data-dnt="true" href="https://twitter.com/ctralie/timelines/1012673261124145153?ref_src=twsrc%5Etfw">Tweets by ctralie</a>
+									
+                                    </div>
+								</section>
+
+
+							<!-- Footer -->
+								<footer id="footer">
+									<p class="copyright">&copy; Christopher J. Tralie. All rights reserved.  Contact chris.tralie@gmail.com. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+								</footer>
+
+						</div>
+					</div>
+
+			</div>
+			
+            <!-- Start of StatCounter Code -->
+            <script type="text/javascript">
+            var sc_project=7309088; 
+            var sc_invisible=1; 
+            var sc_security="f655b56d"; 
+            </script>
+            <script type="text/javascript"
+            src="http://www.statcounter.com/counter/counter.js"></script>
+            <noscript><div class="statcounter"><a title="free hit counter"
+            href="http://statcounter.com/" target="_blank"><img class="statcounter"
+            src="http://c.statcounter.com/7309088/0/f655b56d/1/" alt="free hit
+            counter"></a></div></noscript>
+            <!-- End of StatCounter Code -->
+<!-- End Sidebar !-->
+
+<!-- Scripts -->
+			<script src="../assets/js/jquery.min.js"></script>
+			<script src="../assets/js/skel.min.js"></script>
+			<script src="../assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="../assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="../assets/js/main.js"></script>
+<!-- End Scripts -->
+	</body>
+</html>

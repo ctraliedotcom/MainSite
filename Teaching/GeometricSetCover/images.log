@@ -1,0 +1,823 @@
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=latex 2013.11.20)  3 MAY 2014 10:32
+entering extended mode
+ %&-line parsing enabled.
+**./images.tex
+(./images.tex
+LaTeX2e <2009/09/24>
+Babel <v3.8l> and hyphenation patterns for english, usenglishmax, dumylang, noh
+yphenation, loaded.
+
+(/usr/share/texmf-texlive/tex/latex/base/article.cls
+Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
+(/usr/share/texmf-texlive/tex/latex/base/size10.clo
+File: size10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+) (/usr/share/texmf-texlive/tex/latex/base/ifthen.sty
+Package: ifthen 2001/05/26 v1.1c Standard LaTeX ifthen package (DPC)
+) (/usr/share/texmf-texlive/tex/latex/preprint/fullpage.sty
+Package: fullpage 1999/02/23 1.1 (PWD)
+\FP@margin=\skip43
+) (/usr/share/texmf-texlive/tex/latex/psnfss/mathptmx.sty
+Package: mathptmx 2005/04/12 PSNFSS-v9.2a Times w/ Math, improved (SPQR, WaS) 
+LaTeX Font Info:    Redeclaring symbol font `operators' on input line 28.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
+(Font)                  OT1/cmr/m/n --> OT1/ztmcm/m/n on input line 28.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  OT1/cmr/bx/n --> OT1/ztmcm/m/n on input line 28.
+LaTeX Font Info:    Redeclaring symbol font `letters' on input line 29.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `normal'
+(Font)                  OML/cmm/m/it --> OML/ztmcm/m/it on input line 29.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `bold'
+(Font)                  OML/cmm/b/it --> OML/ztmcm/m/it on input line 29.
+LaTeX Font Info:    Redeclaring symbol font `symbols' on input line 30.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `normal'
+(Font)                  OMS/cmsy/m/n --> OMS/ztmcm/m/n on input line 30.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `bold'
+(Font)                  OMS/cmsy/b/n --> OMS/ztmcm/m/n on input line 30.
+LaTeX Font Info:    Redeclaring symbol font `largesymbols' on input line 31.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `normal'
+(Font)                  OMX/cmex/m/n --> OMX/ztmcm/m/n on input line 31.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
+(Font)                  OMX/cmex/m/n --> OMX/ztmcm/m/n on input line 31.
+\symbold=\mathgroup4
+\symitalic=\mathgroup5
+LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 34.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
+(Font)                  OT1/cmr/bx/n --> OT1/ptm/bx/n on input line 34.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `bold'
+(Font)                  OT1/cmr/bx/n --> OT1/ptm/bx/n on input line 34.
+LaTeX Font Info:    Redeclaring math alphabet \mathit on input line 35.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
+(Font)                  OT1/cmr/m/it --> OT1/ptm/m/it on input line 35.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
+(Font)                  OT1/cmr/bx/it --> OT1/ptm/m/it on input line 35.
+LaTeX Info: Redefining \hbar on input line 50.
+) (/usr/share/texmf-texlive/tex/latex/base/latexsym.sty
+Package: latexsym 1998/08/17 v2.2e Standard LaTeX package (lasy symbols)
+\symlasy=\mathgroup6
+LaTeX Font Info:    Overwriting symbol font `lasy' in version `bold'
+(Font)                  U/lasy/m/n --> U/lasy/b/n on input line 47.
+) (/usr/share/texmf-texlive/tex/latex/graphics/graphicx.sty
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+(/usr/share/texmf-texlive/tex/latex/graphics/keyval.sty
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks14
+) (/usr/share/texmf-texlive/tex/latex/graphics/graphics.sty
+Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+(/usr/share/texmf-texlive/tex/latex/graphics/trig.sty
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+) (/etc/texmf/tex/latex/config/graphics.cfg
+File: graphics.cfg 2009/08/28 v1.8 graphics configuration of TeX Live
+)
+Package graphics Info: Driver file: dvips.def on input line 91.
+(/usr/share/texmf-texlive/tex/latex/graphics/dvips.def
+File: dvips.def 1999/02/16 v3.0i Driver-dependant file (DPC,SPQR)
+))
+\Gin@req@height=\dimen103
+\Gin@req@width=\dimen104
+) (/usr/share/texmf-texlive/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2000/07/18 v2.13 AMS math features
+\@mathmargin=\skip44
+For additional information on amsmath, use the `?' option.
+(/usr/share/texmf-texlive/tex/latex/amsmath/amstext.sty
+Package: amstext 2000/06/29 v2.01
+(/usr/share/texmf-texlive/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0
+\@emptytoks=\toks15
+\ex@=\dimen105
+)) (/usr/share/texmf-texlive/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d
+\pmbraise@=\dimen106
+) (/usr/share/texmf-texlive/tex/latex/amsmath/amsopn.sty
+Package: amsopn 1999/12/14 v2.01 operator names
+)
+\inf@bad=\count87
+LaTeX Info: Redefining \frac on input line 211.
+\uproot@=\count88
+\leftroot@=\count89
+LaTeX Info: Redefining \overline on input line 307.
+\classnum@=\count90
+\DOTSCASE@=\count91
+LaTeX Info: Redefining \ldots on input line 379.
+LaTeX Info: Redefining \dots on input line 382.
+LaTeX Info: Redefining \cdots on input line 467.
+\Mathstrutbox@=\box26
+\strutbox@=\box27
+\big@size=\dimen107
+LaTeX Font Info:    Redeclaring font encoding OML on input line 567.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 568.
+\macc@depth=\count92
+\c@MaxMatrixCols=\count93
+\dotsspace@=\muskip10
+\c@parentequation=\count94
+\dspbrk@lvl=\count95
+\tag@help=\toks16
+\row@=\count96
+\column@=\count97
+\maxfields@=\count98
+\andhelp@=\toks17
+\eqnshift@=\dimen108
+\alignsep@=\dimen109
+\tagshift@=\dimen110
+\tagwidth@=\dimen111
+\totwidth@=\dimen112
+\lineht@=\dimen113
+\@envbody=\toks18
+\multlinegap=\skip45
+\multlinetaggap=\skip46
+\mathdisplay@stack=\toks19
+LaTeX Info: Redefining \[ on input line 2666.
+LaTeX Info: Redefining \] on input line 2667.
+) (/usr/share/texmf-texlive/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2009/06/22 v3.00
+(/usr/share/texmf-texlive/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2009/06/22 v3.00 Basic AMSFonts support
+\symAMSa=\mathgroup7
+\symAMSb=\mathgroup8
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 96.
+)) (/usr/share/texmf-texlive/tex/latex/amscls/amsthm.sty
+Package: amsthm 2004/08/06 v2.20
+\thm@style=\toks20
+\thm@bodyfont=\toks21
+\thm@headfont=\toks22
+\thm@notefont=\toks23
+\thm@headpunct=\toks24
+\thm@preskip=\skip47
+\thm@postskip=\skip48
+\thm@headsep=\skip49
+\dth@everypar=\toks25
+) (/usr/share/texmf-texlive/tex/latex/algorithmicx/algpseudocode.sty
+Package: algpseudocode 
+(/usr/share/texmf-texlive/tex/latex/algorithmicx/algorithmicx.sty
+Package: algorithmicx 2005/04/27 v1.2 Algorithmicx
+Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
+\c@ALG@line=\count99
+\c@ALG@rem=\count100
+\c@ALG@nested=\count101
+\ALG@tlm=\skip50
+\ALG@thistlm=\skip51
+\c@ALG@Lnr=\count102
+\c@ALG@blocknr=\count103
+\c@ALG@storecount=\count104
+\c@ALG@tmpcounter=\count105
+\ALG@tmplength=\skip52
+)
+Document Style - pseudocode environments for use with the `algorithmicx' style
+)
+\c@definition=\count106
+\c@algorithm=\count107
+\c@openquestion=\count108
+\c@remark=\count109
+\c@theorem=\count110
+(/usr/share/texmf-texlive/tex/latex/graphics/color.sty
+Package: color 2005/11/14 v1.0j Standard LaTeX Color (DPC)
+(/etc/texmf/tex/latex/config/color.cfg
+File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
+)
+Package color Info: Driver file: dvips.def on input line 130.
+(/usr/share/texmf-texlive/tex/latex/graphics/dvipsnam.def
+File: dvipsnam.def 1999/02/16 v3.0i Driver-dependant file (DPC,SPQR)
+)) (/usr/share/texmf-texlive/tex/latex/base/inputenc.sty
+Package: inputenc 2008/03/30 v1.1d Input encoding file
+\inpenc@prehook=\toks26
+\inpenc@posthook=\toks27
+)
+\sizebox=\box28
+\lthtmlwrite=\write3
+
+LaTeX Warning: Unused global option(s):
+    [16pt].
+
+(./images.aux)
+\openout1 = `images.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 190.
+LaTeX Font Info:    ... okay on input line 190.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 190.
+LaTeX Font Info:    ... okay on input line 190.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 190.
+LaTeX Font Info:    ... okay on input line 190.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 190.
+LaTeX Font Info:    ... okay on input line 190.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 190.
+LaTeX Font Info:    ... okay on input line 190.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 190.
+LaTeX Font Info:    ... okay on input line 190.
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 190.
+
+(/usr/share/texmf-texlive/tex/latex/psnfss/ot1ptm.fd
+File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
+)
+
+latex2htmlLength hsize=349.0pt
+
+latex2htmlLength vsize=650.43001pt
+
+latex2htmlLength hoffset=0.0pt
+
+latex2htmlLength voffset=0.0pt
+
+latex2htmlLength topmargin=0.0pt
+
+latex2htmlLength topskip=0.00003pt
+
+latex2htmlLength headheight=0.0pt
+
+latex2htmlLength headsep=0.0pt
+
+latex2htmlLength parskip=0.0pt plus 1.0pt
+
+latex2htmlLength oddsidemargin=0.0pt
+
+latex2htmlLength evensidemargin=0.0pt
+
+LaTeX Font Info:    Try loading font information for OT1+ztmcm on input line 21
+4.
+(/usr/share/texmf-texlive/tex/latex/psnfss/ot1ztmcm.fd
+File: ot1ztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OT1/ztmcm.
+)
+LaTeX Font Info:    Try loading font information for OML+ztmcm on input line 21
+4.
+(/usr/share/texmf-texlive/tex/latex/psnfss/omlztmcm.fd
+File: omlztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OML/ztmcm.
+)
+LaTeX Font Info:    Try loading font information for OMS+ztmcm on input line 21
+4.
+(/usr/share/texmf-texlive/tex/latex/psnfss/omsztmcm.fd
+File: omsztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMS/ztmcm.
+)
+LaTeX Font Info:    Try loading font information for OMX+ztmcm on input line 21
+4.
+(/usr/share/texmf-texlive/tex/latex/psnfss/omxztmcm.fd
+File: omxztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMX/ztmcm.
+)
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 214.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7.4> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 214.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 214.
+LaTeX Font Info:    Try loading font information for U+lasy on input line 214.
+(/usr/share/texmf-texlive/tex/latex/base/ulasy.fd
+File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
+)
+l2hSize :tex2html_wrap_inline1113:7.91998pt::7.91998pt::169.13625pt.
+[1
+
+
+
+]
+l2hSize :tex2html_wrap_inline1115:7.91998pt::7.91998pt::184.68593pt.
+[2
+
+
+]
+l2hSize :tex2html_wrap_inline1125:7.91998pt::7.91998pt::96.93105pt.
+[3
+
+
+]
+l2hSize :tex2html_wrap_inline1127:7.91998pt::7.91998pt::276.94893pt.
+[4
+
+
+]
+l2hSize :tex2html_wrap_inline1129:7.91998pt::7.91998pt::77.9579pt.
+[5
+
+
+]
+l2hSize :tex2html_wrap_inline1131:7.91998pt::7.91998pt::358.23123pt.
+
+Overfull \hbox (12.23125pt too wide) in paragraph at lines 245--246
+[]|[] 
+ []
+
+[6
+
+
+]
+Overfull \hbox (80.5205pt too wide) detected at line 260
+ [] 
+ []
+
+l2hSize :tex2html_wrap750:51.36157pt::5.46494pt::349.0pt.
+[7
+
+
+]
+l2hSize :tex2html_wrap_inline1135:7.24997pt::7.24997pt::5.71988pt.
+[8
+
+
+]
+l2hSize :tex2html_wrap_inline1148:8.0pt::8.0pt::43.4348pt.
+[9
+
+
+]
+l2hSize :tex2html_wrap_inline1150:6.74997pt::0.0pt::7.54994pt.
+[10
+
+
+]
+l2hSize :tex2html_wrap_indisplay1152:9.4324pt::9.4324pt::126.21521pt.
+[11
+
+
+]
+l2hSize :tex2html_wrap_inline1154:6.74997pt::0.0pt::6.41995pt.
+[12
+
+
+]
+l2hSize :tex2html_wrap_inline1156:7.24997pt::7.24997pt::23.12401pt.
+[13
+
+
+]
+l2hSize :tex2html_wrap_inline1162:7.24997pt::7.24997pt::21.8341pt.
+[14
+
+
+]
+l2hSize :tex2html_wrap_inline1164:7.24997pt::7.24997pt::20.19395pt.
+[15
+
+
+]
+l2hSize :tex2html_wrap_inline1177:6.74997pt::0.0pt::6.61002pt.
+[16
+
+
+]
+l2hSize :tex2html_wrap_inline1179:8.43242pt::0.0pt::12.16408pt.
+[17
+
+
+]
+l2hSize :tex2html_wrap_inline1184:8.58043pt::0.0pt::11.92226pt.
+[18
+
+
+]
+l2hSize :tex2html_wrap_inline1186:7.24997pt::7.24997pt::5.43997pt.
+[19
+
+
+]
+l2hSize :tex2html_wrap_inline1188:7.24997pt::7.24997pt::7.72pt.
+[20
+
+
+]
+l2hSize :tex2html_wrap_inline1190:8.0pt::8.0pt::42.59416pt.
+[21
+
+
+]
+l2hSize :tex2html_wrap_inline1192:8.0pt::8.0pt::88.60623pt.
+[22
+
+
+]
+l2hSize :tex2html_wrap_inline1194:8.93242pt::8.93242pt::110.48657pt.
+[23
+
+
+]
+l2hSize :tex2html_wrap_inline1224:7.24997pt::7.24997pt::27.68408pt.
+[24
+
+
+]
+l2hSize :tex2html_wrap_indisplay1228:7.46996pt::7.46996pt::66.07564pt.
+[25
+
+
+]
+l2hSize :tex2html_wrap_inline1237:7.24997pt::7.24997pt::23.9042pt.
+[26
+
+
+]
+l2hSize :tex2html_wrap_indisplay1241:7.24997pt::7.24997pt::42.37996pt.
+[27
+
+
+]
+l2hSize :tex2html_wrap_inline1245:8.43242pt::0.0pt::11.97401pt.
+[28
+
+
+]
+l2hSize :tex2html_wrap_inline1247:7.24997pt::7.24997pt::13.48978pt.
+[29
+
+
+]
+l2hSize :tex2html_wrap_inline1256:7.24997pt::7.24997pt::27.03406pt.
+[30
+
+
+]
+l2hSize :tex2html_wrap_inline1262:7.46996pt::7.46996pt::27.38403pt.
+[31
+
+
+]
+l2hSize :tex2html_wrap_indisplay1264:7.91998pt::7.91998pt::100.63692pt.
+[32
+
+
+]
+l2hSize :tex2html_wrap_inline1266:9.39049pt::9.39049pt::25.71382pt.
+[33
+
+
+]
+l2hSize :tex2html_wrap_inline1270:7.91998pt::7.91998pt::32.57385pt.
+[34
+
+
+]
+l2hSize :tex2html_wrap_inline1278:7.24997pt::7.24997pt::7.76991pt.
+[35
+
+
+]
+l2hSize :tex2html_wrap_inline1291:7.38493pt::7.38493pt::6.01993pt.
+[36
+
+
+]
+l2hSize :tex2html_wrap_inline1293:7.94495pt::7.94495pt::32.985pt.
+[37
+
+
+]
+l2hSize :tex2html_wrap_indisplay1297:14.99493pt::14.99493pt::60.26276pt.
+[38
+
+
+]
+l2hSize :tex2html_wrap_inline1303:8.0pt::8.0pt::39.96935pt.
+[39
+
+
+]
+l2hSize :tex2html_wrap_inline1305:9.39049pt::9.39049pt::56.89813pt.
+[40
+
+
+]
+l2hSize :tex2html_wrap_inline1309:9.39049pt::9.39049pt::43.00716pt.
+[41
+
+
+]
+l2hSize :tex2html_wrap_inline1320:9.39049pt::9.39049pt::8.27974pt.
+[42
+
+
+]
+l2hSize :tex2html_wrap_indisplay1331:8.92921pt::8.92921pt::48.80482pt.
+[43
+
+
+]
+l2hSize :tex2html_wrap_inline1333:7.24997pt::7.24997pt::22.7942pt.
+[44
+
+
+]
+l2hSize :tex2html_wrap_indisplay1335:12.11609pt::12.11609pt::64.22958pt.
+[45
+
+
+]
+l2hSize :tex2html_wrap_inline1341:8.0pt::8.0pt::61.74544pt.
+[46
+
+
+]
+l2hSize :tex2html_wrap_indisplay1345:8.0pt::8.0pt::118.41664pt.
+[47
+
+
+]
+l2hSize :tex2html_wrap_inline1347:6.74997pt::0.0pt::4.61989pt.
+[48
+
+
+]
+l2hSize :tex2html_wrap_inline1351:8.0pt::8.0pt::55.38312pt.
+[49
+
+
+]
+l2hSize :tex2html_wrap_inline1353:7.24997pt::7.24997pt::7.16995pt.
+[50
+
+
+]
+Underfull \hbox (badness 10000) in paragraph at lines 552--552
+[]\OT1/ptm/m/it/10 AL-GO-RITHM HittingSetApprox1$\OT1/ztmcm/m/n/10 (^^F =
+ []
+
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <10> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 552.
+l2hSize :tex2html_wrap_inline890:53.4pt::53.4pt::189.30002pt.
+[51
+
+
+]
+l2hSize :tex2html_wrap_inline1365:8.0pt::8.0pt::21.95663pt.
+[52
+
+
+]
+l2hSize :tex2html_wrap_inline1367:8.0pt::8.0pt::19.39952pt.
+[53
+
+
+]
+l2hSize :tex2html_wrap_inline1369:7.24997pt::7.24997pt::3.27992pt.
+[54
+
+
+]
+l2hSize :tex2html_wrap_inline1373:7.0634pt::0.0pt::12.61993pt.
+[55
+
+
+]
+l2hSize :tex2html_wrap_inline1375:7.38493pt::7.38493pt::5.10988pt.
+[56
+
+
+]
+l2hSize :tex2html_wrap_inline1381:8.0pt::8.0pt::39.04074pt.
+[57
+
+
+]
+l2hSize :tex2html_wrap_indisplay1383:8.0pt::8.0pt::166.66968pt.
+[58
+
+
+]
+l2hSize :tex2html_wrap_inline1385:8.0pt::8.0pt::43.39383pt.
+[59
+
+
+]
+l2hSize :tex2html_wrap_indisplay1387:9.4324pt::9.4324pt::72.83525pt.
+[60
+
+
+]
+l2hSize :tex2html_wrap_inline1389:8.0pt::8.0pt::27.04959pt.
+[61
+
+
+]
+l2hSize :tex2html_wrap_indisplay1395:8.06339pt::8.06339pt::57.20117pt.
+[62
+
+
+]
+l2hSize :tex2html_wrap_inline1397:8.0pt::8.0pt::46.93109pt.
+[63
+
+
+]
+l2hSize :tex2html_wrap_inline1399:9.63913pt::9.63913pt::47.53214pt.
+[64
+
+
+]
+l2hSize :tex2html_wrap_inline1401:8.0pt::8.0pt::44.53337pt.
+[65
+
+
+]
+l2hSize :tex2html_wrap_inline1403:8.0pt::8.0pt::19.53065pt.
+[66
+
+
+]
+l2hSize :tex2html_wrap_inline1405:8.0pt::8.0pt::48.97359pt.
+[67
+
+
+]
+l2hSize :tex2html_wrap_inline1407:8.0pt::8.0pt::48.19328pt.
+[68
+
+
+]
+l2hSize :tex2html_wrap_inline1409:8.17761pt::8.17761pt::54.04356pt.
+[69
+
+
+]
+l2hSize :tex2html_wrap_inline1415:7.38493pt::7.38493pt::20.104pt.
+[70
+
+
+]
+l2hSize :tex2html_wrap_indisplay1419:10.13911pt::10.13911pt::58.54207pt.
+[71
+
+
+]
+l2hSize :tex2html_wrap_inline1421:7.91998pt::7.91998pt::34.98381pt.
+[72
+
+
+]
+l2hSize :tex2html_wrap_indisplay1423:16.44458pt::16.44458pt::42.55504pt.
+[73
+
+
+]
+l2hSize :tex2html_wrap_indisplay1425:19.94109pt::19.94109pt::226.65306pt.
+[74
+
+
+]
+l2hSize :tex2html_wrap_inline1427:7.5634pt::7.5634pt::31.88408pt.
+[75
+
+
+]
+l2hSize :tex2html_wrap_indisplay1429:17.99493pt::17.99493pt::142.80467pt.
+[76
+
+
+]
+l2hSize :tex2html_wrap_inline1431:8.0pt::8.0pt::29.6067pt.
+[77
+
+
+]
+l2hSize :tex2html_wrap_indisplay1433:17.99493pt::17.99493pt::96.72533pt.
+[78
+
+
+]
+l2hSize :tex2html_wrap_indisplay1435:13.75983pt::13.75983pt::131.27882pt.
+[79
+
+
+]
+l2hSize :tex2html_wrap_inline1437:11.28085pt::11.28085pt::36.77757pt.
+[80
+
+
+]
+l2hSize :tex2html_wrap_inline1439:9.67468pt::9.67468pt::28.53224pt.
+[81
+
+
+]
+l2hSize :tex2html_wrap_inline1441:9.24248pt::9.24248pt::6.31131pt.
+[82
+
+
+]
+l2hSize :tex2html_wrap_indisplay1443:13.75983pt::13.75983pt::77.93568pt.
+[83
+
+
+]
+l2hSize :tex2html_wrap_indisplay1445:11.99493pt::11.99493pt::62.77705pt.
+[84
+
+
+]
+l2hSize :tex2html_wrap_inline1455:9.67468pt::9.67468pt::61.46153pt.
+[85
+
+
+]
+l2hSize :tex2html_wrap_inline1459:8.0pt::8.0pt::24.73059pt.
+[86
+
+
+]
+l2hSize :tex2html_wrap_inline1461:8.99493pt::8.99493pt::43.7029pt.
+[87
+
+
+]
+l2hSize :tex2html_wrap_inline1480:9.39049pt::9.39049pt::21.93234pt.
+[88
+
+
+]
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 818.
+
+(/usr/share/texmf-texlive/tex/latex/psnfss/omsptm.fd
+File: omsptm.fd 
+)
+LaTeX Font Info:    Font shape `OMS/ptm/m/it' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 818.
+l2hSize :tex2html_wrap_inline950:105.32239pt::105.32239pt::294.00108pt.
+[89
+
+
+]
+l2hSize :tex2html_wrap_inline1489:8.0pt::8.0pt::22.93674pt.
+[90
+
+
+]
+l2hSize :tex2html_wrap_inline1491:7.38493pt::7.38493pt::24.16396pt.
+[91
+
+
+]
+l2hSize :tex2html_wrap_inline1493:7.24997pt::7.24997pt::28.06255pt.
+[92
+
+
+]
+l2hSize :tex2html_wrap_inline1495:8.0pt::8.0pt::27.86961pt.
+[93
+
+
+]
+l2hSize :tex2html_wrap_inline1497:8.0pt::8.0pt::25.74059pt.
+[94
+
+
+]
+l2hSize :tex2html_wrap_inline1499:8.0pt::8.0pt::20.47974pt.
+[95
+
+
+]
+l2hSize :tex2html_wrap_inline1502:7.94495pt::7.94495pt::15.50003pt.
+[96
+
+
+]
+l2hSize :tex2html_wrap_inline1504:9.42404pt::9.42404pt::23.591pt.
+[97
+
+
+]
+l2hSize :tex2html_wrap_inline1509:6.74997pt::0.0pt::6.61002pt.
+[98
+
+
+]
+l2hSize :tex2html_wrap_inline1513:7.46996pt::7.46996pt::89.0075pt.
+[99
+
+
+]
+l2hSize :tex2html_wrap_inline1515:7.32988pt::7.32988pt::19.391pt.
+[100
+
+
+]
+l2hSize :tex2html_wrap_inline972:66.99994pt::66.99994pt::294.00108pt.
+[101
+
+
+]
+l2hSize :tex2html_wrap_inline1528:8.0pt::8.0pt::48.26169pt.
+[102
+
+
+]
+l2hSize :tex2html_wrap_inline1555:7.91998pt::7.91998pt::5.50003pt.
+[103
+
+
+] (./images.aux) ) 
+Here is how much of TeX's memory you used:
+ 2453 strings out of 495062
+ 31311 string characters out of 1182643
+ 80376 words of memory out of 3000000
+ 5604 multiletter control sequences out of 15000+50000
+ 14859 words of font info for 44 fonts, out of 3000000 for 9000
+ 28 hyphenation exceptions out of 8191
+ 27i,13n,24p,601b,371s stack positions out of 5000i,500n,10000p,200000b,50000s
+
+Output written on images.dvi (103 pages, 28480 bytes).

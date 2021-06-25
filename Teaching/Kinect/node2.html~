@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<link rel="stylesheet" type="text/css" href="../tutorials.css" />
+<TITLE>Bibliography</TITLE>
+<META NAME="description" CONTENT="Bibliography">
+<META NAME="keywords" CONTENT="KinectMath">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="KinectMath.css">
+
+<LINK REL="next" HREF="node3.html">
+<LINK REL="previous" HREF="node1.html">
+<LINK REL="up" HREF="KinectMath.html">
+<LINK REL="next" HREF="node3.html">
+</HEAD>
+
+<BODY >
+
+<div id="wrapper">
+
+<!-- Start of MenuBar Code -->
+<div id="menu-bar">
+<a href="http://www.duke.edu/" id="duke-logo">Duke</a>
+<a href = "http://www.princeton.edu" id="pton-logo">Princeton</a>
+<ul class="menus-level0">
+<li><a href="../../index.html" accesskey="1"><b>Chris Tralie</b></a></li>
+<li><a href="../../Research" accesskey="2">Research</a></li>
+<li><a href="../../Teaching" accesskey="3">Teaching</a></li>
+<li><a href="../../Teaching/Tutorials.html" accesskey="4">Tutorials</a></li>
+<li><a href = "../../Coursework" accesskey="5">Coursework</a></li>
+<li><a href = "../../PrincetonUGRAD" accesskey="6">Undergrad</a></li>
+</ul>
+</div>
+<!-- End of MenuBar Code -->
+
+
+<BR><BR>
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html26"
+  HREF="node3.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html24"
+  HREF="KinectMath.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html18"
+  HREF="node1.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html27"
+  HREF="node3.html">About this document ...</A>
+<B> Up:</B> <A NAME="tex2html25"
+  HREF="KinectMath.html">Disparity-Based Performance Analysis of</A>
+<B> Previous:</B> <A NAME="tex2html19"
+  HREF="node1.html">Depth from Disparity by</A>
+<BR><BR></DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00002000000000000000">
+Bibliography</A>
+</H2><DL COMPACT><DD><P></P><DT><A NAME="khoshelham2012accuracy">1</A>
+<DD>
+Kourosh Khoshelham and Sander&nbsp;Oude Elberink.
+<BR>Accuracy and resolution of kinect depth data for indoor mapping
+  applications.
+<BR><EM>Sensors</EM>, 12(2):1437-1454, 2012.
+
+<P></P><DT><A NAME="KonoligeCalibrationTechnical">2</A>
+<DD>
+Patrick&nbsp;Mihelich Kurt&nbsp;Konolige.
+<BR>Technical description of kinect calibration, April 2013.
+</DL>
+
+<P>
+<BR><HR>
+<ADDRESS>
+Chris Tralie
+2014-05-02
+</ADDRESS>
+
+<!-- Start of StatCounter Code -->
+<script type="text/javascript">
+var sc_project=7309088; 
+var sc_invisible=1; 
+var sc_security="f655b56d"; 
+</script>
+<script type="text/javascript"
+src="http://www.statcounter.com/counter/counter.js"></script>
+<noscript><div class="statcounter"><a title="free hit counter"
+href="http://statcounter.com/" target="_blank"><img class="statcounter"
+src="http://c.statcounter.com/7309088/0/f655b56d/1/" alt="free hit
+counter"></a></div></noscript>
+<!-- End of StatCounter Code -->
+<!-- BEGIN DISQUS -->
+<BR><BR><BR>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ctralieteaching';
+    var disqus_identifier = 'KinectMath';
+    var disqus_url = 'http://ctralie.com/Teaching/Kinect/index.html';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+<!-- END DISQUS -->
+
+</BODY>
+</HTML>

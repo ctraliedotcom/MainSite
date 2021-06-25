@@ -1,0 +1,7 @@
+multires:
+level 1: 119.91 sec
+level 2: 266.99 sec
+level 3: 301.54 sec
+level 4: 313.34 sec
+
+(Time increases by less and less since the image being added to the pyramid is smaller and smaller)

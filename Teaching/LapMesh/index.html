@@ -1,0 +1,537 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<!-- Header !-->
+	<head>
+		<title>Christopher J. Tralie, Ph.D.</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<!--[if lte IE 8]><script src="../../assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="../../assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="../../assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="../../assets/css/ie8.css" /><![endif]-->
+        <style>
+        .image_off, #home:hover .image_on{
+           display:none
+        }
+        .image_on, #home:hover .image_off{
+           display:block
+        }
+        </style>
+	</head>
+	<body>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								<header id="header">
+									<a href="../../index.html" class="logo"><strong>Christopher J. Tralie, Ph.D.</strong></a>
+								</header>
+<!-- End Header !-->
+
+							<!-- Content -->
+							    <SCRIPT SRC="../../jsMath/easy/load.js"></SCRIPT>
+								<section>
+                                    <h1>Laplacian Mesh Editing</h1>
+                                    <h2>NOTE: For those interested in this tutorial, you may find <a href = "../COMPSCI290/Assignments/Group3_LaplacianMesh">this assignment</a> I designed for my class <a href = "../COMPSCI290/">Digital 3D Geometry</a> to be of interest</h2>
+
+                                    <ul>
+                                    <li><a href = "#basic">Introduction / Basic Laplacian Mesh Representation</a></li>
+                                    <li><a href = "#reconstruction">Mesh Reconstruction</a></li>
+                                    <li><a href = "#deformation">Mesh Deformation</a></li>
+                                    <li><a href = "#parameterization">2D Parameterization</a></li>
+                                    <li><a href = "#membrane">Membrane Surface</a></li>
+                                    <li><a href = "#interpolation">Surface Function Interpolation</a></li>
+                                    <li><a href = "#curvature">Discrete Mean Curvature Approximation</a></li>
+                                    <li><a href = "#spectral">Spectral Eigenanalysis</a></li>
+                                    <li><a href = "#debugging">Debugging with Matlab</a></li>
+                                    <li><a href = "#usage">Program Usage</a></li>
+                                    <li><a href = "#download">Download Executable (Windows 7 64 bit only)</a></li>
+                                    <li><a href = "#bloopers">Crazy Bloopers</a></li>
+                                    </ul>
+
+                                    <h2><u><a name = "basic">Introduction / Basic Laplacian Mesh Representation</a></u></h2><BR>
+                                    Triangular meshes have become the ubiquitous surface representation in recent years in computer graphics, so a lot of research has been put into manipulating them in an efficient, meaningful way.  Unfortunately, it's sometimes difficult to do operations on meshes that store geometry in absolute coordinates.  For instance, for meshes that store the absolute position of vertices along with the topology of the mesh, doing holistic deformations that preserve overall shape is not easy operating on a point-by-point basis, nor is doing spectral analysis of the mesh.<BR><BR><BR>
+                                    Laplacian meshes store the geometry of triangle meshes in an alternative way by keeping track of differential vertex information instead of absolute information.  This turns out to be a much better way to preserve the relationship between vertices when certain transformations (especially deformations) are done on the mesh.  It also allows for a very natural way to do smooth function interpolation across the surface, and it allows approximation of a lot of metrics from differential geometry, such as mean curvature, with very little effort.  And finally, Laplacian Meshes give rise to a transformation that can be viewed as a spectral decomposition over surfaces similar to the Discrete Fourier Transform.<BR><BR>
+                                    In this assignment, I will implement the Laplacian Mesh framework and show all of the applications I mentioned above.  I will be working primarily from Olka Sorkine's STAR 2005 report on the topic:<BR><BR>
+
+                                    <blockquote>
+                                    <a href="http://www.cs.princeton.edu/courses/archive/fall10/cos526/papers/sorkine05.pdf">Laplacian Mesh Processing</a><BR>
+                                    Olga Sorkine<BR>
+                                    STAR report, EUROGRAPHICS 2005.
+                                    </blockquote
+                                    <BR><BR>
+                                    The main idea behind this is to construct and manipulate a <i>delta coordinates</i> for each mesh.  A delta coordinate for vertex <b>i</b> is defined as follows:<BR><BR>
+                                    <img src = "Equations/latex0.png"><BR><BR>
+                                    where N(i) represents the set of all neighbor vertices of the <b>ith</b> vertex, and w<SUB>ij</SUB> represents the weight put on the <b>jth</b> neighbor of i.  If the weights are all 1, then this formula reduces to taking the difference between the vertex and the average of its neighbors:<BR><BR>
+                                    <img src = "Equations/latex1.png"><BR><BR>
+                                    where d<SUB>i</SUB> is the the "valence" (the number of neighbors) of the vertex <b>i</b>.  This scheme of choosing equal weights of all neighbors is known as the <b>umbrealla weighting</b> scheme.<BR><BR>
+
+                                    Another common weighting scheme involes the use of "cotangent weights" between the angles in this figure:<BR>
+                                    <img src = "Equations/cotangent.png"><BR><BR>
+                                    Referring to this picture, the weights chosen are related to the cotangents of the angles. opposite the edge formed between the vertex <b>i</b> and its neighbor <b>j</b> by the following equation:<BR><BR>
+
+                                    <img src = "Equations/latex2.png">
+
+                                    <BR><BR>
+
+                                    This weighting scheme is more geometrically-motivated, and I will describe the trade-offs between the cotangent weights and umbrella weights in the various applications in this assignment (I have implemented both).
+                                    <BR><BR>
+
+                                    Since a delta coordinate is a linear combination of a vertex and its neighbors, the process of constructing delta coordinates for all vertices can be represented as a matrix, called the <b>Laplacian Matrix</b> (I will refer to it as <b>L</b> from now on), whose entries are as follows:<BR>
+                                    <ul><li>If i and j are neighbors, the <b>ij<SUP>th</SUP></b> entry is equal to the negative normalzied weight <b>w<SUB>ij</SUB></b> (<b>w<SUB>ij</SUB></b> divided by the sum of all weights from i)</li>
+                                    <li>If i and j are not neighbors and i is not equal to j, then the 0 if i and j are not neighbor, then the <b>ij<SUP>th</SUP></b> entry is zero</li>
+                                    <li>If i = j, then place a 1 at the <b>ij<SUB>th</SUB></b> entry</li>
+                                    </ul>
+
+                                    If L is multiplied by an Nx3 column matrix of all vertices in the mesh (where N is the number of vertices), then we will get back an Nx3 column matrix, where the three columns represent the delta coordinates in x, y, and z.<BR><BR>
+
+                                    One thing to note about this matrix L is that it is <i>extremely</i> sparse.  In typical meshes, the valence of each vertex is around 6.  So this means that in a mesh of N vertices, only 6 + 1 (for the vertex itself) entries of a given row are nonzero.  Therefore, it would be wise to use a sparse matrix package so that these nonzero entries are given more priority in matrix computation.  I chose to use the C library <a href = "http://people.sc.fsu.edu/~jburkardt/c_src/csparse/csparse.html">csparse</a> to do all of my matrix manipluations in this project.  This is a C library (constisting of two files, <b>csparse.c</b> and <b>csparse.h</b>) which has different calling conventions from C++, so it needs to have the "extern"{ #include <csparse.h> } in order to link properly.  I use the QR linear systems solver to solve least squares linear systems in the assignment.<BR><BR>
+
+                                    Unfortunately, this simple csparse library doesn't have functions for eigenanalysis, so I actually used an ordinary linear sover called <a href = "http://math.nist.gov/tnt/download.html">TNT</a> (the Template Numeric Toolkit) to find the eigenvalues and eigenvectors.  This is much, <i>much</i> slower than everything else and I'm sure it could be sped up with a better sparse library that finds eigenvectors, but I just wanted to get some basic results for this extra feature.
+
+
+                                    <BR><BR>
+
+
+                                    <h2><u><a name = "reconstruction">Mesh Reconstruction</a></u></h2><BR>
+                                    One thing to notice right away about the Laplacian Matrix <b>L</b> is that it is of rank (NVertices - 1).  This is because it stores differential coordinates, which throw away all information about absolute position.  As such, the translational offset from the origin has been lost.  Given one additional independent constraint, this matrix will have rank NVertices and will be invertible.  One way to do this is to specify the location of exactly one vertex, which is enough to fix the position of the mesh in space.  To do this, simply add one row to the bottom of the L matrix that has a 1 at the index of this vertex and zeros everywhere else, and set the corresponding "delta coordinate" of this row to be the absolute position of that vertex:<BR>
+
+                                    <img src = "Equations/anchormatrix.png"><BR>
+
+                                    This constraint is called an <b>anchor</b>.  In this case, the matrix is invertible and there is exactly one solution.  It is a sanity check on the implementation to reconstruct a mesh this way.  Here's one example below of a command that does this:
+
+                                    <table border = "1".
+                                    <tr><td><img src = "images/cheetah.jpg"> <img src = "images/cheetahtranslated.jpg"></td></tr>
+                                    <tr><td>lap -batch -input_mesh ..\input\cheetah.off -output_mesh ..\output\cheetahtranslated.off -anchor 0 0 0 0></td></tr>
+                                    </table>
+
+                                    <BR><BR>
+
+                                    <h2><u><a name = "deformation">Mesh Deformation</a></u></h2><BR>
+                                    Things get a little bit more interesting when more than one anchor (contraint) is set.  That is, the mesh can be perfectly reconstructed when the absolute position of exactly one coordinate is set, but the reconstruction problem turns into an overconstrained linear system as soon as multiple constraints are added.  Unless the positions of the anchors are obtained by the same affine transformation from their original positions, then they will either be stretched or compressed out of position with respect to each other.  This means that the reconstruction will somehow have to interpolate between the multiple constraints.  Luckily, this problem of a "best fit" system to satisfy the constraints is well-posed as a linear system, because we can just solve the system in the least squares sense and see what happens.<BR>
+                                    To summarize, mesh deformation goes as follows:<BR>
+                                    <ol>
+                                    <li>Select multiple "anchor" points and add them as rows to the bottom of the <b>L</b> matrix</li>
+                                    <li>Solve the resulting linear system in the least squares sense</li>
+                                    <li>Update the positions of all vertices based on the obtained solution</li>
+                                    <li>Restore the anchors to the positions that were selected before (since it's solving the linear system in the least squares sense, the anchors themselves are subject to change.  In my implementation I chose to restore them to their original positions).
+                                    </ol><BR>
+                                    Here are some results of performing deformations like this:
+
+                                    <h2>Example 1:<BR></h2>
+                                    <table border = "1">
+                                    <tr><td>
+                                    <table><tr><td>Specifying Anchors</td><td>Result</td></tr>
+                                    <tr><td><img src = "images/deform1_1.jpg"></td><td><img src = "images/deform1_2.jpg"><BR><img src = "images/deform1_3.jpg"><BR><img src = "images/deform1_4.jpg"></td></tr>
+                                    </table>
+                                    </td></tr>
+                                    <tr><td>lap ..\input\cheetah.off -anchor 542 1.02685 3.40965 11.0388 -anchor 1744 1e-005 2.78567 5.17036 -anchor 1216 1.27713 2.43501 1.4888 -anchor 1218 1.54832 2.60662 -1.13023 -anchor 93 0.122623 -8.33685 -0.078234 -anchor 1400 -1.68136 -7.81739 6.99476 
+                                    </td></tr>
+                                    </table>
+
+                                    <h2>Example 2:<BR></h2>
+                                    <table border = "1">
+                                    <tr><td>
+                                    <table><tr><td>Specifying Anchors</td><td>Result</td></tr>
+                                    <tr><td><img src = "images/deform2_1.jpg"></td><td><img src = "images/deform2_2.jpg"><img src = "images/deform2_3.jpg"></td></tr>
+                                    </table>
+                                    </td></tr>
+                                    <tr><td>lap ..\input\homer.off -anchor 2441 0.00497882 0.453124 0.029167 -anchor 585 -0.00464966 0.252848 0.107087 -anchor 1312 -0.00312858 0.0823189 0.0729158 -anchor 746 -0.070543 -0.459437 0.0922957 -anchor 629 0.0797675 -0.460417 0.098516 -anchor 41 0.239192 0.368883 0.191258 -anchor 26 -0.23585 0.366796 0.183122
+                                    </td></tr>
+                                    <tr><td>NOTE: I had to fix anchor points on the feet, stomach, and head so that none of those regions would compress too much (otherwise his neck gets shortened or his legs get lengthened, etc. during interpolation)</td></tr>
+                                    </table>
+
+                                    <h2>Example 3:<BR></h2>
+                                    <table border = "1">
+                                    <tr><td>
+                                    <table><tr><td>Specifying Anchors</td><td>Result</td></tr>
+                                    <tr><td><img src = "images/deform3_1.jpg"></td><td><img src = "images/deform3_2.jpg"></td></tr>
+                                    </table>
+                                    </td></tr>
+                                    <tr><td>lap ..\input\bird.off -anchor 372 -0.045667 -0.180281 0.739645 -anchor 144 0.0421702 0.335753 0.0768707 -anchor 118 0.00747901 0.202826 -0.423408 -anchor 41 -0.0842556 -0.00475397 -0.919195 -anchor 285 0.957645 0.144144 0.110768 -anchor 527 -1.25056 -0.0853518 -0.158718 
+                                    </td></tr>
+                                    </table>
+
+                                    <h2>Example 4:<BR></h2>
+                                    <table border = "1">
+                                    <tr><td>
+                                    <table><tr><td>Specifying Anchors</td><td>Result</td></tr>
+                                    <tr><td><img src = "images/deform4_1.jpg"></td><td><img src = "images/deform4_2.jpg"><img src = "images/deform4_3.jpg"><img src = "images/deform4_4.jpg"></td></tr>
+                                    </table>
+                                    </td></tr>
+                                    <tr><td>lap ..\input\homer.off -anchor 4970 0.00783304 0.430231 -0.130552 -anchor 4481 0.0627483 0.0891501 -0.0849756 -anchor 4116 -0.128583 0.0506952 -0.0678414 -anchor 3446 0.236774 0.0419351 -0.030368 -anchor 4422 0.108557 -0.456222 -0.0866849 -anchor 4536 -0.057996 -0.451578 -0.0892058 -anchor 2437 0.0409466 0.410966 0.0308054 -anchor 771 0.0335028 -0.00432647 0.0923488 -anchor 1879 0.11876 -0.445469 0.0351217 -anchor 1886 -0.0614699 -0.427459 0.0472889 -anchor 5046 0.0678885 -0.12167 -0.284095 -anchor 4978 -0.109826 -0.12293 -0.258844 
+                                    </td></tr>
+                                    </table>
+
+                                    <h2>Example 5:<BR></h2>
+                                    <table border = "1">
+                                    <tr><td>
+                                    <table><tr><td>Specifying Anchors</td><td>Result</td></tr>
+                                    <tr><td><img src = "images/deform5_1.jpg"></td><td><img src = "images/deform5_2.jpg"></td></tr>
+                                    </table>
+                                    </td></tr>
+                                    <tr><td>lap ..\input\dragon.off -anchor 281 0.225491 0.784088 1.41387 -anchor 1113 0.639721 0.0547617 1.0153 -anchor 1149 -0.237336 0.155541 1.08933 -anchor 982 -0.372984 -0.780189 0.655208 -anchor 869 0.70507 -0.7625 0.547044 -anchor 762 0.660558 1.85185 0.237422 -anchor 793 -0.65282 1.727 0.404826 -anchor 470 0.72197 0.577027 -0.486846 -anchor 648 -0.172797 0.48738 -0.732294 
+                                    </td></tr>
+                                    </table>
+
+                                    <BR>
+
+                                    Notice how with this method it is possible to get very good results choosing only several anchor points.  For instance, it was possible for me to get the entire leg of the cheetah to move forward by only moving one point on the toe to an anchor point.  These results are amazing considering that this works for arbitrary manifold triangular meshes, and that no wireframe or skeleton had to be specified in order for this to work.  This is all made possible by the differential representation, which allows for correct interpolation of details between anchor points.
+
+                                    <BR><BR>
+                                    One more thing I want to point out is that this application of Laplacian Mesh Editing is particularly well-suited for cotangent weights.  Take the following example below deforming the cheetah's tail:<BR><BR>
+
+                                    <table border = "1"><tr><td>
+                                    <table>
+                                    <tr><td>Umbrella Weights</td><td>Cotangent Weights</td></tr>
+                                    <tr><td><img src = "images/birdwings_umbrella.jpg"></td><td><img src = "images/birdwings_cotangent.jpg"></td></tr>
+                                    </table><BR>
+                                    </td></tr>
+                                    <tr><td>lap ..\input\bird.off -anchor 283 0.704451 -0.0149947 -0.372178 -anchor 593 -0.705112 0.0478067 -0.0420212 -anchor 375 -0.00933032 -0.46185 0.844485 </td></tr>
+                                    </table><BR>
+
+                                    <table border = "1"><tr><td>
+                                    <table>
+                                    <tr><td>Umbrella Weights</td><td>Cotangent Weights</td></tr>
+                                    <tr><td><img src = "images/cheetahtail_umbrella.jpg"></td><td><img src = "images/cheetahtail_cotangent.jpg"></td></tr>
+                                    </table><BR>
+                                    </td></tr>
+                                    <tr><td>lap ..\input\cheetah.off -anchor 739 0.00754 3.40547 14.3869 -anchor 538 9e-005 3.53012 8.42054 -anchor 1809 0.0455269 2.67826 1.17087 -anchor 287 -0.487473 1.02373 -15.5152 -anchor 307 -0.442271 2.0773 -5.25777</td></tr>
+                                    </table>
+
+
+                                    <table border = "1"><tr><td>
+                                    <table>
+                                    <tr><td>Umbrella Weights</td><td>Cotangent Weights</td></tr>
+                                    <tr><td><img src = "images/homer_umbrella.jpg"></td><td><img src = "images/homer_cotangent.jpg"></td></tr>
+                                    </table><BR>
+                                    </td></tr>
+                                    <tr><td>lap ..\input\bird.off -anchor 283 0.704451 -0.0149947 -0.372178 -anchor 593 -0.705112 0.0478067 -0.0420212 -anchor 375 -0.00933032 -0.46185 0.844485 </td></tr>
+                                    </table><BR>
+
+                                    <BR>
+                                    Since the cotangent weights are are a representation based on angles, they preserve angles (and, consequently, area) much better during reconstruction.  The result is that the surface tends to interpolate more "correctly" and in a more visually appealing way, and in a way that actually appears smoother.  This is especially apparent with homer's arms and the cheetah's tail.
+
+
+                                    <BR><BR>
+
+                                    <h2><u><a name = "parameterization">2D Parameterization</a></u></h2><BR>
+                                    2D parametrization of 2D surfaces embedded in 3D space is an important problem in computer graphics.  Applications of parameterization include texture mapping, finding surface correspondences, etc.  The Laplacian Mesh framework leads naturally to a 2D parametrization technique.  The process is as follows:<BR>
+                                    <ol><li>Choose a point on the mesh, <b>v1</b>, and pick one of its neighbors, <b>v2</b></li>
+                                    <li>Choose the point on the mesh that makes a counter-clockwise turn with <b>v1</b> and <b>v2</b> and call it <b>v3</b>.</li>
+                                    <li>Choose the point on the mesh that makes a clockwise turn with <b>v1</b> and <b>v2</b> and call it <b>v4</b>.</li>
+                                    <li>Remove the two faces inside of the quadrilateral (v4, v2, v3, v1)</li>
+                                    <li>"Map" (v4, v2, v3, v1) to the points ( (0, 0, 0), (0, 1, 0), (1, 1, 0), (1, 0, 0) ).  In other words, map the four chosen points that make a quadrilateral to the unit square in 2D, and "anchor" them at these positions (but it's not exactly anchoring)</li>
+                                    <li>Now, instead of adding the four anchor points at the bottom of the <b>L</b> matrix, actually overwrite the rows in the matrix corresponding to the four points with what would have been the anchor rows.  So what results is a square matrix, but with constraints within the square.  I found that this gives better results than trying to add them as anchors, because everything seems to stay flat inside of the square much better this way</li> 
+                                    <li>Set all of the delta coordinates of the remaining vertices to zero.  This makes it so that the points will try to be the exact average of their neighbors when the system is solved, which is important because we want the points to stay within the unit square (along a flat surface)</li>
+                                    <li>After that matrix has been constructed and all of the delta coordinates have been set to zero, solve the system in the least squared sense.  The anchor points will be fixed to the corners and the other points will be interpolated on the interior.  The (x,y) coordinates of the vertices correspond to their 2D coordinates in this mapping</li>
+                                    </ol>
+                                    This whole process is sort of like cutting a little hole in a surface and then flattening it and compressing it to fit inside of the hole.<BR><BR>
+
+                                    My program uses the first anchor specified as <b>v1</b>.  If the user hits the <b>'p'</b> key during interactive viewing, the mesh is parameterized from the selected point.  If the user didn't select a point, it is parameterized starting from vertex "0".  One more caveat is that I switch back to umbrella weights here, which are better suited for this application because they have only positive weights (cotangent weights can be negative for long, skinny triangles).  Positive weights taking averages imply that points stay within the convex hull of the averaged points.  Therefore, none of the points will leave the square or fold over each other with umbrella weights.<BR><BR>
+
+                                    Here are some results of the parameterizations on various meshes I have (NOTE: I have removed the faces and rendered the edges so that the parameterizations are clearer):<BR>
+
+                                    <table border = "1">
+                                    <tr><td>Choosing Point</td></tr>
+                                    <tr><td><img src = "images/homerparam1.jpg"></td></tr>
+                                    <tr><td>Parameterization</td></tr>
+                                    <tr><td><img src = "images/homerparam2.jpg"></td></tr>
+                                    <tr><td>Zooming in</td></tr>
+                                    <tr><td><img src = "images/homerparam3.jpg"></td></tr>
+                                    <tr><td>Zooming in more around the head area</td></tr>
+                                    <tr><td><img src = "images/homerparam4.jpg"></td></tr>
+                                    </table><BR>
+                                    In this example, mapped a square near the center of homer's torso to the outside of the unit square.  Zooming in, it's clear how the points in densely sampled regions such as the head, hands, and feet had to be compressed in order to fit (in the second, zoomed-in image, the clusters of points corresponding to these anatomical regions are clearly visible).  So there is a lot of distortion in these regions<BR><BR>
+
+                                    Let me do a few more examples of this:
+                                    <BR>
+
+                                    <hr>
+                                    <table border = "1">
+                                    <tr><td>Choosing Point</td></tr>
+                                    <tr><td><img src = "images/cheetahparam1.jpg"></td></tr>
+                                    <tr><td>Parameterization</td></tr>
+                                    <tr><td><img src = "images/cheetahparam2.jpg"></td></tr>
+                                    <tr><td>Zooming in</td></tr>
+                                    <tr><td><img src = "images/cheetahparam3.jpg"></td></tr>
+                                    </table><BR>
+                                    Once again zooming in, the leg mappings are visible in two clusters on the left, and the back part of the abdomen is visible as a cluster in the center.  In general, it appears that the distortion is much higher for points far away from the square that was cut out, which makes sense if you think about trying to compress the surface inside of the cut square<BR><BR>
+
+                                    <hr>
+                                    <table border = "1">
+                                    <tr><td>Choosing Point</td></tr>
+                                    <tr><td><img src = "images/birdparam1.jpg"></td></tr>
+                                    <tr><td>Parameterization</td></tr>
+                                    <tr><td><img src = "images/birdparam2.jpg"></td></tr>
+                                    <tr><td>Zooming in</td></tr>
+                                    <tr><td><img src = "images/birdparam3.jpg"></td></tr>
+                                    </table><BR>
+                                    The wings and the back of the bird near the tail all appear in clusters here
+                                    <hr>
+
+                                    <table border = "1">
+                                    <tr><td>Choosing Point</td></tr>
+                                    <tr><td><img src = "images/teapotparam1.jpg"></td></tr>
+                                    <tr><td>Parameterization</td></tr>
+                                    <tr><td><img src = "images/teapotparam2.jpg"></td></tr>
+                                    <tr><td>Zooming in</td></tr>
+                                    <tr><td><img src = "images/teapotparam3.jpg"></td></tr>
+                                    </table><BR>
+                                    This is one of the most interesting examples because it's of genus 1 (i.e. it has a handle).  And out of all of the models encountered, it clearly has the most distortion towards the center for this reason.
+
+                                    <BR><BR>
+
+                                    <h2><u><a name = "membrane">Membrane Surface</a></u></h2><BR>
+                                    Following a process similar to 2D parameterization, it is possible to get a surface that looks like what would happen if we tried to blow a soap bubble over fixed vertices.  That is, fix a subset of the points as anchors and set the delta coordinates of the rest of the points to be zero.  This forces the remaining points to interpolate in a way that minimizes the surface area between interpolated points.<BR><BR>
+                                    In my interface, the user can select which points are going to be fixed in this approach as anchors.  The user can then hit the <b>'m'</b> key to find the membrane between these points.  If no points are selected, the program will randomly select 100 of them to be anchors uniformly sampled across the surface.  Here are a few examples of this:<BR><BR>
+
+                                    <table border = "1"><tr><td>Object with fixed vertices</td><td>Membrane stretched across fixed vertices</td></tr>
+                                    <tr><td><img src = "images/cubemembrane1.jpg"></td><td><img src = "images/cubemembrane2.jpg"></td></tr>
+                                    <tr><td>lap -batch -input_mesh ..\input\cubehighres.off -output_mesh ..\output\cubemembrane.off -membrane -anchor 2 -0.5 0.5 0.5 -anchor 4 -0.5 0.5 -0.5 -anchor 3 0.5 0.5 0.5 -anchor 5 0.5 0.5 -0.5 -anchor 7 0.5 -0.5 -0.5 -anchor 6 -0.5 -0.5 -0.5 -anchor 1 0.5 -0.5 0.5 -anchor 0 -0.5 -0.5 0.5 </td><td></td></tr>
+                                    </table><BR><BR>
+                                    This is the sort of soap surface you would get if you blew a bubble through a cube wireframe.  Let me now do a few more examples, some of which will be with the meshes from before:<BR><BR>
+
+                                    <table border = "1"><tr><td>Object with fixed vertices</td><td>Membrane stretched across fixed vertices</td></tr>
+                                    <tr><td><img src = "images/cubemembrane3.jpg"></td><td><img src = "images/cubemembrane4.jpg"></td></tr><tr><td>lap -batch -input_mesh ..\input\cubehighres.off -output_mesh ..\output\cubemembrane2.off -membrane -anchor 2 -0.5 0.5 0.5 -anchor 4 -0.5 0.5 -0.5 -anchor 3 0.5 0.5 0.5 -anchor 5 0.5 0.5 -0.5 -anchor 7 0.5 -0.5 -0.5 -anchor 6 -0.5 -0.5 -0.5 -anchor 1 0.5 -0.5 0.5</td></tr>
+                                    </table><BR><BR>
+                                    This is the same as the example before, except I left one of the eight corner vertices out.  That leads to a neat interpolation that the right picture shows
+
+
+                                    <BR><BR>
+
+                                    <table border = "1"><tr><td>Picture of membrane surface</td><td>Picture of membrane surface with the fixed points highlighted</td></tr>
+                                    <tr><td><img src = "images/cheetahmembrane1.jpg"></td><td><img src = "images/cheetahmembrane2.jpg"></td></tr><tr><td>lap -batch -input_mesh ..\input\cheetah.off -output_mesh ..\output\cheetahmenbrane.off -membrane -output_function ..\output\cheetahMembraneFunc.txt</td></tr>
+                                    </table><BR><BR>
+                                    In this example, the fixed anchor points were chosen randomly.  Since the area between set points is being interpolated, the cheetah ends up looking malnourished.
+
+                                    <BR><BR>
+
+                                    <table border = "1"><tr><td>Picture of membrane surface</td><td>Picture of membrane surface with the fixed points highlighted</td></tr>
+                                    <tr><td><img src = "images/homermembrane1.jpg"></td><td><img src = "images/homermembrane2.jpg"></td></tr><tr><td>lap -batch -input_mesh ..\input\homer.off -output_mesh ..\output\homermembrane.off -membrane -output_function ..\output\homerMembraneFunc.txt</td></tr>
+                                    </table><BR><BR>
+
+
+
+
+                                    <h2><u><a name = "interpolation">Surface Function Interpolation</a></u></h2><BR>
+                                    The Laplacian Mesh Framework also leads to a nice technique for interpolating function values smoothly between points where a function is not specified.  The math behind this is exactly the same as the math behind the membrane surface and the parameterization.  The rows of the laplacian matrix corresponding to known function values are overwritten with all zeroes and a 1 along the diagonal, and their "delta coordinates" are set to be equal to the known function values at those points.  The rest of the points (whose function values are not specified) are set to have delta coordinates of zero with their rows in L kept in tact.  The result is that the function evaluated at the points specified tries to be the average of the function values of its neighbors, and the least squared solution ends up interpolating smoothly between them.  Here are a few examples of doing function interpolation:<BR><BR>
+
+                                    <table border = "1">
+                                    <tr><td>Specified function values</td><td>Interpolation results</td></tr>
+                                    <tr><td><img src = "images/birdfunc1.jpg"><img src = "images/birdfunc2.jpg"></td><td><img src = "images/birdfunc3.jpg"><img src = "images/birdfunc4.jpg"></td></tr>
+                                    <tr><td>lap ..\input\bird.off -input_function ..\input\birdFunc1.txt -noInterp -drawReds</td><td>lap ..\input\bird.off -input_function ..\input\birdFunc1.txt -drawReds</td></tr>
+                                    </table><BR>
+                                    In this example, I chose a high value of the function on one of the points on the tail, and even higher value of the function on one of the points on the beak, and very low values on both of the wings.  As you can see, the value of the function ends up varying smoothly from high to low between the beak and the wings, and then back from low to high from the wings up to the tail.<BR><BR>
+
+                                    Here are a couple of examples of doing this with the cheetah:<BR>
+                                    <table border = "1">
+                                    <tr><td><img src = "images/cheetahinterp1.jpg"></td><td><img src = "images/cheetahinterp2.jpg"></td></tr>
+                                    <tr><td>lap ..\input\cheetah.off -input_function ..\input\cheetahFunc1.txt -drawReds</td><td>lap ..\input\cheetah.off -input_function ..\input\cheetahFunc2.txt -drawReds</td></tr>
+                                    <tr><td>In this example I set a high value of the function on one of the points on the forehead, a high value of the function on on point on each of the left legs, and a low value of the function on the front right leg.  Interestingly, the least squared solution did not end up coloring the front right leg black as I expected, but this is completely valid since it still blends smoothly (no information was provided there, so blending to a high value is as just as good of an answer as blending to a low value</td>
+                                    <td>This is similar to the example on the left except I explicitly set values on the two back legs to be zero, and values on the two front legs to be 1</td></tr>
+                                    </table>
+
+
+                                    <BR><BR>
+
+                                    <h2><u><a name = "curvature">Discrete Mean Curvature Approximation</a></u></h2><BR>
+                                    Taking the delta coordinates is an approximation of the mean curvature around a point times the normal direction at that point on a continuous surface.  Therefore, taking the magnitude of the delta coordinates should give something proportional to curvature.  Unfortunately, simply taking the magnitude of the delta coordinates and making that the "mean curvature" value at each vertex didn't work out so well for me in practice.  Here's an example of what that looks like on the cheetah:<BR><BR>
+
+                                    <table><tr><td><img src = "images/deltaCurv1.jpg"></td><td><img src = "images/deltaCurv2.jpg"></td></tr></table><BR>
+                                    I was surprised to find that the curvature appeared to be higher around the shoulder area and certain areas of the back than it did around the face and toes (which definitely should have had very high curvature).  So it seemed like I had ended up with somewhat of the opposite of the answer that I expected.  After a little bit more thinking, however, I realied what the problem was.  Simply taking the magnitude of the delta coordinates isn't the answer because the magnitude of the delta coordinate depends on how far away its neighbors are.  Even if there isn't much curvature over a large range, if the neighbors are far away and there's even a little bit of curvature, then the magnitude of the delta coordinate will be large.  Another way of saying this is that two triangular pyraminds with the same height but different sized bases will end up with the same deita coordinate between their apex and base.  But the pyramid with the smaller base intuitively has much more curvature since it's pointier.  Take the following image with the vertices rendered on top, for example:<BR>
+                                    <img src = "images/deltaCurv3.jpg"><BR>
+                                    In this image, it is clear that the back is much more coarsely sampled than the face or toes, so the delta coordinates on the back end up with a greater magnitude.  Thus, merely taking the magnitude of the delta coordinates doesn't appear to be the answer to mean curvature that I was looking for.<BR><BR>
+
+                                    I took to Google to search for the right answer to approximating discrete mean curvature, and I stumbled across <a href = "http://mrl.nyu.edu/~dzorin/geom04/lectures/lect08.pdf">these lecture notes from NYU</a>.  Here I was told that this was the equation to use to approximate mean curvature at a vertex <b>vi</b>:<BR>
+                                    <img src = "Equations/meancurvature.png"><BR><BR>
+                                    In other words, the mean curvature is proportional to the sum of the cotangent weights each scaled by the distance of a point to its neighboring point.  I implemented this on my scaled cotangent weights (the ones that were normalized by the sum of all weights) and got much more meaningful results.  Here are a few examples below:<BR>
+
+                                    <table><tr><td><img src = "images/curv1_1.jpg"></td><td><img src = "images/curv1_2.jpg"></td></tr></table><BR>
+                                    Notice how bright it is now around the face and toes, how dark it is near the abdomen, and how it's semi-bright near regions of the torso that jut out a little bit; this is much closer to what I was expecting.  Now I'm going to show a few more examples with a different heatmap that uses all 3 color channles to make contrast higher (where blue is high curvature and red is low curvature)
+
+                                    <table>
+                                    <tr><td><img src = "images/curv2_1.jpg"></td><td><img src = "images/curv2_2.jpg"></td></tr>
+                                    <tr><td><img src = "images/curv3_1.jpg"></td><td><img src = "images/curv3_2.jpg"></td></tr>
+                                    <tr><td><img src = "images/curv4_1.jpg"></td><td><img src = "images/curv4_2.jpg"></td></tr>
+                                    <tr><td><img src = "images/curv5_1.jpg"></td><td><img src = "images/curv5_2.jpg"></td></tr>
+                                    </table><BR>
+
+                                    To re-iterate, blue is high curvature.  This seems to be working extremely well.  Look at the bird's beak, homer's nose and eyes, and the teapot's rim for places of high curvature.  The overall best example of this method is the teapot.  The rim and handle have extremely high curvatures, while the flat bottom has nearly none.
+
+                                    <BR><BR>
+
+                                    <h2><u><a name = "spectral">Spectral Eigenanalysis</a></u></h2><BR>
+                                    As it turns out, the eigenvectors of the Laplacian Matrix form a very good basis for spectral decomposition via projection of the vertices.  I wrote a function that uses the TNT matrix library to find the eigenvalues and eigenvectors of the Laplacian matrix.  If I had more time, I would project the mesh coordinates onto these eigenvectors and shown how they have lowfrequency and high frequency characteristics.  But for now I'll just provide visualization of a few of them on the surface itself as surface functions.  In the example below, I sorted the eigenvectors by their eigenvalues, from small to large, before outputting.  Also, I used a symmetric version of the laplacian matrix where each entry is scaled by the valence of the row (or in the case of cotangent weights, I didn't normalize them), so that the ijth entry and the jith entry will have the same value.  This is important to keep the eigenvalues real and positive:<BR><BR>
+                                    <table border = "1"><tr><td>2nd eigenvalue</td><td>10th eigenvalue</td><td>40th eigenvalue</td><td>200th eigenvalue</td><td>600th eigenvalue</td></tr>
+                                    <td><img src = "images/eig/1.jpg"></td>
+                                    <td><img src = "images/eig/10.jpg"></td>
+                                    <td><img src = "images/eig/40.jpg"></td>
+                                    <td><img src = "images/eig/200.jpg"></td>
+                                    <td><img src = "images/eig/600.jpg"></td>
+                                    </tr></table>
+                                    As you can see, the function varies much more quickly for higher eigenvalues, which gives this spectral properties much like the Discrete Fourier Transform
+
+                                    <BR><BR>
+
+                                    <h2><u><a name = "debugging">Debugging with Matlab</a></u></h2><BR>
+                                    I wrote  a little script in matlab to load in the matrices <b>L</b>, <b>L<SUP>T</SUP></b>, the delta coordinates, the point coordinates, and the solutions to the linear equations that I could output from my program (by setting the static variable printMatrices in R3LaplacianMesh.cpp to true).  This was very helpful in finding some horrendous bugs in the laplacian matrix early on in my development.
+
+                                    <BR><BR>
+
+                                    <h2><u><a name = "usage">Program Usage</a></u></h2><BR>
+                                    <code> lap input_mesh_file [options] </code><BR><BR>
+                                    Where the options are as follows:<BR>
+                                    <table border = "1"><tr><td>Option</td><td>Explanation</td></tr>
+                                    <tr><td>-v</td><td>Verbose printing</td></tr>
+                                    <tr><td>-batch</td><td>Don't use the display interface; simply do processing and save output</td></tr>
+                                    <tr><td>-input_mesh [filename]</td><td>The filename of the input mesh</td></tr>
+                                    <tr><td>-output_mesh [filename]</td><td>The filename of the output mesh</td></tr>
+                                    <tr><td>-input_function [filename]</td><td>The filename of the input function</td></tr>
+                                    <tr><td>-output_function [filename]</td><td>The filename to save the interpolated function</td></tr>
+                                    <tr><td>-output_image [filename]</td><td>The output image</td></tr>
+                                    <tr><td>-empty_value</td><td>Interpolate the function at vertices with this value</td></tr>
+                                    <tr><td>-curvature [filename]</td><td>Outputs the curvature values as a function to the file specified</td></tr>
+                                    <tr><td>-anchor [vertexID x y z]</td><td>Anchors the vertex with ID "vertexID" to position (x, y, z)</td></tr>
+                                    <tr><td>parameterize [outputFile]</td><td>Parameterize the mesh and save the output to outputFile</td></tr>
+                                    <tr><td>-textureMapping [texture.jpg textureCoordsFile.txt]</td><td>Do texture mapping given texture coordinates from the parameterization phase. <b>I was in the process of implementing this and it really should work, but for some reason the texture isn't getting loaded into memory properly</b></td></tr>
+                                    <tr><td>-membrane</td><td>Do a membrane surface randomly choosing 100 fixed points</td></tr>
+                                    <tr><td>-membraneColor</td><td>Do a membrane surface but draw the fixed points as red and the interpolating points as yellow</td></tr>
+                                    <tr><td>-noInterp</td><td>Don't interpolate the function values (useful for visualizing the function before it's interpolated</td></tr>
+                                    <tr><td>-drawReds</td><td>Use a red colormap instead of the colormap with three channels (a little bit easier to tell what the absolute value of the function is but it has less contrast</td></tr>
+                                    <tr><td>-spectral [name]</td><td>Does spectral analysis and outputs eigenvalues to namevalues.txt and outputs the eigenvector matrix to namevectors.txt as column vectors</td></tr>
+                                    </table>
+                                    <BR><BR>
+
+                                    <h2><u><a name = "download">Download Executable (Windows 7 64 bit only)</a></u></h2>
+
+                                    <a href = "https://drive.google.com/file/d/103pajg_8oXI_zh1wSNbA1b4iCRqPaLdf/view?usp=sharing">Click here</a> to download the executable file.  Parameters are as described in the usage section, and many examples are given in the text.  To choose anchors in the GUI, hold down CTRL and drag a vertex away from its original position.  Once all anchors are chosen, hit SPACE to update the mesh.
+
+                                    <BR><BR>
+
+                                    <h2><u><a name = "bloopers">Crazy Bloopers</a></u></h2><BR>
+                                    In addition to some of the images above, here are some bloopers or interesting results I came across during development:<BR>
+                                    <img src = "art/cotangenthell.png"><BR>
+                                    Cheetah on scaffold<BR>
+                                    <img src = "art/cotangentbug2.png"><BR><BR>
+                                    <img src = "art/homerjaw.jpg"><BR><BR>
+
+                                    <img src = "art/malnourished_cheetah.jpg"><BR>
+                                    Malnourished cheetah<BR><BR>
+
+                                    <img src = "art/malnourished_cheetah2.jpg"><BR>
+                                    <img src = "art/malnourished_cheetah3.jpg">
+
+
+                                    <!-- BEGIN DISQUS -->
+                                    <BR><BR><BR>
+                                    <div id="disqus_thread"></div>
+                                    <script type="text/javascript">
+                                        var disqus_shortname = 'ctralieteaching';
+                                        var disqus_identifier = 'LapMesh';
+                                        var disqus_url = 'http://ctralie.com/Teaching/LapMesh/index.html';
+
+                                        (function() {
+                                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                            dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                                        })();
+                                    </script>
+                                    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                    <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+                                    <!-- END DISQUS -->
+
+
+								</section>
+
+						</div>
+					</div>
+
+<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+							<!-- Menu -->
+								<nav id="menu">
+									<header class="major">
+										<h2>Menu</h2>
+									</header>
+									<ul>
+										<li><a href="../../index.html">Homepage</a></li>
+										<li><a href = "../../ctralie_cv.pdf">CV</a></li>
+										<li>
+											<span class="opener">Research</span>
+											<ul>
+												<li><a href="../../Research/index.html">Projects</a></li>
+												<li><a href="../../Research/statement.pdf">Research Statement</a></li>
+												<li><a href = "../../Research/ctralie_dissertation.pdf">Dissertation</a></li>
+											</ul>
+										</li>
+										<li><a href="../../Software">Software</a></li>
+										<li><a href = "../../Teaching/index.html">Teaching</a></li>
+										<li>
+											<span class="opener">Archives</span>
+											<ul>
+												<li><a href="../../Teaching/Tutorials.html">Tutorials</a></li>
+												<li><a href="../../Coursework/index.html">Graduate Classes</a></li>
+												<li><a href="../../PrincetonUGRAD">Princeton Undergraduate Portfolio</a></li>
+											</ul>
+										</li>
+									</ul>
+								</nav>
+
+							<!-- Section -->
+								<section>
+									<div class="mini-posts">
+									
+									
+									 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+									<a class="twitter-timeline" data-width="314" data-height="350" data-link-color="#f56a6a" data-chrome="transparent" data-dnt="true" href="https://twitter.com/ctralie/timelines/1012673261124145153?ref_src=twsrc%5Etfw">Tweets by ctralie</a>
+									
+                                    </div>
+								</section>
+
+
+							<!-- Footer -->
+								<footer id="footer">
+									<p class="copyright">&copy; Christopher J. Tralie. All rights reserved.  Contact chris.tralie@gmail.com. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+								</footer>
+
+						</div>
+					</div>
+
+			</div>
+			
+            <!-- Start of StatCounter Code -->
+            <script type="text/javascript">
+            var sc_project=7309088; 
+            var sc_invisible=1; 
+            var sc_security="f655b56d"; 
+            </script>
+            <script type="text/javascript"
+            src="http://www.statcounter.com/counter/counter.js"></script>
+            <noscript><div class="statcounter"><a title="free hit counter"
+            href="http://statcounter.com/" target="_blank"><img class="statcounter"
+            src="http://c.statcounter.com/7309088/0/f655b56d/1/" alt="free hit
+            counter"></a></div></noscript>
+            <!-- End of StatCounter Code -->
+<!-- End Sidebar !-->
+
+<!-- Scripts -->
+			<script src="../../assets/js/jquery.min.js"></script>
+			<script src="../../assets/js/skel.min.js"></script>
+			<script src="../../assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="../../assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="../../assets/js/main.js"></script>
+<!-- End Scripts -->
+	</body>
+</html>

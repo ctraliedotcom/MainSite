@@ -1,0 +1,363 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<link rel="stylesheet" type="text/css" href="../tutorials.css" />
+<TITLE>Depth from Disparity by Triangulation</TITLE>
+<META NAME="description" CONTENT="Depth from Disparity by Triangulation">
+<META NAME="keywords" CONTENT="KinectMath">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="KinectMath.css">
+
+<LINK REL="next" HREF="node2.html">
+<LINK REL="previous" HREF="KinectMath.html">
+<LINK REL="up" HREF="KinectMath.html">
+<LINK REL="next" HREF="node2.html">
+</HEAD>
+
+<BODY >
+
+<div id="wrapper">
+
+<!-- Start of MenuBar Code -->
+<div id="menu-bar">
+<a href="http://www.duke.edu/" id="duke-logo">Duke</a>
+<a href = "http://www.princeton.edu" id="pton-logo">Princeton</a>
+<ul class="menus-level0">
+<li><a href="../../index.html" accesskey="1"><b>Chris Tralie</b></a></li>
+<li><a href="../../Research" accesskey="2">Research</a></li>
+<li><a href="../../Teaching" accesskey="3">Teaching</a></li>
+<li><a href="../../Teaching/Tutorials.html" accesskey="4">Tutorials</a></li>
+<li><a href = "../../Coursework" accesskey="5">Coursework</a></li>
+<li><a href = "../../PrincetonUGRAD" accesskey="6">Undergrad</a></li>
+</ul>
+</div>
+<!-- End of MenuBar Code -->
+
+
+<BR><BR>
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html16"
+  HREF="node2.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html14"
+  HREF="KinectMath.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html8"
+  HREF="KinectMath.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html17"
+  HREF="node2.html">Bibliography</A>
+<B> Up:</B> <A NAME="tex2html15"
+  HREF="KinectMath.html">Disparity-Based Performance Analysis of</A>
+<B> Previous:</B> <A NAME="tex2html9"
+  HREF="KinectMath.html">Disparity-Based Performance Analysis of</A>
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00001000000000000000"></A>
+<A NAME="sec:DepthFromDisparity"></A>
+<BR>
+Depth from Disparity by Triangulation
+</H2>
+
+<P>
+The relation between disparity and depth is derived in [<A
+ HREF="node2.html#khoshelham2012accuracy">1</A>] and [<A
+ HREF="node2.html#KonoligeCalibrationTechnical">2</A>] but is repeated here for completeness.  Figure&nbsp;<A HREF="#fig:DepthFromDisparity">1</A> shows the geometry of measurements that are taken with the Kinect.  To derive the relationship between disparity <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img7.png"
+ ALT="$ d$"></SPAN> and depth <SPAN CLASS="MATH"><IMG
+ WIDTH="16" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img5.png"
+ ALT="$ Z$"></SPAN>, pick a part of the IR dot pattern that is projected onto the reference plane at depth <!-- MATH
+ $Z_{\text{ref}}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="30" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img4.png"
+ ALT="$ Z_{\text {ref}}$"></SPAN> (green point in the figure), which is known, and then examine the same part of the pattern that is projected onto a plane further away at depth <SPAN CLASS="MATH"><IMG
+ WIDTH="16" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img5.png"
+ ALT="$ Z$"></SPAN> onto the object point (black point in the figure), which is the point that is being imaged.  The reference point gets imaged to the pixel <!-- MATH
+ $u_{\text{ref}}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="28" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img8.png"
+ ALT="$ u_{\text{ref}}$"></SPAN> on the image plane, and the object point gets imaged to the pixel <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img9.png"
+ ALT="$ u$"></SPAN>.  Then, by definition, the disparity <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img7.png"
+ ALT="$ d$"></SPAN> is pixel shift between the pattern imaged on the reference plane and the pattern projected onto the object plane, or
+
+<P>
+<P><!-- MATH
+ \begin{displaymath}
+d = u - u_{\text{ref}}
+\end{displaymath}
+ -->
+</P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<IMG
+ WIDTH="86" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img10.png"
+ ALT="$\displaystyle d = u - u_{\text{ref}} $">
+</DIV><P></P>
+
+<P>
+Now note that by similar triangles in a process typical for pinhole cameras
+
+<P>
+<P><!-- MATH
+ \begin{displaymath}
+u_{\text{ref}} = f (\frac{b + X_{\text{ref}}}{Z_{\text{ref}}}) = f \frac{b}{Z_{\text{ref}}} + f \frac{X_{\text{ref}}}{Z_{\text{ref}}}
+\end{displaymath}
+ -->
+</P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<IMG
+ WIDTH="252" HEIGHT="52" ALIGN="MIDDLE" BORDER="0"
+ SRC="img11.png"
+ ALT="$\displaystyle u_{\text{ref}} = f (\frac{b + X_{\text{ref}}}{Z_{\text{ref}}}) = f \frac{b}{Z_{\text{ref}}} + f \frac{X_{\text{ref}}}{Z_{\text{ref}}} $">
+</DIV><P></P>
+
+<P>
+<P><!-- MATH
+ \begin{displaymath}
+u = f (\frac{b + X}{Z}) = f \frac{b}{Z} + f \frac{X}{Z}
+\end{displaymath}
+ -->
+</P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<IMG
+ WIDTH="194" HEIGHT="52" ALIGN="MIDDLE" BORDER="0"
+ SRC="img12.png"
+ ALT="$\displaystyle u = f (\frac{b + X}{Z}) = f \frac{b}{Z} + f \frac{X}{Z} $">
+</DIV><P></P>
+
+<P>
+Note also that by a different set of similar triangles
+
+<P>
+<P><!-- MATH
+ \begin{displaymath}
+\frac{X}{X_{\text{ref}}} = \frac{Z}{Z_{\text{ref}}}
+\end{displaymath}
+ -->
+</P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<IMG
+ WIDTH="88" HEIGHT="53" ALIGN="MIDDLE" BORDER="0"
+ SRC="img13.png"
+ ALT="$\displaystyle \frac{X}{X_{\text{ref}}} = \frac{Z}{Z_{\text{ref}}} $">
+</DIV><P></P>
+
+<P>
+Thus
+
+<P>
+<P><!-- MATH
+ \begin{displaymath}
+u = f \frac{b}{Z} + f \frac{X_{ref} \frac{Z}{Z_{\text{ref}}}}{Z} = f \frac{b}{Z} + f \frac{X_{\text{ref}}}{Z_{\text{ref}}}
+\end{displaymath}
+ -->
+</P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<IMG
+ WIDTH="260" HEIGHT="64" ALIGN="MIDDLE" BORDER="0"
+ SRC="img14.png"
+ ALT="$\displaystyle u = f \frac{b}{Z} + f \frac{X_{ref} \frac{Z}{Z_{\text{ref}}}}{Z} = f \frac{b}{Z} + f \frac{X_{\text{ref}}}{Z_{\text{ref}}}$">
+</DIV><P></P>
+
+<P>
+and the disparity <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img7.png"
+ ALT="$ d$"></SPAN> is 
+
+<P>
+<P><!-- MATH
+ \begin{displaymath}
+d = u - u_{\text{ref}} = \frac{bf}{Z} - \frac{bf}{Z_{\text{ref}}}
+\end{displaymath}
+ -->
+</P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<IMG
+ WIDTH="177" HEIGHT="52" ALIGN="MIDDLE" BORDER="0"
+ SRC="img15.png"
+ ALT="$\displaystyle d = u - u_{\text{ref}} = \frac{bf}{Z} - \frac{bf}{Z_{\text{ref}}}$">
+</DIV><P></P>
+
+<P>
+Thus, the disparity depends only on the depth of the point in front of the camera, not its position on the the plane; the x coordinate factors out.  Re-arranging and solving for the depth <SPAN CLASS="MATH"><IMG
+ WIDTH="16" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img5.png"
+ ALT="$ Z$"></SPAN>.
+
+<P>
+<P><!-- MATH
+ \begin{displaymath}
+Z = \frac{bf}{ \frac{bf}{Z_{\text{ref}}} - d}
+\end{displaymath}
+ -->
+</P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<IMG
+ WIDTH="95" HEIGHT="52" ALIGN="MIDDLE" BORDER="0"
+ SRC="img16.png"
+ ALT="$\displaystyle Z = \frac{bf}{ \frac{bf}{Z_{\text{ref}}} - d} $">
+</DIV><P></P>
+
+<P>
+The quantity <!-- MATH
+ $\frac{bf}{Z_{\text{ref}}}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="30" HEIGHT="38" ALIGN="MIDDLE" BORDER="0"
+ SRC="img17.png"
+ ALT="$ \frac{bf}{Z_{\text{ref}}}$"></SPAN> is defined as <!-- MATH
+ $d_{\text{off}}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="27" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img18.png"
+ ALT="$ d_{\text{off}}$"></SPAN> in [<A
+ HREF="node2.html#KonoligeCalibrationTechnical">2</A>] and is referred to as the ``disparity offset."  Thus, the equation in its final form is
+
+<P>
+<P><!-- MATH
+ \begin{displaymath}
+Z = \frac{bf}{d_{\text{off}} - d}
+\end{displaymath}
+ -->
+</P>
+<DIV ALIGN="CENTER" CLASS="mathdisplay">
+<IMG
+ WIDTH="92" HEIGHT="52" ALIGN="MIDDLE" BORDER="0"
+ SRC="img19.png"
+ ALT="$\displaystyle Z = \frac{bf}{d_{\text{off}} - d} $">
+</DIV><P></P>
+
+<P>
+
+<DIV ALIGN="CENTER"><A NAME="fig:DepthFromDisparity"></A><A NAME="116"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Figure 1:</STRONG>
+The geometry of converting disparity to depth.  The blue dot shows the location of the IR camera and the red dot shows the location of the IR projector.  The focal length is <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img1.png"
+ ALT="$ f$"></SPAN> and the baseline (separation between IR camera and IR projector) is <SPAN CLASS="MATH"><IMG
+ WIDTH="11" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img2.png"
+ ALT="$ b$"></SPAN>.  Images are formed through the pinhole at the IR camera (blue dot) on the imaging plane, and the actual scene is above the camera plane.  The green dot is the location of a part of the dot pattern on the reference plane, while the black dot is the same part of that pattern on another plane further away.  <!-- MATH
+ $X_{\text{ref}}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="32" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img3.png"
+ ALT="$ X_{\text {ref}}$"></SPAN> is the horizontal distance of the reference point from the IR projector, and <!-- MATH
+ $Z_{\text{ref}}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="30" HEIGHT="30" ALIGN="MIDDLE" BORDER="0"
+ SRC="img4.png"
+ ALT="$ Z_{\text {ref}}$"></SPAN> is the depth of the reference point.  <SPAN CLASS="MATH"><IMG
+ WIDTH="16" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img5.png"
+ ALT="$ Z$"></SPAN> is the depth of the actual point that is being measured, and <SPAN CLASS="MATH"><IMG
+ WIDTH="18" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img6.png"
+ ALT="$ X$"></SPAN> is the horizontal distance of that point from the IR projector</CAPTION>
+<TR><TD>
+<DIV ALIGN="CENTER">
+
+</DIV>
+<IMG
+  WIDTH="457" HEIGHT="332" ALIGN="BOTTOM" BORDER="0"
+ SRC="./DepthFromDisparity.png"
+ ALT="Image DepthFromDisparity"></TD></TR>
+</TABLE>
+</DIV>
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html16"
+  HREF="node2.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html14"
+  HREF="KinectMath.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html8"
+  HREF="KinectMath.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html17"
+  HREF="node2.html">Bibliography</A>
+<B> Up:</B> <A NAME="tex2html15"
+  HREF="KinectMath.html">Disparity-Based Performance Analysis of</A>
+<B> Previous:</B> <A NAME="tex2html9"
+  HREF="KinectMath.html">Disparity-Based Performance Analysis of</A></DIV>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Chris Tralie
+2014-05-02
+</ADDRESS>
+
+<!-- Start of StatCounter Code -->
+<script type="text/javascript">
+var sc_project=7309088; 
+var sc_invisible=1; 
+var sc_security="f655b56d"; 
+</script>
+<script type="text/javascript"
+src="http://www.statcounter.com/counter/counter.js"></script>
+<noscript><div class="statcounter"><a title="free hit counter"
+href="http://statcounter.com/" target="_blank"><img class="statcounter"
+src="http://c.statcounter.com/7309088/0/f655b56d/1/" alt="free hit
+counter"></a></div></noscript>
+<!-- End of StatCounter Code -->
+<!-- BEGIN DISQUS -->
+<BR><BR><BR>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ctralieteaching';
+    var disqus_identifier = 'KinectMath';
+    var disqus_url = 'http://ctralie.com/Teaching/Kinect/index.html';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+<!-- END DISQUS -->
+
+</BODY>
+</HTML>

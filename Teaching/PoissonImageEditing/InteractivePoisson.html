@@ -1,0 +1,168 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<!-- Header !-->
+	<head>
+		<title>Christopher J. Tralie, Ph.D.</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<!--[if lte IE 8]><script src="../../assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="../../assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="../../assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="../../assets/css/ie8.css" /><![endif]-->
+        <style>
+        .image_off, #home:hover .image_on{
+           display:none
+        }
+        .image_on, #home:hover .image_off{
+           display:block
+        }
+        </style>
+	</head>
+	<body>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								<header id="header">
+									<a href="../../index.html" class="logo"><strong>Christopher J. Tralie, Ph.D.</strong></a>
+								</header>
+<!-- End Header !-->
+
+							<!-- Content -->
+							    <SCRIPT SRC="../../jsMath/easy/load.js"></SCRIPT>
+								<section>
+                                    <h1>Interactive Poisson Image Editing Application</h1>
+                                        
+                                     <!--<table><tr><td><img src = "Examples/willtattoo_before.png"></td><td><img src = "Examples/willtattoo_after.png"></td></tr></table><BR>!-->
+
+                                    <table><tr><td><img src = "Examples/sharkBefore.png"></td><td><img src = "Examples/sharkAfter.png"></td></tr></table><BR>
+
+                                    I have created an interactive Java applet to allow people to try out <a href = "http://www.cs.princeton.edu/courses/archive/fall10/cos526/papers/perez03.pdf">Poisson Image Editing</a> with their own pictures.  If you landed at this page and you're curious about how the algorithm works or would like to see some examples, <a href = "index.html">click here</a>.<BR><BR>
+                                    Below is an emedded applet that you can run within your browser.  Click <b>"File"</b> to see the options you have with the program.  If you click "select left image" or "select right image", a new dialog will pop up which will allow you to select, resize, rotate, and flip an image that you would like to use in the program.  Typically you will select a left image, select a right image, select a region in one of the images, drag and drop that region onto another image, and click "blend selection".   A progress bar at the top will show an estimate of how much computation time is left.  Please be patient for larger selections; I'm a busy Ph.D. student so I did not have time to implement the most efficient sparse matrix solver for this problem.  I also apologize that the interface is not more polished for the same reason, although you should still be able to do almost anything you want to with my program.<BR><BR>
+                                    <b>Also please note: in the image selector for the browser embedded version, you will not be able to upload images from your hard drive or to import them from a URL for security reasons.  You will need to download a standalone (JAR) version of this program and run it from outside of your browser in order to use images beyond the sample images I have in the drop-down menu.</b>
+                                    <h2><a href = "PoissonImageEditing.jar">Click here</a> to download the standalone version of this program</h2>
+                                    If you don't want to download this for some reason, you can still play around with the sample images in the embedded version, most of which came from examples I did in <a href = "index.html">my writeup</a>.  Enjoy!!<BR><BR>
+                                    <BR>
+
+                                    <table border = "1">
+                                    <tr><td>
+                                    <applet
+                                    code	= "Poisson.class"
+                                    archive = "PoissonImageEditing.jar"
+                                    width	= "1200"
+                                    height	= "850"
+                                    >
+                                    </td></tr>
+                                    </table>
+
+
+                                    <!-- BEGIN DISQUS -->
+                                    <BR><BR><BR>
+                                    <div id="disqus_thread"></div>
+                                    <script type="text/javascript">
+                                        var disqus_shortname = 'ctralieteaching';
+                                        var disqus_identifier = 'PoissonImageEditing';
+                                        var disqus_url = 'http://ctralie.com/Teaching/PoissonImageEditing/InteractivePoisson.html';
+
+                                        (function() {
+                                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                            dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                                        })();
+                                    </script>
+                                    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                    <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+								</section>
+
+						</div>
+					</div>
+
+<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+							<!-- Menu -->
+								<nav id="menu">
+									<header class="major">
+										<h2>Menu</h2>
+									</header>
+									<ul>
+										<li><a href="../../index.html">Homepage</a></li>
+										<li><a href = "../../ctralie_cv.pdf">CV</a></li>
+										<li>
+											<span class="opener">Research</span>
+											<ul>
+												<li><a href="../../Research/index.html">Projects</a></li>
+												<li><a href="../../Research/statement.pdf">Research Statement</a></li>
+												<li><a href = "../../Research/ctralie_dissertation.pdf">Dissertation</a></li>
+											</ul>
+										</li>
+										<li><a href="../../Software">Software</a></li>
+										<li><a href = "../../Teaching/index.html">Teaching</a></li>
+										<li>
+											<span class="opener">Archives</span>
+											<ul>
+												<li><a href="../../Teaching/Tutorials.html">Tutorials</a></li>
+												<li><a href="../../Coursework/index.html">Graduate Classes</a></li>
+												<li><a href="../../PrincetonUGRAD">Princeton Undergraduate Portfolio</a></li>
+											</ul>
+										</li>
+									</ul>
+								</nav>
+
+							<!-- Section -->
+								<section>
+									<div class="mini-posts">
+									
+									
+									 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+									<a class="twitter-timeline" data-width="314" data-height="350" data-link-color="#f56a6a" data-chrome="transparent" data-dnt="true" href="https://twitter.com/ctralie/timelines/1012673261124145153?ref_src=twsrc%5Etfw">Tweets by ctralie</a>
+									
+                                    </div>
+								</section>
+
+
+							<!-- Footer -->
+								<footer id="footer">
+									<p class="copyright">&copy; Christopher J. Tralie. All rights reserved.  Contact chris.tralie@gmail.com. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+								</footer>
+
+						</div>
+					</div>
+
+			</div>
+			
+            <!-- Start of StatCounter Code -->
+            <script type="text/javascript">
+            var sc_project=7309088; 
+            var sc_invisible=1; 
+            var sc_security="f655b56d"; 
+            </script>
+            <script type="text/javascript"
+            src="http://www.statcounter.com/counter/counter.js"></script>
+            <noscript><div class="statcounter"><a title="free hit counter"
+            href="http://statcounter.com/" target="_blank"><img class="statcounter"
+            src="http://c.statcounter.com/7309088/0/f655b56d/1/" alt="free hit
+            counter"></a></div></noscript>
+            <!-- End of StatCounter Code -->
+<!-- End Sidebar !-->
+
+<!-- Scripts -->
+			<script src="../../assets/js/jquery.min.js"></script>
+			<script src="../../assets/js/skel.min.js"></script>
+			<script src="../../assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="../../assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="../../assets/js/main.js"></script>
+<!-- End Scripts -->
+	</body>
+</html>

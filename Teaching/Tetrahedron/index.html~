@@ -1,0 +1,95 @@
+<html>
+<head>
+<SCRIPT SRC="../../jsMath/easy/load.js"></SCRIPT>
+<link rel="stylesheet" type="text/css" href="../tutorials.css" />
+</head>
+<body>
+
+<div id="wrapper">
+
+<!-- Start of MenuBar Code -->
+<div id="menu-bar">
+<a href="http://www.duke.edu/" id="duke-logo">Duke</a>
+<a href = "http://www.princeton.edu" id="pton-logo">Princeton</a>
+<ul class="menus-level0"> 
+<li><a href="../../index.html" accesskey="1"><b>Chris Tralie</b></a></li>
+<li><a href="../../Research" accesskey="2">Research</a></li>
+<li><a href="../../Software" accesskey="3">Software</a></li>
+<li><a href="../../Teaching" accesskey="4">Teaching</a></li>
+<li><a href="../../Teaching/Tutorials.html" accesskey="5">Tutorials</a></li>
+<li><a href = "../../Coursework" accesskey="6">Coursework</a></li>
+<li><a href = "../../PrincetonUGRAD" accesskey="7">Undergrad</a></li>
+</ul>
+</div>
+<!-- End of MenuBar Code -->
+
+<div id="pagetitle"><h1><center>The Tetrahedron and 109.5 Degrees</h1></div>
+<div id="page-content">
+
+<BR><center><h2>Chris Tralie</h2></center><BR>
+
+When we look at <b>regular polygons</b> in 2D, we have an equilateral triangle with three sides and the square with 4 sides.  Go up a dimension to 3D, and we have the good ol' cube that everyone knows about.  But is there a natural extension of the equilateral triangle in 3 dimensions?<BR>
+<center><img src = "2Dto3D.png"></center><BR>
+This is where the regular tetrahedron comes in.  A regular tetrahedron is a closed polyhedron with four equilateral triangular faces (all faces are congruent), where sets of 3 faces meet at a point.  Here's a picture of a regular tetrahedron from a couple of different viewpoints:<BR>
+<center><img src = "shadedtetrahedron.png"></center><BR>
+The shape has four vertices and four faces.  Each vertex is the same distance from every other vertex, which is the length of one of the sides of the triangles.  Note that there can be tetrahedrons that aren't regular and don't have that property, just as there can be triangles that aren't equilateral.  As the natural extension of triangles, tetrahedrons in general are very useful in geometry for a wide variety of things (e.g. decomposing volumes into tetrahedra as an analog of triangulating 2D polygons).  But in addition to being a useful mathematical object, <i>regular tetrahedra</i>, in particular, arise very naturally in science.  Take methane gas, for example (out of the many, many compounds with this property).  Its chemical formula is <b>CH<SUB>4</SUB></b>.  It has a carbon atom in the center and four hydrogen atoms surrounding it.  Here is a picture of a model of a methane molecule that I created in OpenGL:<BR><BR>
+<center><img src = "methane-molecule.png"></center><BR><BR>
+As you can see, the hydrogen molecules (red) actually reside at the vertices of a tetrahedron, with the carbon atom (blue) in their center.  And furthermore, this tetrahedron is regular (i.e. the distance between each pair of hydrogen molecules is the same).  The reason for this is that each hydrogen molecule is identical, and wants to get as far away from every other hydrogen molecule as possible, but still be bonded with the carbon molecule.  If two hydrogen molecules were closer to each other than they were to some other one, this would be an unstable configuration, and they would repel each other until there were equal forces from the other hydrogen molecule balancing them out.<BR><BR>
+
+You will often read in chemistry or biology textbooks that the angle between two of the outer atoms in a tetrahedral molecule is approximately <b>109.5 degrees</b>.  It used to bother me that this number seemed to come out of nowhere.  But I can now show you a very solid mathematical proof of this fact if we assume the tetrahedral shape, using vectors.<BR>
+<ul>
+<li>I will start by constructing a regular tetrahedron from the vertices of a cube.  Start out with a cube and take a subset of 4 vertices such that each vertex is equidistant from all other vertices:<BR>
+<center><img src = "cube4vertices.png"></center><BR>
+I did this by picking vertex (0, 0, 0) and then picking the three points that are across diagonals of the three faces coming out of (0, 0, 0): (0, 1, 1), (1, 1, 0), and (1, 0, 1).  These points are all equidistant from each other, becuase every pair of points lie on the opposite side of a square face across a diagonal, and all squares are congruent since these are the faces of a cube.  The distance between each point and every other point is sqrt(2) in this case.  For those of you who know anything about binary or information theory, we had to pick a subset of 4 3-bit binary numbers whose Hamming Distance is 2; if we look at the coordinates as bits, every binary string differs by two bits out of the points that I chose (we need to change two coordinates to get from one point to another).<BR><BR>
+</li>
+<li>Connecting the points shows that this is indeed a tetrahedron<BR>
+<center><img src = "tetrahedroncube.png"></center><BR><BR>
+</li>
+<li>
+What remains to be shown now is the whole 109.5 degree business.  In order to do this, I need to add one more point to the picture we have, and that's the center atom (carbon in our CH<SUB>4</SUB> methane example).  This point gets added at the coordinate (0.5, 0.5, 0.5) right in the center of the cube, placing it equidistant from every corner of the cube and, in particular, the points we've chosen to represent the hydrogens:<BR>
+<center><img src = "cubevectorsdrawn.png"></center><BR>
+Now calculate the angle between two vertices of the regular tetrahedron, I need to pick two of them and draw vectors to them from the center.  In the above picture I chose points (0, 1, 1) and (1, 0, 0).  We just find the angle between the two constructed vectors, and that's it!  The process is as follows:<BR><BR>
+\[ v_1 = (0, 1, 1) - (0.5, 0.5, 0.5) = (-0.5, 0.5, 0.5) \]
+\[v_2 = (1, 1, 0) - (0.5, 0.5, 0.5) = (0.5, 0.5, -0.5) \]<BR><BR>
+Now use the dot product to compute the angle between <b>v<SUB>1</SUB></b> and <b>v<SUB>2</SUB></b>: (NOTE: ||v|| means magnitude of vector v)<BR><BR>
+\[ v_1 \cdot v_2 = ||v_1||*||v_2||*cos(\theta) \]<BR><BR>
+\[ \theta = cos^{-1}( \frac{ v_1 \cdot v_2 }{||v_1||*||v_2|| } )  \]<BR><BR>
+\[ \theta = cos^{-1}( \frac{ -0.5*0.5 + 0.5*0.5 + -0.5*0.5 } { \sqrt{3*0.5^2} * \sqrt{3*0.5^2} } ) \]<BR><BR>
+\[ \theta = cos^{-1}(- \frac{1}{3} ) \]<BR><BR>
+
+So plug that into your calculator and you'll see that the inverse cosine of -1/3 is about 109.4712 degrees, or <b>109.5</b> rounded!  The exact answer, however, is acos(-1/3).  So there you have it, a nice mathematical proof on why the angle between vertices of a tetrahedral compound is 109.5 degrees.
+</li>
+</ul>
+
+<!-- Start of StatCounter Code -->
+<script type="text/javascript">
+var sc_project=7309088; 
+var sc_invisible=1; 
+var sc_security="f655b56d"; 
+</script>
+<script type="text/javascript"
+src="http://www.statcounter.com/counter/counter.js"></script>
+<noscript><div class="statcounter"><a title="free hit counter"
+href="http://statcounter.com/" target="_blank"><img class="statcounter"
+src="http://c.statcounter.com/7309088/0/f655b56d/1/" alt="free hit
+counter"></a></div></noscript>
+<!-- End of StatCounter Code -->
+<!-- BEGIN DISQUS -->
+<BR><BR><BR>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ctralieteaching';
+    var disqus_identifier = 'Tetrahedron';
+    var disqus_url = 'http://ctralie.com/Teaching/Tetrahedron/index.html';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+<!-- END DISQUS -->
+</body>
+</html>

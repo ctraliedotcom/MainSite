@@ -1,0 +1,81 @@
+<html>
+<body>
+
+<h1>Directions for Deploying VirtualBox</h1>
+
+<h3>
+For the summer school <a href = "http://www-m15.ma.tum.de/Allgemeines/SummerSchool2016">Mathematical Methods for High-Dimensional Data Analysis</a> July 18 - 22, 2016, TU Munchen, Garching
+</h3>
+
+The groups "Topological Descriptors for Geometric Data" and "Topological Time Series Analysis - Theory and Practice" will be using a virtual image of XUbuntu 16.04 32-bit with packages pre-installed.  The first group will be using R Studio with the <a href = "https://cran.r-project.org/web/packages/TDA/index.html">TDA R Package</a>, and the second group will be using <a href = "http://jupyter.org/">Jupyter Notebook</a>, which are all pre-installed on an image.
+<BR><BR><HR>
+<h2>1. Installing VirtualBox</h2>
+
+You will first need to download and install the <a href = "https://www.virtualbox.org/">VirtualBox</a> client on your computer. <a href = "https://www.virtualbox.org/wiki/Downloads">Click here</a> to go to the VirtualBox downloads page, and choose the file corresponding to your operating system
+
+<BR><BR><HR>
+<h2>2. Downloading The Image</h2>
+
+Please visit the following URL to grab the image:
+
+<p>
+<a href = "https://www.dropbox.com/sh/yrn8bgwwvzhjncx/AADLcidLyAMdLk9K6gTMZVqra?dl=0">https://www.dropbox.com/sh/yrn8bgwwvzhjncx/AADLcidLyAMdLk9K6gTMZVqra?dl=0</a>
+</p>
+
+You'll want to download the following 3 files:
+<ul>
+<li>TUMTopoTimeSeries.vbox</li>
+<li>TUMTopoTimeSeries.vbox-prev</li>
+<li>TUMTopoTimeSeries.vdi</li>
+</ul>
+
+and put them all in the same folder.  The .vdi file is quite large (~11GB), so be aware of that.<BR><BR>
+
+Alternatively, visit the mirror at the following location to download everything in one .zip file:<BR><BR>
+<a href = "https://syncandshare.lrz.de/dl/fi8GDHbfebvNHxTZoFcNigAk/.zip">https://syncandshare.lrz.de/dl/fi8GDHbfebvNHxTZoFcNigAk/.zip</a>
+
+<BR><BR><HR>
+<h2>3. Running The Image</h2>
+Once the three files are are all downloaded, you should then be able to open the image in VirtualBox.  First, launch VirtualBox and click the menu item <code>Machine->Add</code><BR>
+<img src = "AddMachine.png"><BR><BR>
+
+Then, navigate to the folder where you downloaded the three files, and open the .vdi file:<BR><BR>
+<img src = "ChooseVBox.png"><BR><BR>
+
+Then, double click on the image to start it:<BR><BR>
+
+<img src = "StartVBox.png"><BR><BR>
+
+For the topological descriptors group, there is an icon for RStudio on the desktop.  For the time series group, right click on <code>TUMTopoTimeSeries2016</code> and click "Open Terminal Here"<BR><BR>
+
+<img src = "OpenTerminal.png"><BR><BR>
+
+Then, type<BR><BR>
+<table border = "1" border = "10">
+<tr><td><code><h2>git pull</h2></code></td></tr>
+</table><BR>
+to update the files to the most recent version.  After that, type<BR><BR>
+
+<table border = "1" border = "10">
+<tr><td><code><h2>jupyter notebook</h2></code></td></tr>
+</table><BR>
+
+which will launch Jupyter Notebook in the browser automatically.<BR><BR>
+
+<b>NOTE: If it is prohibitively slow, you may need to enable hardware virtualization in your BIOS, as shown in <a href = "https://www.youtube.com/watch?v=mFJYpT7L5ag">this video</a>.</b>
+
+<!-- Start of StatCounter Code -->
+<script type="text/javascript">
+var sc_project=7309088; 
+var sc_invisible=1; 
+var sc_security="f655b56d"; 
+</script>
+<script type="text/javascript"
+src="http://www.statcounter.com/counter/counter.js"></script>
+<noscript><div class="statcounter"><a title="free hit counter"
+href="http://statcounter.com/" target="_blank"><img class="statcounter"
+src="http://c.statcounter.com/7309088/0/f655b56d/1/" alt="free hit counter"></a></div></noscript>
+<!-- End of StatCounter Code -->
+
+</body>
+</html>

@@ -1,0 +1,203 @@
+<html>
+<head>
+<SCRIPT SRC="../../jsMath/easy/load.js"></SCRIPT>
+<link rel="stylesheet" type="text/css" href="../tutorials.css" />
+</head>
+<body>
+
+<div id="wrapper">
+
+<!--------------MENU BAR-------------------->
+<div id="menu-bar">
+<ul class="menus-level0">
+<li><a href="http://www.duke.edu/" id="duke-logo">Duke</a></li>
+<li><a href="../../" accesskey="1"><b>Chris Tralie</b></a></li>
+<li><a href="../../Teaching" accesskey="2">Teaching</a></li>
+<li><a href="../../Research" accesskey="3">Research</a></li>
+<li><a href = "../../Coursework" accesskey="4">Coursework</a></li>
+<li><a href = "../../PrincetonUGRAD" accesskey="5">Undergrad</a></li>
+<li>
+<a href = "http://www.princeton.edu" id="pton-logo">Princeton</a>
+</li>
+</ul>
+</div>
+<!--------------MENU BAR-------------------->
+
+<div id="pagetitle"><h1><center>Multivariable Implicit Differentiation</h1></div>
+<div id="page-content">
+
+<BR><center><h2>Chris Tralie</h2></center><BR>
+
+<b>NOTE: This tutorial is intended for students who want to understand how to compute implicit partial derivatives for specific problems (likely engineering or science undergraduates).  If you're more interested in theory and rigorous math, you should learn the implicit function theorem (which is not covered here (yet) )</b><BR>
+
+<a name = "intro"><h1>Introduction</h1></a>
+Usually when you're asked to find a partial derivative, you're taking it from a variable that's explicitly equal to a function of some other variables.  For example, the function
+
+\[ Z = sin(X + Y) \]
+
+operates on the variables <b>X</b> and <b>Y</b>.  If I asked for the partial derivative of <b>Z</b> with respect to the variable <b>X</b>, you would hold <b>Y</b> constant and go along the x-axis, obtaining:
+
+\[ \frac{\partial}{\partial{X}}(sin(X+Y)) = cos(X+Y) \]<BR>
+The image below shows a plot of this surface with Y held constant at -0.1.  The blue dots show the path of a curve holding y constant, and you can imagine taking the single variable derivative of that curve with respect to x on that curve to get the partial derivative for that y value.  This may be a bit hard to see because of the perspective:<BR>
+<img src = "sinxplusy.png"><BR>
+
+In other instances, however, you will come across a relationship between variables where it is impossible (or extremely difficult) to isolate a variable by itself.  But you can still figure out the rates of change between the variables by following a process known as <b>implicit differentiation</b>.  This process involves taking partials of a function and using the chain rule.  The hope is to somehow get the partial derivative of one of the variables with respect to another one in the resulting equation somewhere so that you can isolate it and solve for it.  I’ll first show an example that can be done both ways (so you see that I’m not lying), and then I’ll launch into an example from a previous math 201 midterm that can only be done implicitly<BR><BR>
+
+<a name = "example1"><h1>Example 1:</h1></a>
+
+Consider the equation \[ z = ln(x) + e^y \]
+
+Compute \[ \frac{\partial{x}}{\partial{y}} \]
+
+<a name = "example1way1"><h2>Way 1:</h2></a><BR>
+We'll turn this into a familiar differentiation problem by isolating x on one side of the equation, and differentiating both sides of the equation with respect to y:<BR><BR>
+
+
+
+
+<table cellpadding = "20" border = "1">
+
+<tr><td><h2>
+\[ ln(x) = z - e^y \]</h2></td><td>Given</td></tr>
+
+<tr><td><h2>
+\[ x = e^{(z - e^y)} \]</h2>
+</td><td>Having e raised to both sides isolates everything explicitly in terms of x</td></tr>
+
+<tr><td><h2>
+\[ \frac{\partial{x}}{\partial{y}} = e^{(z - e^y)} \frac{\partial}{\partial{y}}(z - e^y) \]</h2>
+</td><td>By the chain rule</td></tr>
+
+<tr><td><h2>
+\[ e^{(z - e^y)} \frac{\partial}{\partial{y}}(z - e^y) = e^{(z-e^y)}(-e^y) \]</h2>
+</td><td>Since the partial is with respect to y, z is a constant which drops out</td></tr>
+
+<tr><td><h2>
+\[ \frac{\partial{x}}{\partial{y}} = e^{(y+z-e^y)} \]</h2>
+</td><td>Final answer</td></tr>
+
+</table>
+
+</h2>
+
+
+<a name = "example1way2"><h2>Way 2:</h2></a><BR>
+
+Now let's redo the same problem using implicit differentiation; that is, differentiate both sizes of the equation with respect to y, holding z constant.  To understand why we’re holding z constant, think back to how partial derivatives work.  When we take a partial derivative of a variable with respect to another variable, only those two variables may change; <i>all other variables remain constant</i> Since we're interested in computing partial{x} / partial{y} , x (the dependent variable) and y (the independent variable) are the only two variables that are going to vary.  z must be fixed at some constant value.  We have now figured out enough to proceed with the nitty gritty computation:<BR><BR>
+
+<table cellpadding = "20" border = "1">
+
+<tr><td><h2>
+\[ \frac{\partial}{\partial{y}} ln(x) =  \frac{\partial}{\partial{y}} (z - e^y) \]</h2>
+</td><td>Start by taking the partial derivative of both sides with respect to y.  We hope that eventually a partial of x with respect to y will pop out</td></tr>
+
+
+<tr><td><h2>
+\[ \frac{1}{x} (\frac{\partial{x}}{\partial{y}}) =  \frac{\partial}{\partial{y}}(z) - \frac{\partial}{\partial{y}}(e^y) \]</h2>
+</td><td>Use the chain rule to break up the ln(x) on the left side.  And <b>tada</b>, a partial{x}/partial{y} has popped out, which is what we were looking for!  The whole goal of the rest of the computation will be to solve for everything in terms of the partial{x}/partial{y}</td></tr>
+
+
+<tr><td><h2>
+\[ \frac{1}{x} (\frac{\partial{x}}{\partial{y}}) =  0 - \frac{\partial}{\partial{y}}(e^y) \]</h2>
+</td><td>Derivative of constant (z) is zero (see explanation above for why z is zero)</td></tr>
+
+
+<tr><td><h2>
+\[ (\frac{\partial{x}}{\partial{y}}) =  -xe^y = -(e^{(z-e^y)})e^y \]</h2>
+</td><td>Substituting back in for x</td></tr>
+
+<tr><td><h2>
+\[ = e^{(y+z-e^y)} \]</h2>
+</td><td>Final answer</td></tr>
+</table><BR>
+
+The final answer matches up with way #1, so implicit differentation seems to have worked out this time.  Remember, the main trick/strategy is to take partials of something that isn't explicitly in terms of y, with the hope that eventually the parial (partial{x}/partial{y}) will pop out.  And it will.  Let's see another example where we really need implicit differentaiton to solve the problem
+
+<BR><BR>
+
+<a name = "example2"><h1>Example 2:</h1></a>
+Consider the following relation:
+
+\[ ln(x + z) - ze^y + x^2z = 0 \]
+
+Compute \[ \frac{\partial{z}}{\partial{y}} at (1, 0, 0) \]
+
+<BR>
+Try as you may, you will not be able to isolate z on one side of the equation by itself for an explicit equation of x and y in terms of z.  So it looks like the only option here is to use implicit differentiation<BR><BR>
+
+
+<table cellpadding = "20" border = "1">
+
+<tr><td><h2>
+\[ \frac{\partial{ln(x+z)}}{\partial{y}} - \frac{\partial{ze^y}}{\partial{y}} +  \frac{\partial{x^2z}}{\partial{y}} = \frac{\partial{0}}{\partial{y}} \]</h2>
+</td><td>Start by taking the partial derivative of both sides of the equation with respect to y (and breaking up the equation).  We hope that eventually a partial of z with respect to y will pop out</td></tr>
+
+<tr><td><h2>
+\[ \frac{1}{x+z}\frac{\partial{z}}{\partial{y}} - (\frac{\partial{z}}{\partial{y}}e^y + ze^y) + x^2 \frac{\partial{z}}{\partial{y}} = 0 \]</h2>
+</td><td>Now we actually evaluate some of the partials with respect to y.  Remember that we're looking of the partial of z with respect to y, so only z and y vary (<b>x is constant!!</b>).<BR>
+<ul><li>The first term (ln(x+z)) is differentiated using the chain rule and the derivative of natural log</li>
+<li>The second term (ze<sup>y</sup>) is differentiated using the product rule, remembering that z is a function of y</li>
+<li>The third term is simple because x is treated as a constant</li>
+<li>The right hand side of the equation is the derivative of zero (a constant), which is trivially zero.</li>
+</ul> 
+
+Note that partial{z}/partial{y} has popped out as we wanted!  Now all we need to do is isolate it on one side of the equation by itself and we're done!
+</td></tr>
+
+<tr><td><h2>
+\[ \frac{\partial{z}}{\partial{y}} (\frac{1}{x+z} - e^y + x^2) = ze^y \]</h2>
+</td><td>Grouping all the terms together that have the partial of z with respect for y, getting ready to solve for partial{z} / partial{y}</td></tr>
+
+<tr><td><h2>
+\[ \frac{\partial{z}}{\partial{y}} = \frac{ze^y}{\frac{1}{x+z} - e^y + x^2} \]</h2>
+</td><td>We now have an equation for the partial derivative we were looking for</td></tr>
+
+<tr><td><h2>
+\[ \frac{\partial{z}}{\partial{y}}|^{(x,y,z)=(1,0,0)} = \frac{0e^0}{\frac{1}{1+0} - e^0 + 1^2}  = \frac{0}{1 - 1 + 1} = 0 \]</h2>
+</td><td>Final answer to the original question of finding the derivative at (1,0,0), which is 0</td></tr>
+
+</table><BR>
+
+The process of differentiating both sides of an equation and waiting for the partial we needed to pop out of a chain rule worked in this example, and this technique works in general for implicit differentiation.  
+
+<BR><BR>
+
+One interesting thing to note is that the final expression for partial{z}/partial{y} actually includes z in it.  You may not be used to seeing an equation of a derivative of a dependent variable containing the variable itself; usually it's in terms of the other independent variables (in this case we would usually expect to see partial{z}/partial{y} in terms of x and y only).  But remember that the whole point of implicit differentiation is that we were unable to find an explicit equation for z in terms of x and y, so it makes perfect sense that z would show up in the final derivative equation too.  Consequently, we need to know all three of the numbers(x,y,z) to evaluate the derivative at a point, <i>and we should check to make sure that our triple (x,y,z) actually satisfies the equation we were given</i> (NOTE that (1,0,0) indeed satisfies ln(x+z) - ze<sup>y</sup> + x<sup>2</sup>z = 0)<BR><BR>
+
+
+<!--TODO: A concrete example showing how relations are more general than functions (maybe a circle x^2 + y^2 = 4!-->
+
+<!--TODO: A derivation of the special implicit function theorem-->
+
+<!--BEGIN DISQUS!-->
+<BR><BR><BR>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'ctralieteaching'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+<!--END DISQUS!-->
+<!-- Start of StatCounter Code -->
+<script type="text/javascript">
+var sc_project=7309088; 
+var sc_invisible=1; 
+var sc_security="f655b56d"; 
+</script>
+<script type="text/javascript"
+src="http://www.statcounter.com/counter/counter.js"></script>
+<noscript><div class="statcounter"><a title="free hit counter"
+href="http://statcounter.com/" target="_blank"><img class="statcounter"
+src="http://c.statcounter.com/7309088/0/f655b56d/1/" alt="free hit
+counter"></a></div></noscript>
+<!-- End of StatCounter Code -->
+</body>
+</html>

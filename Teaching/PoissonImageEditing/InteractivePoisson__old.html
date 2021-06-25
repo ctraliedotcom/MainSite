@@ -1,0 +1,85 @@
+<html>
+<head>
+<SCRIPT SRC="../../jsMath/easy/load.js"></SCRIPT>
+<link rel="stylesheet" type="text/css" href="../tutorials.css" />
+<title>Chris Tralie : Poisson Image Editing</title>
+</head>
+<body>
+
+
+<div id="wrapper">
+
+<!-- Start of MenuBar Code -->
+<div id="menu-bar">
+<a href="http://www.duke.edu/" id="duke-logo">Duke</a>
+<a href = "http://www.princeton.edu" id="pton-logo">Princeton</a>
+<ul class="menus-level0">
+<li><a href="../../index.html" accesskey="1"><b>Chris Tralie</b></a></li>
+<li><a href="../../Teaching" accesskey="2">Teaching</a></li>
+<li><a href="../../Research" accesskey="3">Research</a></li>
+<li><a href = "../../Coursework" accesskey="4">Coursework</a></li>
+<li><a href = "../../PrincetonUGRAD" accesskey="5">Undergrad</a></li>
+</ul>
+</div>
+<!-- End of MenuBar Code -->
+
+<div id="pagetitle"><h1><center>Interactive Poisson Image Editing Application</h1></div>
+<div id="page-content">
+
+<BR><center><h2>Chris Tralie<BR></h2></center>
+
+<!--<table><tr><td><img src = "Examples/willtattoo_before.png"></td><td><img src = "Examples/willtattoo_after.png"></td></tr></table><BR>!-->
+
+<table><tr><td><img src = "Examples/sharkBefore.png"></td><td><img src = "Examples/sharkAfter.png"></td></tr></table><BR>
+
+I have created an interactive Java applet to allow people to try out <a href = "http://www.cs.princeton.edu/courses/archive/fall10/cos526/papers/perez03.pdf">Poisson Image Editing</a> with their own pictures.  If you landed at this page and you're curious about how the algorithm works or would like to see some examples, <a href = "index.html">click here</a>.<BR><BR>
+Below is an emedded applet that you can run within your browser.  Click <b>"File"</b> to see the options you have with the program.  If you click "select left image" or "select right image", a new dialog will pop up which will allow you to select, resize, rotate, and flip an image that you would like to use in the program.  Typically you will select a left image, select a right image, select a region in one of the images, drag and drop that region onto another image, and click "blend selection".   A progress bar at the top will show an estimate of how much computation time is left.  Please be patient for larger selections; I'm a busy Ph.D. student so I did not have time to implement the most efficient sparse matrix solver for this problem.  I also apologize that the interface is not more polished for the same reason, although you should still be able to do almost anything you want to with my program.<BR><BR>
+<b>Also please note: in the image selector for the browser embedded version, you will not be able to upload images from your hard drive or to import them from a URL for security reasons.  You will need to download a standalone (JAR) version of this program and run it from outside of your browser in order to use images beyond the sample images I have in the drop-down menu.</b>
+<h2><a href = "PoissonImageEditing.jar">Click here</a> to download the standalone version of this program</h2>
+If you don't want to download this for some reason, you can still play around with the sample images in the embedded version, most of which came from examples I did in <a href = "index.html">my writeup</a>.  Enjoy!!<BR><BR>
+<BR>
+
+<table border = "1">
+<tr><td>
+<applet
+code	= "Poisson.class"
+archive = "PoissonImageEditing.jar"
+width	= "1200"
+height	= "850"
+>
+</td></tr>
+</table>
+
+
+<!-- Start of StatCounter Code -->
+<script type="text/javascript">
+var sc_project=7309088; 
+var sc_invisible=1; 
+var sc_security="f655b56d"; 
+</script>
+<script type="text/javascript"
+src="http://www.statcounter.com/counter/counter.js"></script>
+<noscript><div class="statcounter"><a title="free hit counter"
+href="http://statcounter.com/" target="_blank"><img class="statcounter"
+src="http://c.statcounter.com/7309088/0/f655b56d/1/" alt="free hit
+counter"></a></div></noscript>
+<!-- End of StatCounter Code -->
+<!-- BEGIN DISQUS -->
+<BR><BR><BR>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'ctralieteaching';
+    var disqus_identifier = 'PoissonImageEditing';
+    var disqus_url = 'http://ctralie.com/Teaching/PoissonImageEditing/InteractivePoisson.html';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+</body>
+</html>

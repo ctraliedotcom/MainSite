@@ -1,0 +1,83 @@
+<!--LOGBOOK ORGANIZER INFO
+Description: 
+Tags: Papers, DTW
+!-->
+<html>
+<head>
+<!--LaTeX in Javascript!-->
+<script src="../../jsMath/easy/load.js"></script>
+<!--Syntax highlighting in Javascript!-->
+<script type="text/javascript" src="../../../syntaxhighlighter/scripts/shCore.js"></script>
+<script type="text/javascript" src="../../../syntaxhighlighter/scripts/shBrushJScript.js"></script>
+<script type="text/javascript" src="../../../syntaxhighlighter/scripts/shBrushCpp.js"></script>
+<script type="text/javascript" src="../../../syntaxhighlighter/scripts/shBrushMatlabSimple.js"></script>
+<script type="text/javascript" src="../../../syntaxhighlighter/scripts/shBrushPython.js"></script>
+<link type="text/css" rel="stylesheet" href="../../../syntaxhighlighter/styles/shCoreDefault.css"/>
+<script type="text/javascript">SyntaxHighlighter.all();</script>
+
+<!--Do wrapping with preformatted text!-->
+<style>
+pre
+{
+white-space: -moz-pre-wrap; /* Mozilla, supported since 1999 */
+white-space: -pre-wrap; /* Opera 4 - 6 */
+white-space: -o-pre-wrap; /* Opera 7 */
+white-space: pre-wrap; /* CSS3 - Text module (Candidate Recommendation) http://www.w3.org/TR...xt/#white-space */
+word-wrap: break-word; /* IE 5.5+ */
+}
+</style>
+
+</head>
+<body>
+
+
+<h1>Schubert Not Synchronized</h1>
+
+<p>Below are two different performances of Schubert's Unfinished Symphony (one in each ear if you have headphones).  The one on the left goes slower than the one on the right, so they quickly get out of sync</p>
+
+</pre>
+<audio controls style="width: 400px;">
+  <source src='schubert_not_synced.mp3' type="audio/mpeg">
+Your browser does not support the audio element.
+</audio>
+
+
+<HR>
+
+<h1>Schubert Automatically Synchronized</h1>
+
+<p>With our linear memory exact dynamic time warping algorithm, we are able to automatically synchronize them in a couple of minutes of computation time on a personal computer, down to the millisecond scale</p>
+
+</pre>
+<audio controls style="width: 400px;">
+  <source src='schubert_synced.mp3' type="audio/mpeg">
+Your browser does not support the audio element.
+</audio>
+
+<HR>
+
+<h1>Vivaldi Not Synchronized</h1>
+
+<p>Below are two different performances of Vivaldi's Spring (one in each ear if you have headphones).  The one on the left goes faster than the one on the right, but it starts later.  Because of this, they are in sync for a brief moment around 20 seconds, but the left one then overtakes the right one for the rest of it.</p>
+
+</pre>
+<audio controls style="width: 400px;">
+  <source src='vivaldi_not_synced.mp3' type="audio/mpeg">
+Your browser does not support the audio element.
+</audio>
+
+
+<HR>
+
+<h1>Vivaldi Automatically Synchronized</h1>
+
+<p>Here's the result of synchronizing them.  Pay particular attention to the attacks of each note which line up, since we're at a fine scale.</p>
+
+</pre>
+<audio controls style="width: 400px;">
+  <source src='vivaldi_synced.mp3' type="audio/mpeg">
+Your browser does not support the audio element.
+</audio>
+
+</body>
+</html>

@@ -1,0 +1,45 @@
+This is BibTeX, Version 0.99c (TeX Live 2009/Debian)
+The top-level auxiliary file: Notes_lec22.aux
+The style file: alpha.bst
+Database file #1: Notes_lec22-ref.bib
+You've used 3 entries,
+            2543 wiz_defined-function locations,
+            577 strings with 4896 characters,
+and the built_in function-call counts, 1098 in all, are:
+= -- 105
+> -- 52
+< -- 2
++ -- 17
+- -- 17
+* -- 78
+:= -- 196
+add.period$ -- 9
+call.type$ -- 3
+change.case$ -- 17
+chr.to.int$ -- 3
+cite$ -- 3
+duplicate$ -- 43
+empty$ -- 78
+format.name$ -- 20
+if$ -- 215
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 4
+newline$ -- 18
+num.names$ -- 9
+pop$ -- 16
+preamble$ -- 1
+purify$ -- 21
+quote$ -- 0
+skip$ -- 37
+stack$ -- 0
+substring$ -- 52
+swap$ -- 4
+text.length$ -- 2
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 20
+warning$ -- 0
+while$ -- 10
+width$ -- 5
+write$ -- 40

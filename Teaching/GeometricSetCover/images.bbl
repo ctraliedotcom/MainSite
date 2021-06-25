@@ -1,0 +1,20 @@
+\begin{thebibliography}{AES10}
+
+\bibitem[AES10]{aronov2010small}
+Boris Aronov, Esther Ezra, and Micha Sharir.
+\newblock Small-size $\backslash$eps-nets for axis-parallel rectangles and
+  boxes.
+\newblock {\em SIAM Journal on Computing}, 39(7):3248--3282, 2010.
+
+\bibitem[AP14]{pan2014hittingset}
+Pankaj~K Agarwal and Jiangwei Pan.
+\newblock Near-linear algorithms for geometric hitting sets and set covers.
+\newblock {\em Proceedings of the 30th Annual Symposium on Computational
+  Geometry}, 2014.
+
+\bibitem[HP11]{har2011geometric}
+Sariel Har-Peled.
+\newblock {\em Geometric approximation algorithms}, volume 173.
+\newblock American Mathematical Soc., 2011.
+
+\end{thebibliography}

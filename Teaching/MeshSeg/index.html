@@ -1,0 +1,253 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<!-- Header !-->
+	<head>
+		<title>Christopher J. Tralie, Ph.D.</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<!--[if lte IE 8]><script src="../../assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="../../assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="../../assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="../../assets/css/ie8.css" /><![endif]-->
+        <style>
+        .image_off, #home:hover .image_on{
+           display:none
+        }
+        .image_on, #home:hover .image_off{
+           display:block
+        }
+        </style>
+	</head>
+	<body>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								<header id="header">
+									<a href="../../index.html" class="logo"><strong>Christopher J. Tralie, Ph.D.</strong></a>
+								</header>
+<!-- End Header !-->
+
+							<!-- Content -->
+							    <SCRIPT SRC="../../jsMath/easy/load.js"></SCRIPT>
+								<section>
+                                        <h1>Mesh Segmentation</h1>
+                                        
+                                    <h2><u><a name = "intro">Introduction</a></u></h2><BR>
+                                    Mesh Segmentation is the process of decomposing a mesh into smaller "segments" (parts) that have semantic meaning.  This is actually an ill-posed definition, though, because it is unclear what "semantic meaning" is.  Many groups in the past 10 years have defined the problem as some subset assignment of the mesh that minimizes an objective function.  Then results come out and much hand-waving is done to say "oh this looks plausible."<BR><BR>
+
+                                    Luckily, a SIGGRAPH 2009 paper came out of Princeton that is a more rigorous benchmark for mesh segmentation evaluation.  The basic idea was to use a Mechanical Turk to collect data on how humans would cut a surface into different parts, and to compare algorithms to that data.  The paper can be found here:<BR>
+
+                                    <blockquote>
+                                    Xiaobai Chen, Aleksey Golovinskiy, and Thomas Funkhouser,<br>
+                                    <a href="http://segeval.cs.princeton.edu/public/paper.pdf">A Benchmark for 3D Mesh Segmentation</a><br>
+                                    <i>ACM Transactions on Graphics</i> (Proc. SIGGRAPH), 28(3), 2009.
+                                    </blockquote>
+
+                                    <BR>
+                                    In this assignment I will implement a simple (but quick) K-Means algorithm for decomposing a mesh, based on the work in the following paper:<BR>
+                                    <blockquote>
+                                    Shlafman, S., Tal, A. and Katz, S. (2002), Metamorphosis of Polyhedral Surfaces using Decomposition. Computer Graphics Forum, 21: 219228. doi: 10.1111/1467-8659.00581
+                                    </blockquote>
+                                    <BR>
+
+                                    <h2><u><a name = "algorithm">Algorithm Overview</a></u></h2><BR>
+                                    The algorithm that I'm implementing is an iterative algorithm.  The basic idea is to make an initial guess about faces that cluster to each segment, and then to iteratively improve the cluster centers and segment guesses until convergence.  At every step, there is exactly one face per cluster that represents its "center," and these cluster centers are what undergo iterative improvement.  The process is as follows:<BR>
+                                    <ol>
+                                    <li>The first step is to compute a "distance" between adjacent faces on a mesh.  This distance can then be propagated to non-adjacent faces using shortest paths (explained a bit later), but assume for now that all that's done in this step is to compute the distance between adjacent faces.  The distance should be chosen so that faces on the mesh within a segment are close to each other, so that the segments we want will cluster together.  In ShalfmanTalKatz, the distance is chosen as part <b>Geodesic Distance</b>, or distance along the surface (as opposed to Euclidean Distance) and part <b>Dihedral Angle</b>, or angle between the normals of faces.  The distance includes a geodesic part to make sure that clusters are continuous across the surface, and it includes a dihedral angle part to encourage segment boundaries around areas of high curvature (such as the place where the arm connects to the rest of the body; this cue wouldn't be picked up merely by geodesic distance).<BR><BR>
+
+                                    The actual definition of the distance between faces I use is as follows (I will refer to it as "mesh distance" from now on):<BR>
+                                    MeshDistance = 0.5*<b>PhysDist</b> + 0.5*(1-cos^2(<b>dihedral angle</b>))<BR>
+                                    where PhysDist is the sum of the distances from the centroid of each face to the center of their common edge (borrowed from the ShlafmanTalKatz paper).  Note also that since the second term includes 1-cos^2(dihedral angle), the distance is greater when the angle is closer to 90 degrees.<BR>
+                                    To find the distance between non-adjacent faces, I use Dijkstra's algorithm (described more below).
+
+                                    <BR><BR>
+
+                                    </li>
+
+                                    <li>The next step is to make an initial guess on faces that represent the center of each cluster.  This is a very important step because, like all iterative nonlinear algorithms, this needs a good initial guess to converge to a good local minimum (also it will converge faster with a better initial guess).  Let us assume for the moment that <b>k</b> clusters have been chosen ahead of time (I will explain how to automatically determine <b>k</b> later if the user so chooses).  Choose the first cluster center to be the face on the mesh that is closest to the <b>Eucliden</b> centroid of all faces.  I choose it to be the centroid of the faces in Euclidean space because this is significantly easier to compute than if I had used the original distance metric defined in step 1, and because it should still give a pretty good guess of a face that is close to the center of all faces for many models (and this will be iteratively improved anyway).<BR><BR>
+
+                                    To choose the second face, I compute the <b>mesh distance</b> from this first cluster face to all other faces using Dijsktra's algorithm.  I choose the second cluster center to be the one that's furthest from the first one using this metric.  To choose the third face, I compute the geodesic distance from the second cluster to all faces, and I choose the face that's furthest from the average of the distance to cluster centers 1 and 2.  This process (finding the face furthest from the average of all mesh distances from the cluster centers chosen so far) continues until there are <b>k</b> clusters chosen.<BR><BR> </li>
+
+                                    <li>Once there is an initial "seed" choice of cluster centers, the iterative part of this algorithm can begin.  I already have <b>k</b> arrays of mesh distances from the k cluster centers to all other faces, so for each face, I find the cluster to which it is the closest (using mesh distance).  The set of all faces that "belong" to a cluster center forms a segment.  Once this has been done to compute all segments, find a new cluster center in each segment.  Do this (once again) by taking the closest face to the <i>Euclidean</i> centroid of all faces.  Even though this isn't the most "correct" approach (since the mesh distance is really what's used to cluster), it's really fast because I only have to compute the mesh distance between the cluster centers and the rest of the faces, not between all n^2 pairs of faces.<BR>
+                                    If any of the cluster centers change, recompute the mesh distance from all faces to the new center using Dijkstra's.  NOTE: When convergence gets closer a lot of the cluster centers don't change, so I can re-use a lot of the computation I've already done computing the mesh distances.
+
+                                    <BR><BR>
+                                    </li>
+
+                                    <li>Repeat step 3 until convergence (none of the cluster centers change) or for a maximum of 50 iterations to obtain the final segmentation</li>
+
+                                    </ol>
+                                    I mostly followed the techniques perscribed in ShalfmanTalKatz, but with the change that I choose cluster centers based on Euclidean centroids instead of Geodesic (mesh distance) centroids.  I did this to save computation time because I only have to find the distance between the k cluster centers and all faces (k * NFACES), as opposed to the distance between all faces (NFACES*NFACES), which would take <i>a really long time</i> if NFACES was on the order of a few thousand.  With this optimization, most of my segmentations converge in under 10 seconds on my dinky laptop, even for models with many faces (many of them even converge in less than 1 second).  When all was said and done, running this segmentation technique on the entire shape benchmark with 400 models only took 1.5 hours...
+                                    <BR><BR>
+
+                                    <h2><u><a name = "clusterNum">Automatically Choosing Number of Clusters</a></u></h2><BR>
+                                    In the actual tests I run on the shape benchmark, I have the program automatically determine the number of clusters to save time.  Basically, I follow step 2 as before to make the intial guesses; I simply continue to add new cluster centers in that manner until the cluster added is "too close" (less than <b>eps</b> mesh distance) to one of the existing cluster centers.  I can't hardcode this <b>eps</b> distance cuttof in though, because it needs to be independent of the scale of the mesh.  So I choose eps at the beginning to be the mean distance from the first cluster to all other faces, divided by 1.5.  This seems to work pretty well in practice.
+                                    <BR><BR>
+
+                                    <h2><u><a name = "tradeoff">Trading off Geodesic Distance and Dihedral Angle</a></u></h2><BR>
+                                    When computing the <b>mesh distance</b>, there is a trade-off including the Geodesic term and the dihedral angle term.  By default they are weighted evenly, but let me show what happens to the initial clusters skewing the distance to one extreme and the other.  In the table below, "Delta" refers to the ratio that's given to Geodesic Distance (delta=1 is all geodesic no dihedral, delta=0 is no geodesic all dihedral)<BR><BR>
+                                    <table border = "1">
+                                    <tr><td>Delta</td><td>Iteration 1 (Initial Guess)</td><td>Iteration 2</td><td>Iteration 3</td></tr>
+                                    <tr><td>1.0</td><td><img src = "writeupImages/delta1_1.png"></td><td><img src = "writeupImages/delta1_2.png"></td><td><img src = "writeupImages/delta1_3.png"></td></tr>
+
+                                    <tr><td>0.0</td><td><img src = "writeupImages/delta2_1.png"></td><td><img src = "writeupImages/delta2_2.png"></td><td><img src = "writeupImages/delta2_3.png"></td></tr>
+
+                                    </table><BR><BR>
+
+                                    See how above how using Geodesic distance alone wasn't able to pick out many of the finer protrusions (fingers or even the head), while using dihedral angle pretty much <b>only</b> picked out the finer protrusions (and didn't cluster well in the long run).  So some trade-off is clearly needed (I simply choose 0.5 in the rest of my evaluations).  Also note how in iteration 2 of the geodesic-only segmentation, the arm segments creep into the torso in a strange way.  The dihedral angle would have discouraged this (since there is a large dihedral angle at the boundary between the arm and the torso).
+
+                                    <BR><BR>
+
+                                    <h2><u><a name = "results">Results</a></u></h2><BR>
+                                    I rand my segmentation algorithm on the shape benchmark as promised.  <a href = "MySeg.html">Click here to see pictures of the segmentations</a>.  Clearly they aren't perfect, but how do they measure up to the human segmentations?  Here is quantitative information spit back from the shape benchmark comparing this technique to the human technique to other algorithms.  <BR><BR>
+
+                                    <h2>Rand Index for four levels</h2>
+                                    <img  width=496 height=337 src="plots/RIByLevel.jpg"></ BR>
+                                    <h2>Evaluation Results by Different metrics</h2>
+                                    <table style="text-align: center" border="0" cellpadding="0" cellspacing="0"><tbody>
+                                    <tr>
+                                    <td><img width=496 height=337 src="plots/ByModel-CE-all.jpg"/><br><div style="text-align:center">Consistency Error</div></td>
+                                    <td><img width=496 height=337 src="plots/ByModel-HD-all.jpg"/><br><div style="text-align:center">Hamming Distance</div></td>
+                                    </tr>
+                                    <tr>
+                                    <td><img width=496 height=337 src="plots/ByModel-CD-all.jpg"/><br><div style="text-align:center">Cut Discrepancy</div></td>
+
+                                    <td><img width=496 height=337 src="plots/ByModel-RI-all.jpg"/><br><div style="text-align:center">Rand Index</div></td>
+                                    </tr>
+                                    </tbody></table><br>
+
+
+                                    <BR><BR>
+                                    My algorithm ("MySeg") is the worst in terms of performance, but its error rate is pretty similar to the other "kmeans" implementation, which is encouraging since I'm not sure if I even managed to find the best parameters.  One other thing that I will say is that although my technique isn't the most accurate, it can be computed extremely quickly and is easy to implement, so perhaps it can be used in a setting with limited processing power to get a workable initial guess of a segmentation.
+
+                                    <h2><u><a name = "usage">Program Usage</a></u></h2><BR>
+                                    <code><b>seg inputMesh outputMesh segmentationFile -options</b></code><BR><BR>
+                                    The options are as follows:<BR>
+                                    <table border = "1">
+                                    <tr><td>-v</td><td>Verbose: This is mostly used to print out the chosen cluster centers at each iteration</td></tr>
+
+                                    <tr><td>-doViewer [iteration_num]</td><td>View the results of the <b>iteration_num<SUP>th</SUP></b> iteration.  I modified the viewer from the laplacian mesh assignment to draw the colored segments so the user can interact and look at the segmentation from may different angles</td></tr>
+
+                                    <tr><td>-clusterCenters [filename]</td><td>The name of the file to which to output cluster centers</td></tr>
+
+                                    <tr><td>-nsegment [numSegments]</td><td>Manually choose the number of segments (if this parameter is omitted, the number of segments will be chosen automatically).</td></tr>
+
+                                    <tr><td>-delta [delta]</td><td>Choose the "delta" value (described earlier) to trade-off geodesic versus dihedral angle in the <b>mesh distance</b></td></tr>
+
+                                    <tr><td>-viewResults</td><td>This will launch a viewer for every iteration of the clustering algorithm (I used this for debugging).  NOTE that the clusterCenters argument should also be defined to save them cluster centers because I visualize them (otherwise the program will crash looking for them)</td></tr>
+                                    </table>
+                                    <BR><BR>
+
+                                    <!-- BEGIN DISQUS -->
+                                    <BR><BR><BR>
+                                    <div id="disqus_thread"></div>
+                                    <script type="text/javascript">
+                                        var disqus_shortname = 'ctralieteaching';
+                                        var disqus_identifier = 'MeshSeg';
+                                        var disqus_url = 'http://ctralie.com/Teaching/MeshSeg/index.html';
+
+                                        (function() {
+                                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                            dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                                        })();
+                                    </script>
+                                    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                    <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+                                    <!-- END DISQUS -->
+
+
+								</section>
+
+						</div>
+					</div>
+
+<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+							<!-- Menu -->
+								<nav id="menu">
+									<header class="major">
+										<h2>Menu</h2>
+									</header>
+									<ul>
+										<li><a href="../../index.html">Homepage</a></li>
+										<li><a href = "../../ctralie_cv.pdf">CV</a></li>
+										<li>
+											<span class="opener">Research</span>
+											<ul>
+												<li><a href="../../Research/index.html">Projects</a></li>
+												<li><a href="../../Research/statement.pdf">Research Statement</a></li>
+												<li><a href = "../../Research/ctralie_dissertation.pdf">Dissertation</a></li>
+											</ul>
+										</li>
+										<li><a href="../../Software">Software</a></li>
+										<li><a href = "../../Teaching/index.html">Teaching</a></li>
+										<li>
+											<span class="opener">Archives</span>
+											<ul>
+												<li><a href="../../Teaching/Tutorials.html">Tutorials</a></li>
+												<li><a href="../../Coursework/index.html">Graduate Classes</a></li>
+												<li><a href="../../PrincetonUGRAD">Princeton Undergraduate Portfolio</a></li>
+											</ul>
+										</li>
+									</ul>
+								</nav>
+
+							<!-- Section -->
+								<section>
+									<div class="mini-posts">
+									
+									
+									 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+									<a class="twitter-timeline" data-width="314" data-height="350" data-link-color="#f56a6a" data-chrome="transparent" data-dnt="true" href="https://twitter.com/ctralie/timelines/1012673261124145153?ref_src=twsrc%5Etfw">Tweets by ctralie</a>
+									
+                                    </div>
+								</section>
+
+
+							<!-- Footer -->
+								<footer id="footer">
+									<p class="copyright">&copy; Christopher J. Tralie. All rights reserved.  Contact chris.tralie@gmail.com. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+								</footer>
+
+						</div>
+					</div>
+
+			</div>
+			
+            <!-- Start of StatCounter Code -->
+            <script type="text/javascript">
+            var sc_project=7309088; 
+            var sc_invisible=1; 
+            var sc_security="f655b56d"; 
+            </script>
+            <script type="text/javascript"
+            src="http://www.statcounter.com/counter/counter.js"></script>
+            <noscript><div class="statcounter"><a title="free hit counter"
+            href="http://statcounter.com/" target="_blank"><img class="statcounter"
+            src="http://c.statcounter.com/7309088/0/f655b56d/1/" alt="free hit
+            counter"></a></div></noscript>
+            <!-- End of StatCounter Code -->
+<!-- End Sidebar !-->
+
+<!-- Scripts -->
+			<script src="../../assets/js/jquery.min.js"></script>
+			<script src="../../assets/js/skel.min.js"></script>
+			<script src="../../assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="../../assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="../../assets/js/main.js"></script>
+<!-- End Scripts -->
+	</body>
+</html>

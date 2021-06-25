@@ -1,0 +1,1387 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Notes_lec22</TITLE>
+<META NAME="description" CONTENT="Notes_lec22">
+<META NAME="keywords" CONTENT="Notes_lec22">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META NAME="Generator" CONTENT="LaTeX2HTML v2008">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="Notes_lec22.css">
+
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<IMG WIDTH="81" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next_inactive"
+ SRC="/usr/share/latex2html/icons/nx_grp_g.png"> 
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up_g.png"> 
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev_g.png">   
+<BR>
+<BR><BR></DIV>
+<!--End of Navigation Panel-->
+
+<P>
+
+   #24: Geometric Set Cover-<SPAN CLASS="arabic">0</SPAN>
+   
+   <DIV ALIGN="CENTER">
+<!-- MATH
+ $\framebox{
+\vbox{
+\hbox to 5.78in { {\bf COMPSCI 634: Geometric Algorithms} \hfill 4/3/2014 }
+\vspace{4mm}
+\hbox to 5.78in { {\Large \hfill Lecture \#24: Geometric Set Cover  \hfill} }
+\vspace{2mm}
+\hbox to 5.78in { {\it Lecturer: Pankaj Agarwal \hfill Scribe: Chris Tralie} }
+}
+}$
+ -->
+<IMG
+ WIDTH="685" HEIGHT="97" ALIGN="BOTTOM" BORDER="0"
+ SRC="img7.png"
+ ALT="\framebox{
+\vbox{
+\hbox to 5.78in { {\bf COMPSCI 634: Geometric Algorithms} \hfi...
+...box to 5.78in { {\it Lecturer: Pankaj Agarwal \hfill Scribe: Chris Tralie} }
+}
+}">
+</DIV>
+   <BR>
+<BR>
+
+<P>
+
+<H1><A NAME="SECTION00010000000000000000"></A>
+<A NAME="section:overview"></A><BR>
+Overview
+</H1>
+
+<P>
+The purpose of this lecture is to cover a few classic combinatorial optimization problems, including set cover, hitting set, and independent set, in a geometric context.  Though the optimal set cover and hitting set problems are NP-hard, results from <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img8.png"
+ ALT="$ \epsilon$"></SPAN>-nets help to give good approximation bounds for these algorithms for simpler set systems that arise in a geometric context.
+
+<P>
+The notes begin with some preliminary definitions of the dual range space and of the algorithms, and several results from <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img8.png"
+ ALT="$ \epsilon$"></SPAN>-nets are reviewed.  Then, a modified, weighted version of an <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img8.png"
+ ALT="$ \epsilon$"></SPAN>-net is presented which leads to an approximation algorithm for the hitting set and set cover.  After this, a new randomized hitting set algorithm with better bounds is presented, which was discovered by our very own T.A. Jiangwei Pan and professor Pankaj Agarwal.  Finally, some basic ideas for independent set are shown in a geometric context
+
+<P>
+Throughout, I also highlight several open problems that were mentioned in class.
+
+<P>
+
+<H1><A NAME="SECTION00020000000000000000"></A>
+<A NAME="section:dualrangespaces"></A><BR>
+Dual Range Spaces
+</H1>
+
+<P>
+
+<H2><A NAME="SECTION00021000000000000000">
+Definitions</A>
+</H2>
+
+<P>
+<P><DIV><B>Definition  <SPAN CLASS="arabic">1</SPAN></B> &nbsp; 
+<P>
+<I>Let <!-- MATH
+ $\Sigma = (X, R)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="79" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img9.png"
+ ALT="$ \Sigma = (X, R)$"></SPAN> be a range space on the set <SPAN CLASS="MATH"><IMG
+ WIDTH="17" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img10.png"
+ ALT="$ X$"></SPAN>.  Then
+</I>
+<P><P><!-- MATH
+ \begin{displaymath}
+\Sigma^T = \left( R, \{ \{ r_j | x_i \in r_j \} | x_i \in X \} \right)
+\end{displaymath}
+ -->
+</P><DIV ALIGN="CENTER" CLASS="mathdisplay">
+<IMG
+ WIDTH="223" HEIGHT="41" ALIGN="MIDDLE" BORDER="0"
+ SRC="img11.png"
+ ALT="$\displaystyle \Sigma^T = \left( R, \{ \{ r_j \vert x_i \in r_j \} \vert x_i \in X \} \right) $">
+</DIV><P></P>
+<P>
+<I>is the <EM>dual range space</EM> associated with <SPAN CLASS="MATH"><IMG
+ WIDTH="15" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img12.png"
+ ALT="$ \Sigma$"></SPAN>
+</I>
+<P></DIV><P></P>
+
+<P>
+In other words, the space becomes the set of ranges, and the ranges become sets of ranges that hit an <SPAN CLASS="MATH"><IMG
+ WIDTH="44" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img13.png"
+ ALT="$ x \in X$"></SPAN>.  A slightly easier conceptualization of a range space for this purpose is a bipartite graph, where one set is the elements in <SPAN CLASS="MATH"><IMG
+ WIDTH="17" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img10.png"
+ ALT="$ X$"></SPAN> and the other set is the ranges, and there's a line between <SPAN CLASS="MATH"><IMG
+ WIDTH="44" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img13.png"
+ ALT="$ x \in X$"></SPAN> and <SPAN CLASS="MATH"><IMG
+ WIDTH="41" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img14.png"
+ ALT="$ r \in R$"></SPAN> if <SPAN CLASS="MATH"><IMG
+ WIDTH="39" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img15.png"
+ ALT="$ x \in r$"></SPAN>.  The dual range space simply switches the roles of the two sets in the graph.  Figure&nbsp;<A HREF="#fig:BipartiteGraph">1</A> shows an example with this construction.
+
+<P>
+
+<DIV ALIGN="CENTER"><A NAME="fig:BipartiteGraph"></A><A NAME="61"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Figure 1:</STRONG>
+An example of a range space represented as a bipartite graph.  The primal range space has <!-- MATH
+ $X = \{ 1, 2, 3, 4 \} , R = \{ \{1, 2, 3\}, \{1, 3\} \{ 4 \} \}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="298" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img1.png"
+ ALT="$ X = \{ 1, 2, 3, 4 \} , R = \{ \{1, 2, 3\}, \{1, 3\} \{ 4 \} \}$"></SPAN>.  The dual range space has <!-- MATH
+ $X = \{A, B, C\}, R = \{ \{ A, B \}, \{ A \}, \{ A, B \}, \{ C \} \}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="325" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img2.png"
+ ALT="$ X = \{A, B, C\}, R = \{ \{ A, B \}, \{ A \}, \{ A, B \}, \{ C \} \}$"></SPAN></CAPTION>
+<TR><TD><DIV ALIGN="CENTER">
+
+</DIV><IMG
+  WIDTH="500" HEIGHT="333" ALIGN="BOTTOM" BORDER="0"
+ SRC="./BipartiteGraph.png"
+ ALT="Image BipartiteGraph"></TD></TR>
+</TABLE>
+</DIV>
+
+<P>
+Note also that if one constructs an incidence matrix <SPAN CLASS="MATH"><IMG
+ WIDTH="15" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img16.png"
+ ALT="$ A$"></SPAN> for the range space out of this bipartite graph, then <SPAN CLASS="MATH"><IMG
+ WIDTH="24" HEIGHT="21" ALIGN="BOTTOM" BORDER="0"
+ SRC="img17.png"
+ ALT="$ A^T$"></SPAN> represents an incidence matrix for the dual range space.  This makes the transpose symbol a natural choice for denoting the dual range space.
+
+<P>
+
+<H2><A NAME="SECTION00022000000000000000"></A>
+<A NAME="sec:GeometricExample"></A><BR>
+Geometric Example
+</H2>
+
+<P>
+One way to visualize dual range spaces in a geometric context is with points and rectangles.  Define the following objects:
+
+<P>
+
+<UL>
+<LI><SPAN CLASS="MATH"><IMG
+ WIDTH="17" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img10.png"
+ ALT="$ X$"></SPAN>: Finite set of points in <!-- MATH
+ $\mathbb{R}^2$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="24" HEIGHT="18" ALIGN="BOTTOM" BORDER="0"
+ SRC="img18.png"
+ ALT="$ \mathbb{R}^2$"></SPAN>
+
+<P>
+</LI>
+<LI><SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img19.png"
+ ALT="$ \gamma$"></SPAN>: A finite set of <SPAN CLASS="MATH"><IMG
+ WIDTH="17" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img20.png"
+ ALT="$ m$"></SPAN> rectangles <!-- MATH
+ $(\gamma_1, ..., \gamma_m)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="77" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img21.png"
+ ALT="$ (\gamma_1, ..., \gamma_m)$"></SPAN>
+
+<P>
+</LI>
+<LI><!-- MATH
+ $\Sigma: (X, \{ \gamma \cap X | \gamma \in \Gamma \} )$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="158" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img22.png"
+ ALT="$ \Sigma: (X, \{ \gamma \cap X \vert \gamma \in \Gamma \} ) $"></SPAN>
+
+<P>
+In other words, for each rectangle, create a range comprised of the points that are contained within that rectangle
+
+<P>
+</LI>
+<LI><!-- MATH
+ $\Sigma^T: ( \Gamma, \{ \{ \gamma | x \in \gamma\} | x \in X \} )$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="196" HEIGHT="39" ALIGN="MIDDLE" BORDER="0"
+ SRC="img23.png"
+ ALT="$ \Sigma^T: ( \Gamma, \{ \{ \gamma \vert x \in \gamma\} \vert x \in X \} )$"></SPAN>
+
+<P>
+In other words, for each point, create a range out of the set of rectangles that contain it
+
+<P>
+Figure&nbsp;<A HREF="#fig:RectanglePoints">2</A> shows an example of such a space.
+
+<P>
+</LI>
+</UL>
+
+<P>
+
+<DIV ALIGN="CENTER"><A NAME="fig:RectanglePoints"></A><A NAME="72"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Figure 2:</STRONG>
+An geometric example of a range space.  The primal range space consists of the points <!-- MATH
+ $X = \{ 1, 2, 3, 4, 5, 6, 7, 8 \}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="172" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img3.png"
+ ALT="$ X = \{ 1, 2, 3, 4, 5, 6, 7, 8 \}$"></SPAN> and the rectangles covering the ranges  <!-- MATH
+ $R = \{ A:\{1, 2, 3\}, B:\{2, 3, 4, 5\}, C:\{4, 5, 6\}, D:\{3, 5, 7\}, E:\{7, 8\} \}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="486" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img4.png"
+ ALT="$ R = \{ A:\{1, 2, 3\}, B:\{2, 3, 4, 5\}, C:\{4, 5, 6\}, D:\{3, 5, 7\}, E:\{7, 8\} \}$"></SPAN>.  The dual range space consists of the rectangles <!-- MATH
+ $X = \{ A, B, C, D, E \}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="139" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img5.png"
+ ALT="$ X = \{ A, B, C, D, E \}$"></SPAN> and the points intersecting the rectangles <!-- MATH
+ $R = \{ 1:\{A\}, 2:\{A, B\}, 3:\{A, B, D\}, 4:\{B, C\}, 5:\{B, C, D\}, 6:\{C\}, 7:\{D, E\}, 8:\{E\} \}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="625" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img6.png"
+ ALT="$ R = \{ 1:\{A\}, 2:\{A, B\}, 3:\{A, B, D\}, 4:\{B, C\}, 5:\{B, C, D\}, 6:\{C\}, 7:\{D, E\}, 8:\{E\} \}$"></SPAN> </CAPTION>
+<TR><TD><DIV ALIGN="CENTER">
+
+</DIV><IMG
+  WIDTH="340" HEIGHT="350" ALIGN="BOTTOM" BORDER="0"
+ SRC="./RectanglePoints.png"
+ ALT="Image RectanglePoints"></TD></TR>
+</TABLE>
+</DIV>
+
+<P>
+
+<H1><A NAME="SECTION00030000000000000000">
+Geometric Hitting Set and Set Cover</A>
+</H1>
+
+<H2><A NAME="SECTION00031000000000000000">
+Definitions</A>
+</H2>
+
+<P>
+<P><DIV><B>Definition  <SPAN CLASS="arabic">2</SPAN></B> &nbsp; 
+<P>
+<I>For the range space <!-- MATH
+ $\Sigma = (X, R)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="79" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img9.png"
+ ALT="$ \Sigma = (X, R)$"></SPAN>, <!-- MATH
+ $H \subset X$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="52" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img24.png"
+ ALT="$ H \subset X$"></SPAN> is a <EM>hitting set of <SPAN CLASS="MATH"><IMG
+ WIDTH="15" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img12.png"
+ ALT="$ \Sigma$"></SPAN></EM> if 
+</I>
+<P><P><!-- MATH
+ \begin{displaymath}
+H \cap r \neq \emptyset \forall r \in R
+\end{displaymath}
+ -->
+</P><DIV ALIGN="CENTER" CLASS="mathdisplay">
+<IMG
+ WIDTH="119" HEIGHT="33" ALIGN="MIDDLE" BORDER="0"
+ SRC="img25.png"
+ ALT="$\displaystyle H \cap r \neq \emptyset \forall r \in R $">
+</DIV><P></P>
+<P></DIV><P></P>
+
+<P>
+<P><DIV><B>Definition  <SPAN CLASS="arabic">3</SPAN></B> &nbsp; 
+<P>
+<I>For the range space <!-- MATH
+ $\Sigma = (X, R)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="79" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img9.png"
+ ALT="$ \Sigma = (X, R)$"></SPAN>, <!-- MATH
+ $S \subset R$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="45" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img26.png"
+ ALT="$ S \subset R$"></SPAN> is a <EM>set cover of <SPAN CLASS="MATH"><IMG
+ WIDTH="15" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img12.png"
+ ALT="$ \Sigma$"></SPAN></EM> if
+</I><P><!-- MATH
+ \begin{displaymath}
+\cup_{s \in S} s = X
+\end{displaymath}
+ -->
+</P><DIV ALIGN="CENTER" CLASS="mathdisplay">
+<IMG
+ WIDTH="77" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img27.png"
+ ALT="$\displaystyle \cup_{s \in S} s = X $">
+</DIV><P></P>
+<P></DIV><P></P>
+
+<P>
+Note that the hitting set of a range space <SPAN CLASS="MATH"><IMG
+ WIDTH="15" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img12.png"
+ ALT="$ \Sigma$"></SPAN> is the same as a set cover of <SPAN CLASS="MATH"><IMG
+ WIDTH="24" HEIGHT="21" ALIGN="BOTTOM" BORDER="0"
+ SRC="img28.png"
+ ALT="$ \Sigma^T$"></SPAN>.  The goal is to find the smallest sized hitting set or set cover.  Note also that the hitting set is closely related to an <!-- MATH
+ $\epsilon-\text{net}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="27" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img29.png"
+ ALT="$ \epsilon-$">net</SPAN>.  To see this, recall the definition of an <!-- MATH
+ $\epsilon-\text{net}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="27" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img29.png"
+ ALT="$ \epsilon-$">net</SPAN>
+
+<P>
+<P><DIV><B>Definition  <SPAN CLASS="arabic">4</SPAN></B> &nbsp; 
+<P>
+<I><!-- MATH
+ $N \subset X$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="51" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img30.png"
+ ALT="$ N \subset X$"></SPAN> is an <EM><!-- MATH
+ $\epsilon - \text{net}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="27" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img29.png"
+ ALT="$ \epsilon-$">&nbsp; &nbsp;net</SPAN></EM> of <SPAN CLASS="MATH"><IMG
+ WIDTH="17" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img10.png"
+ ALT="$ X$"></SPAN> if <!-- MATH
+ $\forall r \in R$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="51" HEIGHT="33" ALIGN="MIDDLE" BORDER="0"
+ SRC="img31.png"
+ ALT="$ \forall r \in R$"></SPAN> 
+</I>
+<P><P><!-- MATH
+ \begin{displaymath}
+|r| \geq \epsilon |x| \implies N \cap r \neq \emptyset
+\end{displaymath}
+ -->
+</P><DIV ALIGN="CENTER" CLASS="mathdisplay">
+<IMG
+ WIDTH="179" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img32.png"
+ ALT="$\displaystyle \vert r\vert \geq \epsilon \vert x\vert \implies N \cap r \neq \emptyset $">
+</DIV><P></P>
+<P></DIV><P></P>
+
+<P>
+If <!-- MATH
+ $\epsilon = \frac{1}{N}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="48" HEIGHT="39" ALIGN="MIDDLE" BORDER="0"
+ SRC="img33.png"
+ ALT="$ \epsilon = \frac{1}{N}$"></SPAN> in the definition of the the <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img8.png"
+ ALT="$ \epsilon$"></SPAN>-net, where <SPAN CLASS="MATH"><IMG
+ WIDTH="60" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img34.png"
+ ALT="$ N = \vert X\vert$"></SPAN> for the ranges space <!-- MATH
+ $\Sigma = (X, R)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="79" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img9.png"
+ ALT="$ \Sigma = (X, R)$"></SPAN>, then the <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img8.png"
+ ALT="$ \epsilon$"></SPAN>-net is certainly a hitting set for all of the ranges, because every range has size at least 1.  Though the <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img8.png"
+ ALT="$ \epsilon$"></SPAN> is quite small in this case, and it is only related to <SPAN CLASS="MATH"><IMG
+ WIDTH="17" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img35.png"
+ ALT="$ N$"></SPAN>, not to the optimal sized hitting set.  Still, if one can improve the bound on <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img8.png"
+ ALT="$ \epsilon$"></SPAN>, <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img8.png"
+ ALT="$ \epsilon$"></SPAN>-nets may be useful for set systems of bounded VC-dimension because of the following theorem
+
+<P>
+<P><DIV><A NAME="theorem:epsnettheorem"><B>Theorem  <SPAN CLASS="arabic">1</SPAN></B></A> &nbsp; 
+<I>Given a range space <!-- MATH
+ $\Sigma = (X, R)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="79" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img9.png"
+ ALT="$ \Sigma = (X, R)$"></SPAN> with finite VC-dimension <SPAN CLASS="MATH"><IMG
+ WIDTH="14" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img36.png"
+ ALT="$ d$"></SPAN>, for any <!-- MATH
+ $\delta, \epsilon > 0$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="61" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img37.png"
+ ALT="$ \delta, \epsilon &gt; 0$"></SPAN>, a random subset <!-- MATH
+ $N \subset X$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="51" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img30.png"
+ ALT="$ N \subset X$"></SPAN> of size 
+</I>
+<P><P><!-- MATH
+ \begin{displaymath}
+O\left( \frac{d}{\epsilon} \log \frac{1}{\delta \epsilon} \right)
+\end{displaymath}
+ -->
+</P><DIV ALIGN="CENTER" CLASS="mathdisplay">
+<IMG
+ WIDTH="108" HEIGHT="59" ALIGN="MIDDLE" BORDER="0"
+ SRC="img38.png"
+ ALT="$\displaystyle O\left( \frac{d}{\epsilon} \log \frac{1}{\delta \epsilon} \right) $">
+</DIV><P></P><I>
+ is an <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img8.png"
+ ALT="$ \epsilon$"></SPAN>-net of <SPAN CLASS="MATH"><IMG
+ WIDTH="15" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img12.png"
+ ALT="$ \Sigma$"></SPAN> with probability <!-- MATH
+ $\geq (1 - \delta)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="73" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img39.png"
+ ALT="$ \geq (1 - \delta)$"></SPAN>
+ [<A
+ HREF="Notes_lec22.html#har2011geometric">HP11</A>]</I></DIV><P></P>
+
+<P>
+Thus, the hope is to come up with better approximation algorithms for simple set systems using this theorem.  As an example of where this may be useful, return to the ranges space with points and rectangles in Section&nbsp;<A HREF="#sec:GeometricExample">2.2</A>.  In fact, for this range space, an even better bound of size <!-- MATH
+ $O(\frac{1}{\epsilon} \log \log \frac{1}{\epsilon} )$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="102" HEIGHT="39" ALIGN="MIDDLE" BORDER="0"
+ SRC="img40.png"
+ ALT="$ O(\frac{1}{\epsilon} \log \log \frac{1}{\epsilon} )$"></SPAN> has been shown recently in [<A
+ HREF="Notes_lec22.html#aronov2010small">AES10</A>], while the <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img8.png"
+ ALT="$ \epsilon$"></SPAN>-net of the dual range space is still <!-- MATH
+ $O(\frac{1}{\epsilon} \log \frac{1}{\epsilon} )$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="77" HEIGHT="39" ALIGN="MIDDLE" BORDER="0"
+ SRC="img41.png"
+ ALT="$ O(\frac{1}{\epsilon} \log \frac{1}{\epsilon} )$"></SPAN> with constant probability.
+
+<P>
+As a side note, this implies that there is actually a gap in the bounds for computing set cover and the hitting set if <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img8.png"
+ ALT="$ \epsilon$"></SPAN>-nets are used for the approximation.
+
+<P>
+
+<H2><A NAME="SECTION00032000000000000000">
+An Approximation Algorithm</A>
+</H2>
+
+<P>
+As mentioned before, the goal is to somehow reduce the hitting set to an <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img8.png"
+ ALT="$ \epsilon$"></SPAN>-net.  The main issue with the <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img8.png"
+ ALT="$ \epsilon$"></SPAN>-net is that it is only guaranteed to cover heavy (high cardinality) ranges, but the hitting set requires all ranges to be covered, so before <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img8.png"
+ ALT="$ \epsilon$"></SPAN> had to be set to a very small value <!-- MATH
+ $\frac{1}{N}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="17" HEIGHT="39" ALIGN="MIDDLE" BORDER="0"
+ SRC="img42.png"
+ ALT="$ \frac{1}{N}$"></SPAN>.  To make this more convenient for the hitting set application, modify the definition of an <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img8.png"
+ ALT="$ \epsilon$"></SPAN>-net to include weights for each element, so that small sets can effectively be given larger weights:
+
+<P>
+<P><DIV><B>Definition  <SPAN CLASS="arabic">5</SPAN></B> &nbsp; 
+<P>
+<I>For a range set <!-- MATH
+ $\Sigma = (X, R)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="79" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img9.png"
+ ALT="$ \Sigma = (X, R)$"></SPAN>, define a map 
+</I>
+<P><P><!-- MATH
+ \begin{displaymath}
+w: X \rightarrow \mathbb{Z}^+
+\end{displaymath}
+ -->
+</P><DIV ALIGN="CENTER" CLASS="mathdisplay">
+<IMG
+ WIDTH="88" HEIGHT="39" ALIGN="MIDDLE" BORDER="0"
+ SRC="img43.png"
+ ALT="$\displaystyle w: X \rightarrow \mathbb{Z}^+$">
+</DIV><P></P>
+<P>
+<I>And extend this maps to sets <SPAN CLASS="MATH"><IMG
+ WIDTH="43" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img44.png"
+ ALT="$ S \in R$"></SPAN> so that
+</I>
+<P><P><!-- MATH
+ \begin{displaymath}
+w(S) = \sum_{x \in S} w(x)
+\end{displaymath}
+ -->
+</P><DIV ALIGN="CENTER" CLASS="mathdisplay">
+<IMG
+ WIDTH="115" HEIGHT="50" ALIGN="MIDDLE" BORDER="0"
+ SRC="img45.png"
+ ALT="$\displaystyle w(S) = \sum_{x \in S} w(x) $">
+</DIV><P></P>
+<P>
+<I>Then <!-- MATH
+ $N \subset X$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="51" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img30.png"
+ ALT="$ N \subset X$"></SPAN> is a <EM>weighted <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img8.png"
+ ALT="$ \epsilon$"></SPAN>-net of <!-- MATH
+ $(\Sigma = (X, R), w)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="111" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img46.png"
+ ALT="$ (\Sigma = (X, R), w)$"></SPAN></EM> if <!-- MATH
+ $\forall r \in R$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="51" HEIGHT="33" ALIGN="MIDDLE" BORDER="0"
+ SRC="img31.png"
+ ALT="$ \forall r \in R$"></SPAN>
+</I>
+<P><P><!-- MATH
+ \begin{displaymath}
+w(r) \geq \epsilon w(x) \implies r \cap N \neq \emptyset
+\end{displaymath}
+ -->
+</P><DIV ALIGN="CENTER" CLASS="mathdisplay">
+<IMG
+ WIDTH="210" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img47.png"
+ ALT="$\displaystyle w(r) \geq \epsilon w(x) \implies r \cap N \neq \emptyset $">
+</DIV><P></P>
+<P>
+<I>Also say that <SPAN CLASS="MATH"><IMG
+ WIDTH="11" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img48.png"
+ ALT="$ r$"></SPAN> is <EM><SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img8.png"
+ ALT="$ \epsilon$"></SPAN>-light</EM> if <!-- MATH
+ $w(r) < \epsilon w(x)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="100" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img49.png"
+ ALT="$ w(r) &lt; \epsilon w(x)$"></SPAN>
+</I>
+<P></DIV><P></P>
+
+<P>
+Use this modified definition to devise an algorithm that estimates the weights <SPAN CLASS="MATH"><IMG
+ WIDTH="16" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img50.png"
+ ALT="$ w$"></SPAN> for a range space <!-- MATH
+ $(\Sigma = (X, R), w)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="111" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img46.png"
+ ALT="$ (\Sigma = (X, R), w)$"></SPAN> that will lead to a good hitting set approximation with an <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img8.png"
+ ALT="$ \epsilon$"></SPAN>-net.  The algorithm is as follows:
+
+<P>
+<P><DIV><B>Algorithm  <SPAN CLASS="arabic">1</SPAN></B> &nbsp; 
+<I><!-- MATH
+ $\fbox{
+{\em
+\begin{minipage}{0.5\textwidth}
+\par
+\begin{algorithmic}
+\State ALGORITHM HittingSetApprox1$(\Sigma = (X, R) )$
+\State Initially, $w(x) = 1 \forall x \in X$
+\par
+\While{$\exists$\  an $\epsilon$-light range}
+\par
+\State Choose an $\epsilon$-light range $r \in R$
+\par
+\State $w(x) \leftarrow 2 w(x) \forall x \in r$
+\par
+\EndWhile
+\par
+\State \Return $\epsilon$-net of $(\Sigma, w)$
+\end{algorithmic}
+\par
+\end{minipage}
+}
+}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="306" HEIGHT="197" ALIGN="MIDDLE" BORDER="0"
+ SRC="img51.png"
+ ALT="% latex2html id marker 890
+\fbox{
+{\em
+\begin{minipage}{0.5\textwidth}
+\par
+\be...
+... \Return $\epsilon$-net of $(\Sigma, w)$
+\end{algorithmic}\par
+\end{minipage}}
+}"></SPAN>
+<A NAME="alg:estimateweights"></A></I></DIV><P></P>
+
+<P>
+The algorithm is very simple, but the analysis requires some tricks.  To analyze this algorithm, let <SPAN CLASS="MATH"><IMG
+ WIDTH="42" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img52.png"
+ ALT="$ w_i(x)$"></SPAN> be <SPAN CLASS="MATH"><IMG
+ WIDTH="37" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img53.png"
+ ALT="$ w(x)$"></SPAN> after <SPAN CLASS="MATH"><IMG
+ WIDTH="9" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img54.png"
+ ALT="$ i$"></SPAN> iterations.  Find an upper bound and a lower bound for <SPAN CLASS="MATH"><IMG
+ WIDTH="42" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img52.png"
+ ALT="$ w_i(x)$"></SPAN>.  Also let <SPAN CLASS="MATH"><IMG
+ WIDTH="25" HEIGHT="19" ALIGN="BOTTOM" BORDER="0"
+ SRC="img55.png"
+ ALT="$ H^*$"></SPAN> be an optimal hitting set algorithm of size <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img56.png"
+ ALT="$ k$"></SPAN>.
+
+<P>
+
+<UL>
+<LI>To find an upper bound, observe that at each iteration, the weights of an <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img8.png"
+ ALT="$ \epsilon$"></SPAN>-light range <SPAN CLASS="MATH"><IMG
+ WIDTH="11" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img48.png"
+ ALT="$ r$"></SPAN> are doubled.  Since by definition <!-- MATH
+ $w_i(r) < \epsilon$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="71" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img57.png"
+ ALT="$ w_i(r) &lt; \epsilon$"></SPAN>, 
+
+<P>
+<P><!-- MATH
+ \begin{displaymath}
+w_{i+1}(X) = w_i(X) + w_i(r) \leq (1 + \epsilon) w_i(X)
+\end{displaymath}
+ -->
+</P><DIV ALIGN="CENTER" CLASS="mathdisplay">
+<IMG
+ WIDTH="293" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img58.png"
+ ALT="$\displaystyle w_{i+1}(X) = w_i(X) + w_i(r) \leq (1 + \epsilon) w_i(X) $">
+</DIV><P></P>
+
+<P>
+Since all of the weights start off at 1, <!-- MATH
+ $w_0(X) = n$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="79" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img59.png"
+ ALT="$ w_0(X) = n$"></SPAN>.  Thus, the upper bound is 
+
+<P>
+<P><!-- MATH
+ \begin{displaymath}
+w_{i}(X) \leq n(1+\epsilon)^i
+\end{displaymath}
+ -->
+</P><DIV ALIGN="CENTER" CLASS="mathdisplay">
+<IMG
+ WIDTH="130" HEIGHT="41" ALIGN="MIDDLE" BORDER="0"
+ SRC="img60.png"
+ ALT="$\displaystyle w_{i}(X) \leq n(1+\epsilon)^i $">
+</DIV><P></P>
+
+<P>
+</LI>
+<LI>To find a lower bound, examine what happens to <SPAN CLASS="MATH"><IMG
+ WIDTH="50" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img61.png"
+ ALT="$ w(H^*)$"></SPAN> after each iteration.  Note that at each iteration, at least one element in <SPAN CLASS="MATH"><IMG
+ WIDTH="25" HEIGHT="19" ALIGN="BOTTOM" BORDER="0"
+ SRC="img55.png"
+ ALT="$ H^*$"></SPAN> is doubled in weight.  For the first <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img56.png"
+ ALT="$ k$"></SPAN> iterations, the minimum happens if these changes are spread out, so that a different element is doubled each time.  Thus,
+
+<P>
+<P><!-- MATH
+ \begin{displaymath}
+w(H^*) \geq k + i
+\end{displaymath}
+ -->
+</P><DIV ALIGN="CENTER" CLASS="mathdisplay">
+<IMG
+ WIDTH="103" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img62.png"
+ ALT="$\displaystyle w(H^*) \geq k + i $">
+</DIV><P></P>
+
+<P>
+Let <!-- MATH
+ $f(i) = k + i$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="85" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img63.png"
+ ALT="$ f(i) = k + i$"></SPAN> (spread the changes out evenly), and let <!-- MATH
+ $g(i) = k2^{i/k}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="86" HEIGHT="40" ALIGN="MIDDLE" BORDER="0"
+ SRC="img64.png"
+ ALT="$ g(i) = k2^{i/k}$"></SPAN>.  Then <!-- MATH
+ $f(i) > g(i)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="81" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img65.png"
+ ALT="$ f(i) &gt; g(i)$"></SPAN> over <SPAN CLASS="MATH"><IMG
+ WIDTH="37" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img66.png"
+ ALT="$ [0, k]$"></SPAN>, because <!-- MATH
+ $f(0) = g(0)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="89" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img67.png"
+ ALT="$ f(0) = g(0)$"></SPAN>, <!-- MATH
+ $f(k) = g(k)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="87" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img68.png"
+ ALT="$ f(k) = g(k)$"></SPAN>, <!-- MATH
+ $f'(0) > g'(0)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="97" HEIGHT="35" ALIGN="MIDDLE" BORDER="0"
+ SRC="img69.png"
+ ALT="$ f'(0) &gt; g'(0)$"></SPAN>, and they are both convex functions.  Also, each group of <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img56.png"
+ ALT="$ k$"></SPAN> iterations after the first <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img56.png"
+ ALT="$ k$"></SPAN> (for <SPAN CLASS="MATH"><IMG
+ WIDTH="38" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img70.png"
+ ALT="$ i &gt; k$"></SPAN>), it is also true that the minimum is achieved by spreading the elements out.  Therefore, the lower bound over all <SPAN CLASS="MATH"><IMG
+ WIDTH="9" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img54.png"
+ ALT="$ i$"></SPAN> elements doubled in weight is
+
+<P>
+<P><!-- MATH
+ \begin{displaymath}
+w(H^*) \geq k 2^{i/k}
+\end{displaymath}
+ -->
+</P><DIV ALIGN="CENTER" CLASS="mathdisplay">
+<IMG
+ WIDTH="105" HEIGHT="42" ALIGN="MIDDLE" BORDER="0"
+ SRC="img71.png"
+ ALT="$\displaystyle w(H^*) \geq k 2^{i/k} $">
+</DIV><P></P>
+
+<P>
+</LI>
+</UL>
+
+<P>
+To get <SPAN CLASS="MATH"><IMG
+ WIDTH="64" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img72.png"
+ ALT="$ k = \vert H^*\vert$"></SPAN> involved in the upper bound, let
+
+<P>
+<P><!-- MATH
+ \begin{displaymath}
+\epsilon = \frac{\ln \sqrt{2}}{k}
+\end{displaymath}
+ -->
+</P><DIV ALIGN="CENTER" CLASS="mathdisplay">
+<IMG
+ WIDTH="77" HEIGHT="64" ALIGN="MIDDLE" BORDER="0"
+ SRC="img73.png"
+ ALT="$\displaystyle \epsilon = \frac{\ln \sqrt{2}}{k} $">
+</DIV><P></P>
+
+<P>
+, a choice which will become clear in a moment.  Then
+
+<P>
+<P><!-- MATH
+ \begin{displaymath}
+w_i(X) \leq (1 + \epsilon)^i n = \left(1 + \frac{\ln \sqrt{2}}{k} \right)^i n \leq  \exp\left(  i \frac{\ln \sqrt{2}}{k} \right) n
+\end{displaymath}
+ -->
+</P><DIV ALIGN="CENTER" CLASS="mathdisplay">
+<IMG
+ WIDTH="397" HEIGHT="76" ALIGN="MIDDLE" BORDER="0"
+ SRC="img74.png"
+ ALT="$\displaystyle w_i(X) \leq (1 + \epsilon)^i n = \left(1 + \frac{\ln \sqrt{2}}{k} \right)^i n \leq \exp\left( i \frac{\ln \sqrt{2}}{k} \right) n$">
+</DIV><P></P>
+
+<P>
+Since <!-- MATH
+ $H^* \subset X$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="59" HEIGHT="33" ALIGN="MIDDLE" BORDER="0"
+ SRC="img75.png"
+ ALT="$ H^* \subset X$"></SPAN>,
+
+<P>
+<P><!-- MATH
+ \begin{displaymath}
+w_i(H^*) \leq w_i(X) \leq \exp\left(  i \frac{\ln \sqrt{2}}{k} \right) n
+\end{displaymath}
+ -->
+</P><DIV ALIGN="CENTER" CLASS="mathdisplay">
+<IMG
+ WIDTH="251" HEIGHT="71" ALIGN="MIDDLE" BORDER="0"
+ SRC="img76.png"
+ ALT="$\displaystyle w_i(H^*) \leq w_i(X) \leq \exp\left( i \frac{\ln \sqrt{2}}{k} \right) n $">
+</DIV><P></P>
+
+<P>
+Now combine the lower bound and the upper bound on <SPAN CLASS="MATH"><IMG
+ WIDTH="55" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img77.png"
+ ALT="$ w_i(H^*)$"></SPAN>
+
+<P>
+<P><!-- MATH
+ \begin{displaymath}
+k 2^{i/k} \leq n \exp \left( i \frac{\ln \sqrt{2}}{k} \right)
+\end{displaymath}
+ -->
+</P><DIV ALIGN="CENTER" CLASS="mathdisplay">
+<IMG
+ WIDTH="171" HEIGHT="71" ALIGN="MIDDLE" BORDER="0"
+ SRC="img78.png"
+ ALT="$\displaystyle k 2^{i/k} \leq n \exp \left( i \frac{\ln \sqrt{2}}{k} \right) $">
+</DIV><P></P>
+
+<P>
+<P><!-- MATH
+ \begin{displaymath}
+\ln(k) + \ln(2) \frac{i}{k} \leq \ln(n) + \ln \sqrt{2} \frac{i}{k}
+\end{displaymath}
+ -->
+</P><DIV ALIGN="CENTER" CLASS="mathdisplay">
+<IMG
+ WIDTH="231" HEIGHT="56" ALIGN="MIDDLE" BORDER="0"
+ SRC="img79.png"
+ ALT="$\displaystyle \ln(k) + \ln(2) \frac{i}{k} \leq \ln(n) + \ln \sqrt{2} \frac{i}{k} $">
+</DIV><P></P>
+
+<P>
+In this step it is clear how clever the choice of <!-- MATH
+ $\epsilon = \frac{\ln \sqrt{2}}{k}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="67" HEIGHT="47" ALIGN="MIDDLE" BORDER="0"
+ SRC="img80.png"
+ ALT="$ \epsilon = \frac{\ln \sqrt{2}}{k}$"></SPAN> is (it allows us to subtract <!-- MATH
+ $\ln \sqrt{2} \frac{i}{k}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="53" HEIGHT="42" ALIGN="MIDDLE" BORDER="0"
+ SRC="img81.png"
+ ALT="$ \ln \sqrt{2} \frac{i}{k}$"></SPAN> from both sides of the inequality while maintaining a nonzero factor of <!-- MATH
+ $\frac{i}{k}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="14" HEIGHT="40" ALIGN="MIDDLE" BORDER="0"
+ SRC="img82.png"
+ ALT="$ \frac{i}{k}$"></SPAN> on the left side)
+
+<P>
+<P><!-- MATH
+ \begin{displaymath}
+\frac{i}{k} \ln(\sqrt{2}) \leq \ln \left( \frac{n}{k} \right)
+\end{displaymath}
+ -->
+</P><DIV ALIGN="CENTER" CLASS="mathdisplay">
+<IMG
+ WIDTH="138" HEIGHT="56" ALIGN="MIDDLE" BORDER="0"
+ SRC="img83.png"
+ ALT="$\displaystyle \frac{i}{k} \ln(\sqrt{2}) \leq \ln \left( \frac{n}{k} \right) $">
+</DIV><P></P>
+
+<P>
+<P><!-- MATH
+ \begin{displaymath}
+i = O\left( k \log \frac{n}{k} \right)
+\end{displaymath}
+ -->
+</P><DIV ALIGN="CENTER" CLASS="mathdisplay">
+<IMG
+ WIDTH="112" HEIGHT="50" ALIGN="MIDDLE" BORDER="0"
+ SRC="img84.png"
+ ALT="$\displaystyle i = O\left( k \log \frac{n}{k} \right) $">
+</DIV><P></P>
+
+<P>
+The analysis so far has assumed the size of the optimal hitting set <SPAN CLASS="MATH"><IMG
+ WIDTH="64" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img72.png"
+ ALT="$ k = \vert H^*\vert$"></SPAN>, is known, but that information is not actually available up front.  To estimate <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img56.png"
+ ALT="$ k$"></SPAN>, pick start with a small value of <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img56.png"
+ ALT="$ k$"></SPAN> (say 1), and do an exponential binary search, doubling <SPAN CLASS="MATH"><IMG
+ WIDTH="12" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img56.png"
+ ALT="$ k$"></SPAN> if the algorithm above doesn't converge in <!-- MATH
+ $(k/\sqrt{2}) \log\left(\frac{n}{k}\right)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="110" HEIGHT="42" ALIGN="MIDDLE" BORDER="0"
+ SRC="img85.png"
+ ALT="$ (k/\sqrt{2}) \log\left(\frac{n}{k}\right)$"></SPAN> steps.
+
+<P>
+When the algorithm finally terminates, the <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img8.png"
+ ALT="$ \epsilon$"></SPAN>-net of the weighted range space <!-- MATH
+ $(\Sigma, w)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="47" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img86.png"
+ ALT="$ (\Sigma, w)$"></SPAN> is an <!-- MATH
+ $O\left( k \log \frac{n}{k} \right)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="79" HEIGHT="38" ALIGN="MIDDLE" BORDER="0"
+ SRC="img87.png"
+ ALT="$ O\left( k \log \frac{n}{k} \right)$"></SPAN> of the optimal hitting set of the ranges.  In practice, to transform the weighted <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img8.png"
+ ALT="$ \epsilon$"></SPAN>-net to an unweighted <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img8.png"
+ ALT="$ \epsilon$"></SPAN>-net so that ordinary <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img8.png"
+ ALT="$ \epsilon$"></SPAN>-net algorithms can be run, simply replicate the elements in <!-- MATH
+ $(\Sigma, w)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="47" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img86.png"
+ ALT="$ (\Sigma, w)$"></SPAN> by their weights (this is why it was important that <SPAN CLASS="MATH"><IMG
+ WIDTH="16" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img50.png"
+ ALT="$ w$"></SPAN> be positive integer weights).
+
+<P>
+<P><DIV><B>Open Question  <SPAN CLASS="arabic">1</SPAN></B> &nbsp; 
+<I>It is known that for a range space over points with ranges of discs, the size of the <SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img8.png"
+ ALT="$ \epsilon$"></SPAN>-net is <!-- MATH
+ $\Theta(\frac{1}{\epsilon})$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="41" HEIGHT="39" ALIGN="MIDDLE" BORDER="0"
+ SRC="img88.png"
+ ALT="$ \Theta(\frac{1}{\epsilon})$"></SPAN>, so this algorithm gives a constant-sized approximation of the optimal hitting set for that special case.  However, it is not known whether we can beat the above bound for the special case of points and rectangles
+</I>
+<P></DIV><P></P>
+
+<P>
+
+<H2><A NAME="SECTION00033000000000000000">
+Jiangwei and Pankaj's Approximation Algorithm</A>
+</H2>
+
+<P>
+<P><DIV><B>Algorithm  <SPAN CLASS="arabic">2</SPAN></B> &nbsp; 
+<I><!-- MATH
+ $\fbox{
+{\em
+\begin{minipage}{0.8\textwidth}
+\par
+\begin{algorithmic}
+\State ALGORITHM HittingSetApprox2$(\Sigma = (X, R) )$
+\par
+\State
+\par
+For the range space $\Sigma = (X, R)$
+\begin{flalign}
+ &\text{Let} \mu = \frac{2}{\ln 2} k \ln |R|^2|X|&
+\end{flalign}
+\State Initially, $w(x) = 1 \forall x \in X$
+\State Initially, $w(r) = 1 \forall r \in R$
+\par
+\For{$i = 1$\  to $\mu$}
+\par
+\State
+	\begin{itemize}
+	\item Sample a random $\overline{x_i} \in X$\  with the probability distribution $\text{Pr}(x) = w(x)/w(X)$ 
+\par
+\item Sample a random range $\overline{r_i} \in R$\  with the probability distribution $\text{Pr}(r) = w(r)/w(R)$
+\par
+\end{itemize}
+\par
+\State $\forall r \text{ s.t. } x_i \in r, w(r) \leftarrow w(r)/2 $
+\par
+\State $\forall x \in r, w(x) = 2w(x)$
+\par
+\EndFor
+\end{algorithmic}
+\par
+\end{minipage}
+}
+}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="472" HEIGHT="381" ALIGN="MIDDLE" BORDER="0"
+ SRC="img89.png"
+ ALT="% latex2html id marker 950
+\fbox{
+{\em
+\begin{minipage}{0.8\textwidth}
+\par
+\be...
+...rall x \in r, w(x) = 2w(x)$
+\par
+\EndFor
+\end{algorithmic}\par
+\end{minipage}}
+}"></SPAN>
+<A NAME="alg:jiangweialg"></A></I></DIV><P></P>
+
+<P>
+Let <SPAN CLASS="MATH"><IMG
+ WIDTH="43" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img90.png"
+ ALT="$ \Pi(x_i)$"></SPAN> be the number of indices <!-- MATH
+ $k \leq \mu$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="46" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img91.png"
+ ALT="$ k \leq \mu$"></SPAN> where <!-- MATH
+ $\overline{x_k}  = x_i$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="52" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img92.png"
+ ALT="$ \overline{x_k} = x_i$"></SPAN>.  Then a <SPAN CLASS="MATH"><IMG
+ WIDTH="52" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img93.png"
+ ALT="$ 1/(8k)$"></SPAN>-net of the weighted range space <!-- MATH
+ $(\Sigma, \Pi)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="48" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img94.png"
+ ALT="$ (\Sigma, \Pi)$"></SPAN>, is an <SPAN CLASS="MATH"><IMG
+ WIDTH="39" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img95.png"
+ ALT="$ O(1)$"></SPAN> approximation of the optimal hitting set. More details can be found in [<A
+ HREF="Notes_lec22.html#pan2014hittingset">AP14</A>], particularly in Section 4 of that paper.
+
+<P>
+
+<H1><A NAME="SECTION00040000000000000000">
+Geometric Independent Set</A>
+</H1>
+
+<P>
+The independent set problem asks for the largest set system such that each set is pairwise disjoint.  This problem appears to be harder than hitting set and set cover to approximation.  In particular, for some independent sets of size <SPAN CLASS="MATH"><IMG
+ WIDTH="30" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img96.png"
+ ALT="$ n/2$"></SPAN>, the best known polynomial approximation algorithm returns a set system within <SPAN CLASS="MATH"><IMG
+ WIDTH="44" HEIGHT="41" ALIGN="MIDDLE" BORDER="0"
+ SRC="img97.png"
+ ALT="$ \log^2 n$"></SPAN> size of the optimal.
+
+<P>
+
+<DIV ALIGN="CENTER"><A NAME="fig:RectangleIndySet"></A><A NAME="199"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Figure 3:</STRONG>
+A geometric example of an independent set.  The rectangles in the independent set are drawn with a red border</CAPTION>
+<TR><TD><DIV ALIGN="CENTER">
+
+</DIV><IMG
+  WIDTH="500" HEIGHT="400" ALIGN="BOTTOM" BORDER="0"
+ SRC="./RectangleIndySet.png"
+ ALT="Image RectangleIndySet"></TD></TR>
+</TABLE>
+</DIV>
+
+<P>
+One geometric example is, given a set of axis-parallel rectangles <SPAN CLASS="MATH"><IMG
+ WIDTH="15" HEIGHT="15" ALIGN="BOTTOM" BORDER="0"
+ SRC="img98.png"
+ ALT="$ R$"></SPAN>, find the largest subset <!-- MATH
+ $S \subset R$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="45" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img26.png"
+ ALT="$ S \subset R$"></SPAN> such that <!-- MATH
+ $\forall r_1, r_2 \in S, r_1 \cap r_2 = \emptyset$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="158" HEIGHT="33" ALIGN="MIDDLE" BORDER="0"
+ SRC="img99.png"
+ ALT="$ \forall r_1, r_2 \in S, r_1 \cap r_2 = \emptyset$"></SPAN>.  An example is shown in Figure&nbsp;<A HREF="#fig:RectangleIndySet">3</A>.  An application of this example is to figure out how many city labels it is possible to display on a map without too much clutter (reduce to this problem by putting a bounding rectangle around each city label).
+
+<P>
+With the simpler example where all rectangles are unit-sized squares, a constant-factor approximation is possible with a simple greedy algorithm which takes a random square and removes the squares that intersect it, and repeats until there are no pairwise intersections.  To extend this to squares of different sizes, do the same, but choose the squares to check in increasing order of size.
+
+<P>
+For rectangles, a <SPAN CLASS="MATH"><IMG
+ WIDTH="37" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img100.png"
+ ALT="$ \log n$"></SPAN> approximation is possible with the following greedy algorithm:
+
+<P>
+<P><DIV><B>Algorithm  <SPAN CLASS="arabic">3</SPAN></B> &nbsp; 
+<I><!-- MATH
+ $\fbox{
+{\em
+\begin{minipage}{0.8\textwidth}
+\par
+\begin{algorithmic}
+\State ALGORITHM 2DIS(R)
+\par
+\State
+Draw a vertical line $l$\  s.t. each side contains an equal number of vertices on the rectangles $R$
+\par
+\State Define the sets
+\par
+\begin{itemize}
+\par
+\item $R_0 = \{ r | l \cap r \neq \emptyset \}$
+\item $R^- = \{ r | r \text{  lies to the left of } l \}$
+\item $R^+ = \{ r | r \text{  lies to the left of } l \}$
+\par
+\end{itemize}
+\par
+\State Determine the independent set $I(R_0)$\  with a 1D greedy algorithm.
+\par
+\State Return $I(R) = I(R_0) \cup 2DIS(R^-) \cup 2DIS(R^+)$
+\par
+\end{algorithmic}
+\par
+\end{minipage}
+}
+}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="472" HEIGHT="266" ALIGN="MIDDLE" BORDER="0"
+ SRC="img101.png"
+ ALT="% latex2html id marker 972
+\fbox{
+{\em
+\begin{minipage}{0.8\textwidth}
+\par
+\be...
+...R_0) \cup 2DIS(R^-) \cup 2DIS(R^+)$
+\par
+\end{algorithmic}\par
+\end{minipage}}
+}"></SPAN></I></DIV><P></P>
+
+<P>
+It is also possible to approximate this problem by formulating it as an integer linear programming and then rounding, but this is slower.
+
+<P>
+<P><DIV><B>Open Question  <SPAN CLASS="arabic">2</SPAN></B> &nbsp; 
+<I>Is there a simple <!-- MATH
+ $O(\log\log n)$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="88" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img102.png"
+ ALT="$ O(\log\log n)$"></SPAN> factor approximation for the independent set of axis-aligned rectangle problem?</I></DIV><P></P>
+
+<P>
+<P><DIV><B>Open Question  <SPAN CLASS="arabic">3</SPAN></B> &nbsp; 
+<I>Is there a simple <SPAN CLASS="MATH"><IMG
+ WIDTH="39" HEIGHT="36" ALIGN="MIDDLE" BORDER="0"
+ SRC="img95.png"
+ ALT="$ O(1)$"></SPAN> factor approximation for the independent set of axis-aligned rectangle problem?</I></DIV><P></P>
+
+<P>
+
+<H2><A NAME="SECTION00050000000000000000">
+Bibliography</A>
+</H2><DL COMPACT><DD><P></P><DT><A NAME="aronov2010small">AES10</A>
+<DD>
+Boris Aronov, Esther Ezra, and Micha Sharir.
+<BR>Small-size <!-- MATH
+ $\backslash$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="13" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img103.png"
+ ALT="$ \backslash$"></SPAN>eps-nets for axis-parallel rectangles and
+  boxes.
+<BR><EM>SIAM Journal on Computing</EM>, 39(7):3248-3282, 2010.
+
+<P></P><DT><A NAME="pan2014hittingset">AP14</A>
+<DD>
+Pankaj&nbsp;K Agarwal and Jiangwei Pan.
+<BR>Near-linear algorithms for geometric hitting sets and set covers.
+<BR><EM>Proceedings of the 30th Annual Symposium on Computational
+  Geometry</EM>, 2014.
+
+<P></P><DT><A NAME="har2011geometric">HP11</A>
+<DD>
+Sariel Har-Peled.
+<BR><EM>Geometric approximation algorithms</EM>, volume 173.
+<BR>American Mathematical Soc., 2011.
+</DL>
+
+<P>
+
+<H1><A NAME="SECTION00060000000000000000">
+About this document ...</A>
+</H1>
+ <P>
+This document was generated using the
+<A HREF="http://www.latex2html.org/"><STRONG>LaTeX</STRONG>2<tt>HTML</tt></A> translator Version 2008 (1.71)
+<P>
+Copyright &#169; 1993, 1994, 1995, 1996,
+Nikos Drakos, 
+Computer Based Learning Unit, University of Leeds.
+<BR>Copyright &#169; 1997, 1998, 1999,
+<A HREF="http://www.maths.mq.edu.au/~ross/">Ross Moore</A>, 
+Mathematics Department, Macquarie University, Sydney.
+<P>
+The command line arguments were: <BR>
+ <STRONG>latex2html</STRONG> <TT>-split 1 Notes_lec22</TT>
+<P>
+The translation was initiated by Chris Tralie on 2014-12-10
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<IMG WIDTH="81" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next_inactive"
+ SRC="/usr/share/latex2html/icons/nx_grp_g.png"> 
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up_g.png"> 
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev_g.png">   
+<BR></DIV>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Chris Tralie
+2014-12-10
+</ADDRESS>
+</BODY>
+</HTML>

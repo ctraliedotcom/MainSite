@@ -1,0 +1,533 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<!-- Header !-->
+	<head>
+		<title>Christopher J. Tralie, Ph.D.</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<!--[if lte IE 8]><script src="../../assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="../../assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="../../assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="../../assets/css/ie8.css" /><![endif]-->
+        <style>
+        .image_off, #home:hover .image_on{
+           display:none
+        }
+        .image_on, #home:hover .image_off{
+           display:block
+        }
+        </style>
+	</head>
+	<body>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								<header id="header">
+									<a href="../../index.html" class="logo"><strong>Christopher J. Tralie, Ph.D.</strong></a>
+								</header>
+<!-- End Header !-->
+
+							<!-- Content -->
+							    <SCRIPT SRC="../../jsMath/easy/load.js"></SCRIPT>
+								<section>
+                                    <h1>Image Processing</h1>
+
+                                    <ul>
+                                    <li><a href = "#perpixel">Per-pixel Operations</a></li>
+                                    <ul>
+                                    <li><a href = "#randomnoise">Random Noise</a></li>
+                                    <li><a href = "#saturation">Saturation</a></li>
+                                    <li><a href = "#contrast">Contrast</a></li>
+                                    <li><a href = "#threshold">Threshold</a></li>
+                                    <li><a href = "#blackandwhite">Black & White</a></li>
+                                    <li><a href = "#extract">Extract Channel</a></li>
+                                    </ul>
+                                    <li><a href = "#linear">Linear Filtering Operations</a></li>
+                                    <ul>
+                                    <li><a href = "#blur">Gaussian Blur</a></li>
+                                    <li><a href = "#sharpen">Sharpen</a></li>
+                                    <li><a href = "#edge">Edge Detect</a></li>
+                                    <li><a href = "#motionblur">Motion Blur</a></li>
+                                    <li><a href = "#emboss">Emboss</a></li>
+                                    </ul>
+                                    <li><a href = "#nonlinear">Nonlinear Filtering Operations</a></li>
+                                    <ul>
+                                    <li><a href = "#median">Median Filtering</a></li>
+                                    </ul>
+                                    <li><a href = "#resampling">Resampling Operations</a></li>
+                                    <ul>
+                                    <li><a href = "#scale">Scale</a></li>
+                                    <li><a href = "#rotate">Rotate</a></li>
+                                    <li><a href = "#fun">Fun (the magnifying glass)</a></li>
+                                    </ul>
+                                    <li><a href = "#dithering">Dithering Operations</a></li>
+                                    <ul>
+                                    <li><a href = "#quantize">Quantization</a></li>
+                                    <li><a href = "#randomdither">Random Dither</a></li>
+                                    <li><a href = "#ordereddither">Ordered Dither</a></li>
+                                    <li><a href = "#steinberg">Floyd-Steinberg Dither</a></li>
+                                    </ul>
+                                    <li><a href = "#misc">Miscellaneous Operations</a></li>
+                                    <ul>
+                                    <li><a href = "#crop">Cropping</a></li>
+                                    <li><a href = "#dct">Anything Else: DCT / IDCT</a></li>
+                                    </ul>
+                                    <li><a href = "#art">Art Contest Submissions</a></li>
+                                    </ul>
+
+                                    <h2><a name = "perpixel">Per-pixel Operations</a></h2>
+                                    <h3><a name = "randomnoise">Random Noise</a></h3><BR>
+                                    <PRE>void R2Image::AddNoise(double factor);</PRE>
+                                    Adds noise to an image. The amount of noise is given by the factor in the range [0.0..1.0]. 0.0 adds no noise. 1.0 adds a lot of noise.  In the implementation, I chose to create an image that was all noise, and to linearly interpolate between that image and the original image based on the parameter.<BR>
+                                    <table>
+                                    <tr><td><img src = "noise0.jpg"></td>
+                                    <td><img src = "noise0.1.jpg"></td>
+                                    <td><img src = "noise0.3.jpg"></td>
+                                    <td><img src = "noise0.5.jpg"></td>
+                                    <td><img src = "noise1.0.jpg"></td>
+                                    </tr><tr><td>0.0</td><td>0.1</td><td>0.3</td><td>0.5</td><td>1.0</td></tr>
+                                    </table>
+
+                                    <h3><a name = "saturation">Saturation</a></h3><BR>
+                                    <PRE>void R2Image::ChangeSaturation(double factor);</PRE>
+                                    Based on the factor, I did a pixel-by-pixel linear interpolation between the pixel itself and a pixel with each channel equal to the average luminance of that pixel.  That is, higher factors lead to a higher "saturation," or weight of the color components.
+                                    <table>
+                                    <tr><td><img src = "saturation-5.0.jpg"></td>
+                                    <td><img src = "saturation0.jpg"></td>
+                                    <td><img src = "saturation0.5.jpg"></td>
+                                    <td><img src = "saturation1.0.jpg"></td>
+                                    <td><img src = "saturation5.0.jpg"></td>
+                                    </tr><tr><td>-5.0</td><td>0</td><td>0.5</td><td>1</td><td>5.0</td></tr>
+                                    </table>
+
+                                    <h3><a name = "contrast">Contrast</a></h3><BR>
+                                    <PRE>void R2Image::ChangeContrast(double factor);</PRE>
+                                    I did a linear interpolation between the original image and an image of pixels with channels all equal to the average luminance over the original image.  NewImage = (1 - factor)*greyImage + factor*originalImage
+                                    <table>
+                                    <tr><td><img src = "contrast-5.0.jpg"></td>
+                                    <td><img src = "contrast0.jpg"></td>
+                                    <td><img src = "contrast0.5.jpg"></td>
+                                    <td><img src = "contrast1.jpg"></td>
+                                    <td><img src = "contrast5.jpg"></td>
+                                    </tr><tr><td>-5.0</td><td>0</td><td>0.5</td><td>1</td><td>5.0</td></tr>
+                                    </table>
+
+                                    <h3><a name = "threshold">Threshold</a></h3><BR>
+                                    <PRE>void R2Image::Threshold(double value);</PRE>
+                                    Set all of the pixels with a luminance below <i>value</i>, [0.0, 1.0], to zero.
+                                    <table>
+                                    <tr>
+                                    <td><img src = "thresh0.jpg"></td>
+                                    <td><img src = "thresh0.2.jpg"></td>
+                                    <td><img src = "thresh0.4.jpg"></td>
+                                    <td><img src = "thresh0.6.jpg"></td>
+                                    <td><img src = "thresh0.8.jpg"></td>
+                                    </tr><tr><td>0</td><td>0.2</td><td>0.4</td><td>0.6</td><td>0.8</td></tr>
+                                    </table>
+
+                                    <h3><a name = "blackandwhite">Black & White</a></h3><BR>
+                                    <PRE>void R2Image::BlackAndWhite(void)</PRE>
+                                    Convert the image to a grayscale image by replacing the RGB channels with the average luminance value, pixel by pixel.
+                                    <table border = "1">
+                                    <tr><td><center>Before</center></td><td><center>After</center></td></tr>
+                                    <tr><td><center><img src = "noise1.jpg"></center></td><td><center><img src = "blackwhite1.jpg"></center></td></tr>
+                                    <tr><td><img src = "chris.jpg"></td><td><img src = "blackandwhite2.jpg"></td></tr>
+                                    </table>
+
+                                    <h3><a name = "extract">Extract Channel</a></h3><BR>
+                                    <PRE>void R2Image::ExtractChannel(int channel)</PRE>
+                                    Set all of the channels not equal to <i>channel</i> to zero.  (0=RED, 1=BLUE, 2=GREEN).
+                                    <table>
+                                    <tr><td><img src = "tetris.jpg"></td>
+                                    <td><img src = "tetrisR.jpg"></td>
+                                    <td><img src = "tetrisG.jpg"></td>
+                                    <td><img src = "tetrisB.jpg"></td>
+                                    </tr>
+                                    </table>
+                                    <hr>
+
+                                    <h2><a name = "linear">Linear Filtering Operations</a></h2><BR>
+                                    NOTE: For all of my linear filtering operations, I used a helper function called 
+                                    <i>void Convolve(R2Image* image, double filter[], int w, int h, double factor)</i>, which convolves <i>image</i> with <i>filter</i>, which is a 1D representation of a 2D kernel (parsed based on a given width, <i>w</i>, and a given height, <i>h</i>).  Each entry in the kernel is multiplied by <i>factor</i>, which is used to prevent the image from brightening or darkening overall when the filter is applied.  For instance, for a filter consisting of 9 1s, factor would be 1.0/9.0.
+                                    <h3><a name = "blur">Gaussian Blur</a></h3><BR>
+                                    <PRE>void R2Image::Blur(double sigma)</PRE>
+                                    Convolve the image with a Gaussian kernel of width and height ceil(3*sigma) + 1.  This guarantees that the kernel is of odd dimensions (required since the center of the kernel is supposed to line up with the current pixel based on the way I have the convolution set up), and it also goes out to around 3 sigma, which is more than enough to encompass the Gaussian before it converges to zero.<BR>
+                                    <BR>Use the equation G(x,y,sigma) = 2 ^ (-(x^2 + y^2) / sigma^2), where x and y are the displacements from the current pixel<BR><BR>
+                                    NOTE: Actually, in practice, instead of creating a 2D Gaussian kernel as described above, I created a 1D Gaussian and applied it first in the horizontal direction, then in the vertical direction.  I could do this because the Gaussian as written above is linearly separable; that is, G(x,y,sigma) = 2^(-(x^2 + y^2) / sigma^2) = 2^(-x^2 / sigma^2) * 2^(-y^2 / sigma^2).  So x and y are independent and can be applied separately to yield the same result.  This speeds up computation significantly, from (w*h*l^2) to (2*w*h*l); where w=width of image, h=height of image, l=width of filter
+                                    <BR>
+                                    <table>
+                                    <td><img src = "blur0.125.jpg"></td>
+                                    <td><img src = "blur0.5.jpg"></td>
+                                    <td><img src = "blur1.jpg"></td>
+                                    <td><img src = "blur2.jpg"></td>
+                                    <td><img src = "blur8.jpg"></td>
+                                    </tr><tr><td>sigma = 0.125</td><td>sigma = 0.5</td><td>sigma = 1</td><td>sigma = 2</td><td>sigma = 8</td></tr>
+                                    </table><BR>
+
+
+							                                     
+                                    <h3><a name = "sharpen">Sharpen</a></h3><BR>
+                                    <PRE>void R2Image::Sharpen()</PRE>
+                                    Apply the following kernel to every image:
+                                    <table>
+                                    <tr><td>-1</td><td>-1</td><td>-1</td></tr>
+                                    <tr><td>-1</td><td>9</td><td>-1</td></tr>
+                                    <tr><td>-1</td><td>-1</td><td>-1</td></tr>
+                                    </table><BR>
+
+                                    <table border = "1">
+                                    <tr><td><center>Before</center></td><td><center>After</center></td></tr>
+                                    <tr><td><center><img src = "noise1.jpg"></center></td><td><center><img src = "sharp1.jpg"></center></td></tr>
+                                    <tr><td><img src = "hipser.jpg"></td><td><img src = "sharp2.jpg"></td></tr>
+                                    </table>
+
+                                    <h3><a name = "edge">Edge Detect</a></h3><BR>
+                                    <PRE>void R2Image::EdgeDetect()</PRE>
+                                    Apply the following kernel to every image:
+                                    <table>
+                                    <tr><td>-1</td><td>-1</td><td>-1</td></tr>
+                                    <tr><td>-1</td><td>8</td><td>-1</td></tr>
+                                    <tr><td>-1</td><td>-1</td><td>-1</td></tr>
+                                    </table>
+                                    Exactly the same as the sharpen filter, except the original pixel isn't added back to the laplacian (so it's the difference between a sharpened image and the original image; just the high frequency stuff that gets through the laplacian).<BR><BR>
+
+                                    <table border = "1">
+                                    <tr><td><center>Before</center></td><td><center>After</center></td></tr>
+                                    <tr><td><center><img src = "noise1.jpg"></center></td><td><center><img src = "edge1.jpg"></center></td></tr>
+                                    <tr><td><img src = "hipser.jpg"></td><td><img src = "edge2.jpg"></td></tr>
+                                    </table>
+
+
+
+                                    <h3><a name = "motionblur">Motion Blur</a></h3><BR>
+                                    <PRE>void R2Image::MotionBlur(R2Vector& movement, int sampling_method)</PRE>
+                                    Try to blur the image such that it looks like the camera just translated along the vector <i>movement</i>.  <b>My current implementation doesn't work perfectly</b>, but it's close.  It works well for exactly horizontal and exactly vertical.  For directions that are somewhere in between, it allocates a kernel with width 3 along the smaller dimension, and height proportional to that based on the ratio between the components.  It then puts a 1 at the center and at two of the corners.  So for instance, for the direction 1 3, the kernel would look like:<BR>
+                                    <table cellpadding = "5">
+                                    <tr><td>0</td><td>0</td><td>1</td></tr>
+                                    <tr><td>0</td><td>0</td><td>0</td></tr>
+                                    <tr><td>0</td><td>0</td><td>0</td></tr>
+                                    <tr><td>0</td><td>0</td><td>0</td></tr>
+                                    <tr><td>0</td><td>1</td><td>0</td></tr>
+                                    <tr><td>0</td><td>0</td><td>0</td></tr>
+                                    <tr><td>0</td><td>0</td><td>0</td></tr>
+                                    <tr><td>0</td><td>0</td><td>0</td></tr>
+                                    <tr><td>1</td><td>0</td><td>0</td></tr>
+                                    </table>
+                                    I don't think this is the best method, but it's still relatively convincing.
+                                    <BR>
+                                    <table>
+                                    <tr>
+                                    <td><img src = "noise0.jpg"></td>
+                                    <td><img src = "motion01.jpg"></td>
+                                    <td><img src = "motion10.jpg"></td>
+                                    <td><img src = "motion13.jpg"></td>
+                                    </tr><tr><td>Original</td><td>Move along vector (0,1)</td><td>Move along vector (1,0)</td><td>Move along vector (1,3)</td></tr>
+                                    </table>
+
+                                    <BR>
+                                    <h3><a name = "emboss">Emboss</a></h3><BR>
+                                    <PRE>void R2Image::Emboss()</PRE>
+                                    Use the following linear kernel:<BR>
+                                    <table>
+                                    <tr><td>-1</td><td>-1</td><td>0</td></tr>
+                                    <tr><td>-1</td><td>0</td><td>1</td></tr>
+                                    <tr><td>0</td><td>1</td><td>1</td></tr>
+                                    </table>
+                                    Then make a call to "Black & White" to seal the deal<BR>
+                                    <img src = "chris2.jpg"><BR>
+                                    <img src = "emboss.jpg">
+
+                                    <BR><BR>
+                                    <hr>
+                                    <h2><a name = "nonlinear">Nonlinear Filtering Operations</a></h2><BR>
+                                    <h3><a name = "median">Median Filtering</a></h3><BR>
+                                    <PRE>void R2Image::MedianFilter(double sigma)</PRE>
+                                    For each pixel and for each pixel's channel (R,G,B), take the median value of all of the channel values around it as specified by sigma.  That is, if sigma is 3, put a 3x3 window (9 pixels total) around every pixel and take the median for every channel.  I used C/C++'s built in <b>qsort</b> to help me find the median<BR>
+
+                                    <table>
+                                    <tr>
+                                    <td><img src = "salt.jpg"></td>
+                                    <td><img src = "median3.jpg"></td>
+                                    <td><img src = "median5.jpg"></td>
+                                    </tr><tr><td>Original</td><td>Sigma = 3</td><td>Sigma = 5</td></tr>
+                                    </table>
+                                    <BR>
+                                    <hr>
+                                    <BR>
+                                    <h2><a name = "resampling">Resampling Operations</a></h2><BR>
+                                    For the resampling operations, I made 3 functions: PointResample(u, v, w, h), BilinearResample(u, v, w, h), and GaussianResample(u, v, w, h).  I then used function pointers to access these.  (u,v) is the coordinate describing the nearest point in the source image, and w and h describe the width and the height of the resampler (relevant only for the Gaussian resampling).<BR>
+                                    <b>0 = POINT RESAMPLING, 1 = BILINEAR RESAMPLING, 2 = GAUSSIAN RESAMPLING</b><BR>
+                                    <h3><a name = "scale">Scale</a></h3><BR>
+                                    <PRE>void R2Image::Scale(double sx, double sy, int sampling_method)</PRE>
+                                    Make the new image with the width = originalwidth*sx and height = originalheight*sy.  For Gaussian resampling, make the width of the filter inversely proportional to sx and sy; that is, if sx is small (< 1), make the Gaussian filter wider to prevent aliasing.<BR>
+                                    <table border = "1">
+                                    <tr><td>Original</td><td><img src = "noise0.jpg"></td></tr>
+                                    <tr><td>Scaled by 0.50 0.25 using Gaussian</td><td><img src = "scale0.50.25.jpg"></td></tr>
+                                    <tr><td>Scaled by 2 3 using Point Sampling</td><td><img src = "scale2_3_0.jpg"></td></tr>
+                                    <tr><td>Scaled by 2 3 using Bilinear Sampling</td><td><img src = "scale2_3_1.jpg"></td></tr>
+                                    <tr><td>Scaled by 2 3 using Gaussian Sampling</td><td><img src = "scale2_3_2.jpg"></td></tr>
+                                    </table>
+
+                                    <h3><a name = "rotate">Rotate</a></h3><BR>
+                                    <PRE>void R2Image::Rotate(double angle, int sampling_method)</PRE>
+                                    Rotate counterclockwise by <i>angle</i> in <b>radians</b>, using sampling_method as the resampling method (point, bilinear, or Gaussian).  The image needs to be resized to the rotate form.  I used the following math to help determine the new image size (and to do the mapping):<BR>
+                                    <img src = "rotatemath.gif"><BR>
+                                    Here are some samples, all of which use Gaussian resampling with a radius of 3:<BR>
+                                    <table border = "1">
+                                    <tr><td><center>Original</center></td><td><center>Rotated</center></td></tr>
+                                    <tr><td><img src = "kfc.jpg"</td><td><img src = "kfcr.jpg"><BR>Rotated by 1 radian</td></tr>
+                                    <tr><td><img src = "hilary.jpg"></td><td><img src = "hilaryr.jpg"><BR>Rotated by 6 radians</td></tr>
+                                    </table>
+
+
+                                    <h3><a name = "fun">Fun!! (the magnifying glass)</a></h3><BR>
+                                    <PRE>void R2Image::Fun(int sampling_method, double a, double b, double r)</PRE>
+                                    I distorted the image space using the following inverse mapping from (ix,iy) coordinates in the new image to (u,v) coordinates in the original image:<BR>
+                                    <code>
+			                                    double dx = ix - a;<BR>
+			                                    double dy = iy - bprime;<BR>
+			                                    double factor = sqrt((dx*dx + dy*dy) / (r + dx*dx + dy*dy));<BR>
+			                                    double u = a + factor * dx;<BR>
+			                                    double v = bprime + factor * dy;<BR>
+			                                    </code><BR>
+                                    The effect is basically a magnification of the image around the focal point (<b>a</b>, <b>b</b>), with <b>r</b> more or less specifying the magnification rate (a bigger r leads qualitatively to bigger magnification).<BR>
+                                    NOTE: By default in imgpro, (0,0) is the point in the lower left of the image.  But to be consitent with paint, I actually made (0,0) the upper left of the image when specifying the focal point (a,b).  Here are some examples (all of which use Gaussian resampling):<BR>
+                                    <table>
+                                    <tr><td><center>Original</center><td><center>After Fun!!</center></td><td>After More Fun!!</td></tr>
+                                    <tr><td><img src = "carlton.jpg"></td>
+                                    <td><img src = "carlton1.jpg"><BR>
+                                    imgpro carlton.jpg carlton1.jpg -sampling 2 118 296 10000</td>
+                                    <td><img src = "carlton2.jpg"><BR>
+                                    imgpro carlton.jpg carlton2.jpg -sampling 2 118 296 <b>100000</b></td>
+                                    </tr>
+                                    <tr><td><img src = "will.jpg"></td>
+                                    <td><img src = "will1.jpg"><BR>
+                                    imgpro will.jpg will1.jpg -sampling 2 100 470 10000</td>
+                                    <td><img src = "will2.jpg"><BR>
+                                    imgpro will.jpg will2.jpg -sampling 2 100 470 <b>100000</b></td>
+                                    </tr>
+                                    </table>
+                                    <BR><BR><BR>
+                                    <hr>
+                                    <h2><a name = "dithering">Dithering Operations</a></h2><BR>
+                                    I did exactly what was shown in the <a href = "http://www.cs.princeton.edu/courses/archive/spr09/cos426/assn1/examples.html">examples section</a>,
+                                    so I just copied the descriptions from there for each operation:<BR>
+
+                                    <h3><a name = "quantize">Quantization</a></h3><BR>
+                                    <PRE>void R2Image::Quantize (int nbits)</PRE>
+                                    Converts an image to nbits bits per channel using uniform quantization.<BR>
+                                    The number of levels per channel is L = 2nbits. The size of each input interval is a = 256 / L. The size of each output output interval is b = 255.0 / (L - 1). Each component c is mapped to floor(c / a) * b.
+                                    <table>
+                                    <tr><td><img src = "quantize1.jpg"></td>
+                                    <td><img src = "quantize2.jpg"></td>
+                                    <td><img src = "quantize3.jpg"></td>
+                                    <td><img src = "quantize4.jpg"></td>
+                                    <td><img src = "quantize5.jpg"></td>
+                                    </tr><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+                                    </table>
+                                    <BR><BR>
+
+                                    <h3><a name = "randomdither">Random Dither</a></h3><BR>
+                                    <PRE>void R2Image::RandomDither (int nbits)</PRE>
+                                    Converts an image to nbits bits per channel using random dithering. It is similar to uniform quantization, but random noise is added to each component during quantization. Using a and b as defined for quantization, each component c is mapped to floor(c / a + noise()) * b. The function noise() returns a random floating point number in the interval [-0.5,0.5]. <table>
+                                    <tr><td><img src = "random1.jpg"></td>
+                                    <td><img src = "random2.jpg"></td>
+                                    <td><img src = "random3.jpg"></td>
+                                    <td><img src = "random4.jpg"></td>
+                                    <td><img src = "random5.jpg"></td>
+                                    </tr><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+                                    </table>
+
+                                    <h3><a name = "ordereddither">Ordered Dither</a></h3><BR>
+                                    <PRE>void R2Image::OrderedDither (int nbits)</PRE>
+
+                                    Converts an image to nbits bits per channel using ordered dithering. It is similar to uniform quantization, but pseudo-random noise is added to each component before quantization. The amount of noise added is determined by a Bayer's pattern matrix. The following examples used the matrix<BR>
+                                    Bayer4 	=<BR> 	
+                                    15 	7 	13 	5<BR>
+                                    3 	11 	1 	9<BR>
+                                    12 	4 	14 	6<BR>
+                                    0 	8 	2 	10<BR>
+                                    For each pixel at (x,y), we compute i = x % 4, j = y % 4. Then, using a and b as defined for quantization, a component c is mapped to floor(c / a - 0.5 + Bayer4[i][j] / 15.0) * b. <table>
+                                    <tr><td><img src = "ordered1.jpg"></td>
+                                    <td><img src = "ordered2.jpg"></td>
+                                    <td><img src = "ordered3.jpg"></td>
+                                    <td><img src = "ordered4.jpg"></td>
+                                    <td><img src = "ordered5.jpg"></td>
+                                    </tr><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+                                    </table>
+
+                                    <h3><a name = "steinberg">Floyd-Steinberg Dither</a></h3><BR>
+                                    <PRE>void R2Image::FloydSteinbergDither (int nbits)</PRE>
+                                    Converts an image to nbits per channel using Floyd-Steinberg dither with error diffusion. Each pixel (x,y) is quantized, and the quantization error is computed. Then the error is diffused to the neighboring pixels (x + 1, y), (x - 1, y + 1), (x, y + 1), and (x + 1, y + 1) , with weights 7/16, 3/16, 5/16, and 1/16, respectively. <table>
+                                    <tr><td><img src = "floyd1.jpg"></td>
+                                    <td><img src = "floyd2.jpg"></td>
+                                    <td><img src = "floyd3.jpg"></td>
+                                    <td><img src = "floyd4.jpg"></td>
+                                    <td><img src = "floyd5.jpg"></td>
+                                    </tr><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+                                    </table>
+
+                                    <BR><BR><BR>
+                                    <hr>
+                                    <h2><a name = "misc">Miscellaneous Operations</a></h2><BR>
+
+                                    <h3><a name = "crop">Crop</a></h3><BR>
+                                    <PRE>void R2Image::Crop(int x, int y, int w, int h)</PRE><BR>
+                                    NOTE: Just as with my fun operation, I assume that (x=0, y=0) is the <i>upper left</i> of the image instead of the lower left, which means that I have to change the y coordinate to height - y.<BR>
+                                    <table border = "2">
+                                    <tr><td><img src = "chris2.jpg"></td><td><center><img src = "crop.jpg"></center><BR>imgpro chris2.jpg crop.jpg -crop 84 98 70 50</td></tr>
+                                    </table>
+
+                                    <h3><a name = "dct">Anything Else: DCT / IDCT</a></h3><BR>
+                                    <PRE>void R2Image::DCT()</PRE><BR>
+                                    <PRE>void R2Image::IDCT()</PRE><BR>
+                                    Take the forward and inverse Discrete Cosine Transforms of images (shows basically how they work).  This is important, because this is the transform coding scheme that's used in JPEG.<BR>
+                                    NOTE: This is <i>very slow</i>, because I didn't do any optimizations; I simply left it as an n^4 algorithm.  The fast DCT would have reduced it to something like n^2ln(n)^2.<BR>
+
+                                    <table><tr><td><img src = "noise1.jpg"></td><td><center>DCT<BR>=====></td><
+                                    <td><img src = "dct.jpg"></td><td><center>IDCT<BR>=====></td><td><img src = "idct.jpg"></td></tr>
+                                    </table><BR>
+                                    Note the clustering of the low frequency components in the DCT.  Also, the inverse DCT seems to be a little messed up, I think it has something to do with scaling the frequency coefficients improperly or screwing some of them up when the DCT image is converted to JPG.  But a lot of the basic structure was still retained.<BR><BR><BR>
+
+                                    <h2><a name = "art">Art Contest Submissions</a></h2><BR>
+
+                                    <ol>
+                                    <li><table><tr><td><img src = "thinker.jpg"></td><td> ==></td><td><img src = "thinkerart.jpg"></td></tr></table><BR>
+                                    The median filter gives rise to strange, cartoon-ish noise<BR>
+                                    <b>imgpro thinker.jpg thinkerart.jpg -median 11</b><BR><BR></li>
+                                    <li><table><tr><td><img src = "photo3.jpg"></td><td> ==></td><td><img src = "blooper.jpg"></td></tr></table><BR>
+                                    This is a blooper that I got when I was trying come up with a fun filter.<BR><BR></li>
+
+                                    <li><img src = "emboss.jpg"><BR>
+                                    imgpro chris2.jpg emboss.jpg -emboss<BR><BR></li>
+
+                                    <li><a href = "carlton.avi">Movie (260kB)</a><BR>
+                                    I used the following perl script to generate the images, and then I used a free trial version of "Blaze Media pro" to stich them together:<BR>
+                                    <code>
+                                    $base = 100;<BR>
+                                    for($i = 0; $i < 100; $i++) {<BR>
+	                                    $base += 300;<BR>
+	                                    `./imgpro carlton.jpg carlton$i.jpg -sampling 2 -fun 194 224 $base`<BR>
+                                    }<BR>
+                                    </code></li>
+
+                                    </ol>
+
+                                    <!-- Start of StatCounter Code -->
+                                    <script type="text/javascript">
+                                    var sc_project=7309088; 
+                                    var sc_invisible=1; 
+                                    var sc_security="f655b56d"; 
+                                    </script>
+                                    <script type="text/javascript"
+                                    src="http://www.statcounter.com/counter/counter.js"></script>
+                                    <noscript><div class="statcounter"><a title="free hit counter"
+                                    href="http://statcounter.com/" target="_blank"><img class="statcounter"
+                                    src="http://c.statcounter.com/7309088/0/f655b56d/1/" alt="free hit
+                                    counter"></a></div></noscript>
+                                    <!-- End of StatCounter Code -->
+                                    <!-- BEGIN DISQUS -->
+                                    <BR><BR><BR>
+                                    <div id="disqus_thread"></div>
+                                    <script type="text/javascript">
+                                        var disqus_shortname = 'ctralieteaching';
+                                        var disqus_identifier = 'ImageProcessing';
+                                        var disqus_url = 'http://ctralie.com/Teaching/ImageProcessing/index.html';
+
+                                        (function() {
+                                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                            dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                                        })();
+                                    </script>
+                                    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                    <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+                                    <!-- END DISQUS -->
+
+
+								</section>
+
+						</div>
+					</div>
+
+<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+							<!-- Menu -->
+								<nav id="menu">
+									<header class="major">
+										<h2>Menu</h2>
+									</header>
+									<ul>
+										<li><a href="../../index.html">Homepage</a></li>
+										<li><a href = "../../ctralie_cv.pdf">CV</a></li>
+										<li>
+											<span class="opener">Research</span>
+											<ul>
+												<li><a href="../../Research/index.html#statement">Research Statement</a></li>
+												<li><a href="../../Research/index.html#projects">Projects</a></li>
+											</ul>
+										</li>
+										<li><a href="../../Software">Software</a></li>
+										<li>
+											<span class="opener">Teaching</span>
+											<ul>
+												<li><a href="../../Teaching/index.html#classes">Classes</a></li>
+												<li><a href="../../Teaching/index.html#evaluations">Evaluations</a></li>
+												<li><a href="../../Teaching/index.html#statement">Teaching Statement</a></li>
+											</ul>
+										</li>
+										<li>
+											<span class="opener">Education</span>
+											<ul>
+												<li><a href="../../Teaching/Tutorials.html">Tutorials</a></li>
+												<li><a href="../../Coursework/index.html">Graduate Classes</a></li>
+												<li><a href="../../PrincetonUGRAD">Princeton Undergraduate Portfolio</a></li>
+											</ul>
+										</li>
+									</ul>
+								</nav>
+
+							<!-- Section -->
+								<section>
+									<header class="major">
+										<h2>Recent Updates</h2>
+									</header>
+									<div class="mini-posts">
+										<article>
+											<p>New version of <a href = "http://www.loopditty.net">Loop Ditty</a> geometric music visualizer with Twitter sharing.</p>
+										</article>
+								</section>
+
+
+							<!-- Footer -->
+								<footer id="footer">
+									<p class="copyright">&copy; Christopher J. Tralie. All rights reserved. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+								</footer>
+
+						</div>
+					</div>
+
+			</div>
+<!-- End Sidebar !-->
+
+<!-- Scripts -->
+			<script src="../../assets/js/jquery.min.js"></script>
+			<script src="../../assets/js/skel.min.js"></script>
+			<script src="../../assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="../../assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="../../assets/js/main.js"></script>
+<!-- End Scripts -->
+	</body>
+</html>

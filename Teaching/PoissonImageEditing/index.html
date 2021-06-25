@@ -1,0 +1,384 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<!-- Header !-->
+	<head>
+		<title>Christopher J. Tralie, Ph.D.</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<!--[if lte IE 8]><script src="../../assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="../../assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="../../assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="../../assets/css/ie8.css" /><![endif]-->
+        <style>
+        .image_off, #home:hover .image_on{
+           display:none
+        }
+        .image_on, #home:hover .image_off{
+           display:block
+        }
+        </style>
+	</head>
+	<body>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								<header id="header">
+									<a href="../../index.html" class="logo"><strong>Christopher J. Tralie, Ph.D.</strong></a>
+								</header>
+<!-- End Header !-->
+
+							<!-- Content -->
+							    <SCRIPT SRC="../../jsMath/easy/load.js"></SCRIPT>
+								<section>
+                                    <h1>Poisson Image Editing</h1>
+                                        
+                                    <ol>
+                                    <li><a href = "#basic">Introduction</a></li>
+                                    <li><a href = "#conceptual">Matching the Gradient with Boundary Conditions</a></li>
+                                    <li><a href = "#discreteimplementation">Discrete Solution and Implementation with a Sparse Matrix</a></li>
+                                    <li><a href = "#results">Results and Discussion</a></li>
+                                    <li><a href = "#flattening">Texture Flattening</a></li>
+                                    <li><a href = "#tryit">Try It Out Yourself!</a></li>
+                                    <li><a href = "#russian">Russian Translation</a></li>
+                                    <li><a href = "#chinese">Chinese Translation</a></li>
+                                    <li><a href = "#source">Source Code</a></li>
+                                    </ol>
+                                    <h2><u><a name = "basic">Introduction</a></u></h2><BR>
+
+                                    Poisson Image Editing is a technique for "seamlessly blending" two images together <b>fully automatically</b>.  It was originally conceived in <a href = "http://www.cs.princeton.edu/courses/archive/fall10/cos526/papers/perez03.pdf">this paper</a> by Patrick Perez, Michel Gangnet, and Andrew Blake from Microsoft Research UK.  To motivate the problem, look at an example:<BR><BR>
+
+                                    What if we wanted to take this image of me and some college friends at the beach...<BR><BR>
+                                    <img src = "Examples/beach.jpg"><BR><BR>
+                                    ...and this image of a Great White shark<BR><BR>
+                                    <img src = "Examples/GreatWhiteShark.jpg"><BR><BR>
+                                    ...and make it <b>way</b> more badass by cutting out the shark and putting it in the water in front of us:<BR><BR>
+                                    <img src = "Examples/sharkBefore.png"><BR><BR>
+                                    The problem is, it's really obvious that picture is fake.  The water in both images is a slightly different shade of blue/green and the boundary where I cut out the shark is clearly visible because of this.  We could try something simple in Photoshop/Gimp like making the image of the shark brighter, but the boundary will almost surely will still be visible no matter how hard we try to tweak it, or if we do get it right it will probably take a lot of trial and error.  Is there a way to somehow blend them seamlessly together automatically in one shot with some more clever technique to get an image like this?<BR><BR>
+
+                                    <img src = "Examples/sharkAfter.png"><BR><BR>
+
+                                    Well, since I'm writing this, the answer must be yes (it's Poisson Image Editing).  My goal in this tutorial will be to explain this algorithm in a simple, accessible way, and I will end with a user-friendly program that will allow you to try it out yourself with your own images!  I used this program to wreck my friends in a mock Facebook album, and I hope you will find similarly hilarious uses for it.  So without further ado, let's do some math...
+
+
+                                    <BR><BR>
+                                    <b>Please Note:</b> The images used in the rest of the writeup were either taken by me and my friends, or were taken from Wikimedia commons.  <a href = "PictureAttributions.txt">Click here</a> to see a list of sources for the Wikimedia ones.
+
+                                    <h2><u><a name = "conceptual">Matching the Gradient with Boundary Conditions</a></u></h2><BR>
+
+                                    This whole algorithm actually boils down to a very simple idea.  To get at this, let's first try to define more carefully what we'd like to accomplish when we blend two images together.  Call the image we're changing <b>Image A</b> and the image we're cutting out and pasting <b>Image B</b>:<BR><BR>
+                                    <img src = "imageAimageB.png"><BR><BR>
+                                    It would be nice if we could allow the colors in Image B to change when we pasted it on, but to somehow keep all of the "details" of Image B intact.  Some details we'd like to preserve would be all of the edges, corners, transitions, etc in image B.  But if you read my tutorial on  <a href = "../EdgeCornerBlob">Edge, Corner, and Blob Detection</a>, you'll already know techniques for extracting these details from images, and the first step in every technique is to calculate the <i><b>image gradient</b></i>.  The image gradient is just a mathematical way of describing how the image pixels change relative to the pixels around them (it is essentially the difference of a pixel and its neighbors).  And a relative descriptor is just what we're looking for, since the disagreement between image A and image B that makes them jut out against each other is the absolute magnitude of their colors.  <BR>
+                                    Hence, the goal of Poisson Image Editing stated with a bit more rigor is: allow for the tweaking of absolute information of image B (colors), but preserve the relative information 
+                                    (image gradient) of image B <i>as much as possible</i> after it's pasted.  Below is the image gradient of the shark we're trying to paste, so you can get an idea of what that relative information might look like:<BR>
+                                    <table border = "1">
+                                    <tr><td><center>Image</center></td><td><center>Gradient Magnitude</center></td></tr>
+                                    <tr><td><img src = "Examples/GreatWhiteShark.jpg"></td><td><img src = "Examples/sharkGradient.png"></td></tr>
+                                    </table>
+                                    <BR><BR>
+
+
+                                    Given alone, the image gradient is under-constrained.  As an analogy, consider I told you I wanted you to trace a path on a piece of paper, and I told you "first trace two inches, then turn 30 degrees clockwise, then trace 3 inches, etc", but I didn't tell you a starting position or any specific points on the path.  Then the curve you trace out could start anywhere and be at any rotational orientation and still satisfy the conditions I told you.  The relative information contained in the image gradient is the same way.  We need to fix RGB values of some specific pixels to get a solution to our problem.  This gives us an awesome opportunity to make image B more like image A.  What we do is <i>fix the pixels on the boundary of image B to be equal to the pixels on image A where B resides, and then solve for the rest of the pixels on the interior of image B that preserve the original gradient of image B</i>.  That's it!  In the next section I will give more specific equations for doing this and give even more intuition for how this works, but hopefully now you at least see what needs to be done.
+
+                                    <!--Before I show you how this works for a 2D image, let me know you how it works for a pair of 1D discrete functions (which is easier to demonstrate).  Let's say we have a function <b>f</b> which is analogous to image A, and a function <b>g</b> (analagous to image B) that we want to paste onto <b>f</b>.  They both look as follows:<BR><BR>
+                                    <img src = "fandg1D.png"><BR><BR>
+                                    Let's say in this example that we wanted to seamlessly blend the 30 samples of <b>g</b> into samples 30-59 of <b>f</b>.  If we simply replaced samples 30-59 of f with g (analogous to just pasting the image and doing nothing), we get this:<BR>
+                                    <img src = "1DPasting.png"><BR>
+                                    Clearly not such a good transition in the middle there; the pasted function sticks out like a sore thumb.  Now let's try the technique described above.  First the <b>derivative</b> of function g (analogous to the image gradient).  To do this with a discrete function, !-->
+
+
+                                    <h2><u><a name = "discreteimplementation">Discrete Solution and Implementation with a Sparse Matrix</a></u></h2><BR>
+
+                                    Let me now present the system of equations that solves the problem.  Let's call the image which we're pasting on <b>A</b> (as before), the image which we're pasting <b>B</b> (as before), and the new image to be pasted <b>H</b> (where <b>H</b> should be some improved version of <b>B</b> that blends in with <b>A</b> better).  First the easy part: the boundary constraints.  We said before the pixels on <b>H</b>'s boundary should be exactly the same as the pixels of <b>A</b> on that boundary, so that we can match those pixels on the outside of the selection and blend them inwards.  In math speak<BR>
+
+                                    <h2>
+                                    \[ H_{(x, y)} = A_{(x,y)} \forall  (x, y) \in \partial B \]
+                                    </h2>
+                                    So we already know the exact solution to all pixels on the boundary of H (which is also the boundary of B).  Now we need to solve for the pixels in the interior of H.  We want the gradient of the pixels on the interior of H to equal the gradient of the pixels on the interior of B.  A simple way to define a gradient of an image at a spot is the sum of the differences between that pixel and all of its neighbors:<BR>
+
+                                    <h2>
+                                    \[ | \nabla B_{(x, y)} | = 4B(x, y) - B(x-1, y) - B(x+1, y) - B(x, y-1) - B(x, y+1) \]
+                                    </h2>
+
+                                    If one of the neighbors happens to be a boundary pixel, then its value is fixed.  If one of the neighbors happens to be out of bounds of the selection, then it should be excluded.  This is summarized for all cases for every point in H by the following difference equation (lifted from the paper and rearranged in a way that I think makes more sense):
+
+                                    <h2>
+
+                                    \[ |N|H(x, y) - \sum_{(dx, dy) + (x, y) \in \Omega} H(x+dx, y+dy) - \sum_{((dx, dy) + (x, y) \in \partial \Omega } A(x+dx, y+dy) = \sum_{(dx, dy) + (x, y) \in (\Omega \cup \partial \Omega)} (B(x+dx, y+dy) - B(x, y)) \]
+
+                                    </h2>
+                                    where (x, y) is the location of the point of interest on the 2D grid, "N" is the number of valid neighbors the pixel actually has within the selection region including the boundary (less than or equal to 4), "Omega" is the selection area of B and H excluding the boundary, "partial Omega" is the boundary of the selection area, and (dx, dy) are the possible neighbor locations that range over {(-1, 0), (1, 0), (0, -1), (0, 1)} (this accounts for the 4 possible neighbors of each point). This looks like a mess but it really isn't, so let me break down this equation in English:
+                                    <ul>
+                                    <li>The left hand side of the equation is computing the spatial gradient of the unknown point H(x, y) by taking summing the difference between H(x, y) and all of its <b>N</b> neighbors.  Each difference that goes into the gradient has the form H(x, y) - other(x', y'), where (x', y') is the position of a neighbor.  The first sum on the left hand side represents the difference of H(x, y) with other H(x', y') points that are on the interior of the selection (Omega).  The second term represents the difference of H(x, y) with border points, which are <b>fixed</b> at the value of the image that we're pasting onto, A, which is why we have to treat them separately (they do not vary and we do not solve for them).
+                                    <li>The right hand side of the equation is simply the gradient of image B at (x, y), which we would like to match with the gradient of our new image H at (x, y).  Hence the equality</li>
+
+                                    <li>Note that for color images, these equations are set up and solved for the Red, Green, and Blue channels independently</li>
+                                    </ul>
+
+                                    Hopefully this makes some sense.  If it doesn't, just remember the basic idea: we're trying to solve for a new image H that matches the background of A better, and the border of this image H matches up with A exactly, while the difference between adjacent points of H matches up with the difference of the corresponding adjacent points in B.<BR><BR>
+
+                                    <hr>
+
+                                    What we do next is write out this equation for every point in H, and notice that we have a system of linear equations in <b>k</b> variables, where <b>k</b> is the number of pixels we need to solve for in H.  To solve the system of equations, the most straightforward thing to do would be to put them in matrix form and invert the matrix.  However, <b>k</b> is actually quite large.  For instance, in a 200x200 selection, k = 40,000.  We do not want to sit around and wait to invert a 40,000 x 40,000 matrix.  We should also note that the matrix is <i>extremely sparse</i> because every point has at maximum 4 neighbors (and also positive definite for you really observant math heads reading this).  So each row has at most 5 nonzero elements and the rest are zero.  This lends itself well to an <i>iterative matrix solving technique</i>.  For simplicity, I decided to use something called the <b>Jacobi Method</b> to solve the sparse linear system.  The Jacobi Method is a special case of Gradient Descent (if you've ever heard of that).  Basically here's how it works:
+
+                                    <ol>
+                                    <li>Set up your matrix equations in the form 
+                                    \[ A x = b \]
+                                    where A is the matrix of equations that I defined above (the equations that related gradients to gradients or set the boundary pixels equal to some constant), x is what we'd like to solve for (the pixels of the H image in this case), and b is what the equations should equal.  It would be smart to compress the matrix A if you have a sparse matrix (my program only stores the nonzero entries in its data structure)
+                                    </li>
+                                    <li>Initialize x to all zeros (this is an all black image)</li>
+                                    <li>Compute the product Ax</li>
+                                    <li>Compute the difference (b - Ax), which measures the error between what the current guess of x (our H image) is and what we need it to be.</li>
+                                    <li>Add the difference (b - Ax) back to x.  This is the "gradient descent" part where we try to get our guess of the solution (x) to move in the right direction</li>
+                                    <li>Repeat steps 3-5 until the error between x and (b-Ax) is small enough</li>
+                                    </ol>
+                                    This process is guaranteed to converge on the correct solution for x if A is positive definite (which it is), and it does so exponentially.  The code I wrote to implement the Jacobi method can be found in "MatrixSolver.java" in the <a href = "ctralie_poisson_src.zip">source code archive</a>.  What ends up happening with this iterative solution is that the new image starts off with the correct border and a black interior, and then slowly fills in color from the outside in.  Here's an example progression from 1%, to 33%, to 66%, to 100% convergence:
+
+                                    <table><tr><td><img src = "convergence0.png"></td><td><img src = "convergence33.png"></td></tr><tr><td><img src = "convergence66.png"></td><td><img src = "convergence100.png"></td></tr></table>
+
+
+                                    There are better techniques to use than the Jacobi Method in this case, but it's very simple, easy to explain, and easy to implement, so I just went with it.  Performance suffers a bit for large selections (you may have to wait a minute or 2 for selections much bigger than 150px x 150px), but it's quite fast for small selections (most of the examples in this writeup completed in a matter of seconds).  
+
+                                    <BR><hr><BR>
+                                    <b>NOTE:</b> The <a href = "http://www.cs.princeton.edu/courses/archive/fall10/cos526/papers/perez03.pdf">actual paper</a>  on Poisson Image editing is much more rigorous than I am.  It starts out thinking of image A and image B as continuous functions in 2D space, and formulating/solving a partial differential equation that describes the implantation of the gradient of image B onto image A in a least squared sense.  It turns out you get something called the "Poisson Equation" when you do it this way in continuous space, which is why the technique is called "Poisson Image Editing".  But you definitely don't need to understand partial differential equations to understand how this technique works on images with discrete pixels, so I omitted it in my discussion.  Interested math-inclined readers should definitely check this section of the paper out, though, because the Poisson Equation pops up everywhere and it's neat to see how it fits in here.<BR><BR>
+
+
+                                    <h2><u><a name = "results">Results and Discussion</a></u></h2><BR>
+
+                                    Now comes the really fun part: testing.  Below I'm going to show a bunch of test cases running this algorithm, and examine where the algorithm succeeds and where it fails (and try to explain why given what it's doing).  Alright let's do it!<BR><BR>
+
+                                    <h2><b>Example 1</b></h2>
+                                    <table border = "1"><tr><td><center>Image A</center></td><td><center>Image B</center></td></tr>
+                                    <tr><td><img src = "Examples/harrypottercast.jpg" width = "600" height = "500"></td><td><img src = "Examples/me_lookingright.jpg"></td></tr>
+
+                                    </table>
+                                    <table border = "1"><tr><td><center>Before Blending</center></td><td><center>After Blending</center></td></tr>
+                                    <tr><td><img src = "Examples/me_hpbefore.png"></td><td><img src = "Examples/me_hpafter.png"></td></tr>
+                                    </table>
+
+                                    This is a fairly successful case.  I was pretty tan and in indoor lighting when my picture was taken, while the Harry Potter cast was a little pasty and outside in overcast lighting.  If you look carefully you can see that the boundary matches up exactly (as it should) and that the interpolation inwards smoothly preserves all of the original detail (gradient) of my face.  Looking at specific parts of the boundary, the transition from the bottom of my face to Daniel Radcliffe's neck is seamless (you can't even really see where it happened), and my hair is now the same color as his.  And the rest of my face is the same color too.  So there we go...I can pretty much check hanging out with Emma Watson off the bucket list.
+
+                                    <BR><BR>
+                                    <h2><b>Example 2</b></h2>
+                                    <table border = "1"><tr><td><center>Image A</center></td><td><center>Image B</center></td></tr>
+                                    <tr><td><img src = "Examples/johannes.jpg"></td><td><img src = "Examples/BarackObama.jpg" width = "260" height = "340"></td></tr>
+
+                                    </table>
+                                    <table border = "1"><tr><td><center>Before Blending</center></td><td><center>After Blending</center></td></tr>
+                                    <tr><td><img src = "Examples/barackjohbama_before.png"></td><td><img src = "Examples/barackjohbama_after.png"></td></tr>
+                                    </table>
+                                    This is an example very similar in spirit to the last one.  I pasted President Obama's face onto some goon Johannes I know, and they blended seamlessly together.  Notice how I was careful to make the boundary match make sense; I chose skin pixels on image B to line up with skin pixels on image A so that the correspondence would make sense.
+
+
+                                    <BR><BR>
+                                    <h2><b>Example 3</b></h2>
+                                    <table border = "1"><tr><td><center>Image A</center></td><td><center>Image B</center></td></tr>
+                                    <tr><td><img src = "Examples/PoeField.jpg"></td><td><img src = "Examples/LionYawning.jpg"></td></tr>
+
+                                    </table>
+                                    <table border = "1"><tr><td><center>Before Blending</center></td><td><center>After Blending</center></td></tr>
+                                    <tr><td><img src = "Examples/poelion_before.png"></td><td><img src = "Examples/poelion_after.png"></td></tr>
+                                    </table>
+                                    Here's what I would consider to be the first failure case.  There are a few problems here.  First of all, there isn't much contrast between the lion and his background.  So when we put him in an environment where the grass is much brighter green and we would expect a contrast, the algorithm tries to preserve the original contrast between the lion and his background so he ends up light green.  Also, the grass is much different in the two images, so even though it changes to the correct color there is a visible seam.  In more technical computational photography terms, even though colors match up at the boundary, there is a "texture discontinuity" there.  Poisson Image Editing only solves the color discontinuity problem so this is a problem we're stuck with.
+
+                                    <BR><BR>
+                                    <h2><b>Example 4</b></h2>
+                                    <table border = "1"><tr><td><center>Image A</center></td><td><center>Image B</center></td></tr>
+                                    <tr><td><img src = "Examples/wedding.jpg"></td><td><img src = "Examples/LilWayne.jpg"></td></tr>
+                                    </table>
+                                    <table border = "1"><tr><td><center>Before Blending</center></td><td><center>After Blending</center></td></tr>
+                                    <tr><td><img src = "Examples/melilwayne_before.png"></td><td><img src = "Examples/melilwayne_after.png"></td></tr>
+                                    </table>
+                                    I was really impressed with this case because I started off with a grayscale image of Lil Wayne, and the colors on the boundary of my face were interpolated perfectly to fill his face in.  I've found that the reverse doesn't always work as well (i.e. putting color on a black and white image doesn't usually end up black and white...it often still has some color left).
+
+                                    <BR><BR>
+                                    <h2><b>Example 5</b></h2>
+                                    <table border = "1"><tr><td><center>Image A</center></td><td><center>Image B</center></td></tr>
+                                    <tr><td><img src = "Examples/fatzombie.jpg"></td><td><img src = "Examples/carlton.jpg"></td></tr>
+                                    </table>
+                                    <table border = "1"><tr><td><center>Before Blending</center></td><td><center>After Blending</center></td></tr>
+                                    <tr><td><img src = "Examples/friendlyfatzombie_before.png"></td><td><img src = "Examples/friendlyfatzombie_after.png"></td></tr>
+                                    </table>
+                                    Hey everyone, it's Carlton the friendly fat zombie from Doom 3!  Seriously I love this example, but there is a small problem with it.  Notice how I didn't match up Carlton's skin perfectly with the zombie's skin on the left.  Instead, that region of the boundary is going to match to a dark background in image A.  When the smooth gradient matching takes place it has to start out with those boundary conditions.  So what ends up happening is the black background smoothly seeps into the image of Carlton's face from the left, so his face is way too dark on that side.  Be careful that you have really good boundary matches when you use my program, otherwise you will have colors (like black in the case) bleeding in that shouldn't be there.
+
+
+                                    <BR><BR>
+                                    <h2><b>Example 6</b></h2>
+                                    <table border = "1"><tr><td><center>Image A</center></td><td><center>Image B</center></td></tr>
+                                    <tr><td><img src = "Examples/MichaelJackson_Bad.jpg"></td><td><img src = "Examples/carlton.jpg"></td></tr>
+                                    </table>
+                                    <table border = "1"><tr><td><center>Before Blending</center></td><td><center>After Blending</center></td></tr>
+                                    <tr><td><img src = "Examples/asianmichaeljackson_before.png"></td><td><img src = "Examples/asianmichaeljackson_after.png"></td></tr>
+                                    </table>
+                                    This has a similar problem to example 5, in that part of Carlton's face on the right got matched with Michael Jackson's hair, so some darkness got blended in from the right.
+
+                                    <BR><BR>
+                                    <h2><b>Example 7</b></h2>
+                                    <table border = "1"><tr><td><center>Before Blending</center></td><td><center>After Blending</center></td></tr>
+                                    <tr><td><img src = "Examples/willtattoo_before.png"></td><td><img src = "Examples/willtattoo_after.png"></td></tr>
+                                    </table>
+                                    Not much to say here, other than suddenly my friend Will is hard as f*** (that's a new one for us)
+
+
+                                    <BR><BR>
+                                    <h2><b>Example 8</b></h2>
+                                    <table border = "1"><tr><td><center>Image A</center></td><td><center>Image B</center></td></tr>
+                                    <tr><td><img src = "Examples/oranges.jpg"></td><td><img src = "Examples/willuncle.jpg"></td></tr>
+                                    </table>
+                                    <table border = "1"><tr><td><center>Before Blending</center></td><td><center>After Blending</center></td></tr>
+                                    <tr><td><img src = "Examples/willorange_before.png"></td><td><img src = "Examples/willorange_after.png"></td></tr>
+                                    </table>
+                                    This examples shows what truly bizarre things you can accomplish with Poisson Image Editing.
+
+
+                                    <BR><BR>
+                                    <h2><b>Example 9</b></h2>
+                                    <table border = "1"><tr><td><center>Image A</center></td><td><center>Image B</center></td></tr>
+                                    <tr><td><img src = "Examples/apples.jpg"></td><td><img src = "Examples/wedding.jpg"></td></tr>
+                                    </table>
+                                    <table border = "1"><tr><td><center>After Blending</center></td></tr>
+                                    <tr><td><img src = "Examples/appleparents.png"></td></tr>
+                                    </table>
+                                    The last batch of apples I got at Trader Joe's had two apples with an uncanny resemblance to my parents...
+                                    <BR><HR><BR>
+
+                                    Okay that's enough examples for now!  Just one more quick note on an application of this technique, and then you can try it out yourself
+
+                                    <h2><u><a name = "flattening">Texture Flattening</a></u></h2><BR>
+
+                                    One simple of extension of Poisson Image Editing that I tried (and failed at) is "texture flattening".  The idea is to only keep gradient information where there's a sharp edge, and to zero out the gradient everywhere else.  This way, only the sharpest edges will be transferred over to the new image.  Well I tried this out by implementing a <a href = "../EdgeCornerBlob">Canny Edge Detector</a> to find the edges but didn't have the most success.  Try it out though still and see if you can get it to do anything interesting!<BR><BR>
+
+                                    <h2><u><a name = "tryit">Try It Out Yourself!</a></u></h2><BR>
+                                    I made a program in Java that implements Poisson Image Editing as I described above, and I used that program to generate every one of my examples.  Why Java you may ask?  Well it's certainly not my language of choice but it is a very simple language, and it's still the best cross-platform solution with good data structure support that I know of.  This is important for people who don't know how to compile things from source but who would like to try out my program.  Since I would like this program to reach as wide an audience as possible and to see what a diverse array of people use it for, it needed to be easy to set up and run on many different types of computers "out of the box". <h2><a href = "InteractivePoisson.html">**Click Here to try it out!**</a></h2><BR>
+
+                                    <h2><u><a name = "russian">Russian Translation</a></u></h2><BR>
+                                    It appears that someone in Russia has provided a partial translation with more text of this page.  There is also a very cool discussion of the algorithm in the comments section of that article.  <a href = "http://habrahabr.ru/post/213403/">Click here</a> to view it.<BR><BR>
+
+                                    <h2><u><a name = "chinese">Chinese Translation</a></u></h2><BR>
+                                    There is also a translation of this article into Chinese. <a href = "http://buptjz.github.io/2014/03/17/poissonImageEditing/">Click here</a> to view it.
+
+                                    <h2><u><a name = "source">Source Code</a></u></h2><BR>
+                                    <a href = "https://github.com/ctralie/PoissonImageEditing/">Click here </a> to view and download the Java source code for my <a href = "InteractivePoisson.html">interactive Poisson Image Editing application</a> on Github.  Below is a summary of files you will find there:<BR><BR>
+                                    <table border = "1"><tr><td>Filename</td><td>Purpose</td></tr>
+                                    <tr><td>Poisson.java</td><td>The main applet interface that allows the user to select drag and paste parts of the images onto each other</td></tr>
+                                    <tr><td>
+                                    <tr><td>PoissonStandalone.java</td><td>Same as Poisson.java but designed to be a standalone application with a "main"</td></tr>
+                                    <tr><td>ImageSelector.java</td><td>A GUI interface for selecting, rotating, resizing, and flipping images</td></tr>
+                                    <tr><td>MatrixSolver.java</td><td>The meat of the algorithm that implements a Jacobi Matrix iterative solver for solving the discrete Poisson Image Editing problem</td></tr>
+                                    <tr><td>CannyEdgeImage.java</td><td>An implementation of canny edge extraction used in texture flattening</td></tr>
+                                    <tr><td>Coord.java</td><td>A really simple helper class for storing where selections were made</td></tr>
+                                    </table><BR>
+                                    Feel free to e-mail me with any questions or to ask them in the comments section below
+
+                                    <!-- BEGIN DISQUS -->
+                                    <BR><BR><BR>
+                                    <div id="disqus_thread"></div>
+                                    <script type="text/javascript">
+                                        var disqus_shortname = 'ctralieteaching';
+                                        var disqus_identifier = 'PoissonImageEditing';
+                                        var disqus_url = 'http://ctralie.com/Teaching/PoissonImageEditing/index.html';
+
+                                        (function() {
+                                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                            dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                                        })();
+                                    </script>
+                                    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                    <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+                                    <!-- END DISQUS -->
+
+
+								</section>
+
+						</div>
+					</div>
+
+<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+							<!-- Menu -->
+								<nav id="menu">
+									<header class="major">
+										<h2>Menu</h2>
+									</header>
+									<ul>
+										<li><a href="../../index.html">Homepage</a></li>
+										<li><a href = "../../ctralie_cv.pdf">CV</a></li>
+										<li>
+											<span class="opener">Research</span>
+											<ul>
+												<li><a href="../../Research/index.html">Projects</a></li>
+												<li><a href="../../Research/statement.pdf">Research Statement</a></li>
+												<li><a href = "../../Research/ctralie_dissertation.pdf">Dissertation</a></li>
+											</ul>
+										</li>
+										<li><a href="../../Software">Software</a></li>
+										<li><a href = "../../Teaching/index.html">Teaching</a></li>
+										<li>
+											<span class="opener">Archives</span>
+											<ul>
+												<li><a href="../../Teaching/Tutorials.html">Tutorials</a></li>
+												<li><a href="../../Coursework/index.html">Graduate Classes</a></li>
+												<li><a href="../../PrincetonUGRAD">Princeton Undergraduate Portfolio</a></li>
+											</ul>
+										</li>
+									</ul>
+								</nav>
+
+							<!-- Section -->
+								<section>
+									<div class="mini-posts">
+									
+									
+									 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+									<a class="twitter-timeline" data-width="314" data-height="350" data-link-color="#f56a6a" data-chrome="transparent" data-dnt="true" href="https://twitter.com/ctralie/timelines/1012673261124145153?ref_src=twsrc%5Etfw">Tweets by ctralie</a>
+									
+                                    </div>
+								</section>
+
+
+							<!-- Footer -->
+								<footer id="footer">
+									<p class="copyright">&copy; Christopher J. Tralie. All rights reserved.  Contact chris.tralie@gmail.com. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+								</footer>
+
+						</div>
+					</div>
+
+			</div>
+			
+            <!-- Start of StatCounter Code -->
+            <script type="text/javascript">
+            var sc_project=7309088; 
+            var sc_invisible=1; 
+            var sc_security="f655b56d"; 
+            </script>
+            <script type="text/javascript"
+            src="http://www.statcounter.com/counter/counter.js"></script>
+            <noscript><div class="statcounter"><a title="free hit counter"
+            href="http://statcounter.com/" target="_blank"><img class="statcounter"
+            src="http://c.statcounter.com/7309088/0/f655b56d/1/" alt="free hit
+            counter"></a></div></noscript>
+            <!-- End of StatCounter Code -->
+<!-- End Sidebar !-->
+
+<!-- Scripts -->
+			<script src="../../assets/js/jquery.min.js"></script>
+			<script src="../../assets/js/skel.min.js"></script>
+			<script src="../../assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="../../assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="../../assets/js/main.js"></script>
+<!-- End Scripts -->
+	</body>
+</html>

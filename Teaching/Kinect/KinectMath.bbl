@@ -1,0 +1,13 @@
+\begin{thebibliography}{1}
+
+\bibitem{khoshelham2012accuracy}
+Kourosh Khoshelham and Sander~Oude Elberink.
+\newblock Accuracy and resolution of kinect depth data for indoor mapping
+  applications.
+\newblock {\em Sensors}, 12(2):1437--1454, 2012.
+
+\bibitem{KonoligeCalibrationTechnical}
+Patrick~Mihelich Kurt~Konolige.
+\newblock Technical description of kinect calibration, April 2013.
+
+\end{thebibliography}

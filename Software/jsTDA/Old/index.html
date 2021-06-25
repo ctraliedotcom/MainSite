@@ -1,0 +1,100 @@
+<html>
+
+<head>
+<script src="TDA.js"></script>
+<script src="plotly.min.js"></script>
+<script src="ripser/ripser.js"></script>
+
+</head>
+<table>
+<h1>Fast Rips in The Browser</h1>
+<h2>Powered by Uli Bauer's <a href = "https://github.com/Ripser/ripser">Ripser</a></h2>
+<h2><b>Update 9/19/2016: An even faster version is now up at <a href = "http://live.ripser.org/">http://live.ripser.org/</a></h2>
+<HR>
+<tr><td><h3>Distance Cutoff</h3></td><td><input type="text" id = "dcutoff" size="5"></input></td></tr>
+<tr><td><h3>Max Homological Dimension</h3></td><td><input type="text" id = "homdim" size="5"></input></td></tr>
+<tr><td><h3>Point Cloud File</h3></td><td><input type="file" id="pcInput"></td></tr>
+</table>
+
+Click "browse" and upload a plain text file which contains a Euclidean point cloud, with each point on a line with each coordinate separated by spaces.  Examples include <a href = "PCExamples/Circle50.txt">Circle50.txt</a>, <a href = "PCExamples/Sphere100.txt">Sphere100.txt</a>, and <a href = "PCExamples/Torus200.txt">Torus200.txt</a>.  The rips filtration will be computed up to edge lengths bounded by the distance cutoff, and diagrams will be shown for all dimensions from 0 up to the maximum homological dimension specified (capped at 3).
+
+<HR>
+
+<table>
+<tr><td><button onclick="recompute()">Recompute</button></td><td><button onclick="saveResults()">Save Results</button></td></tr>
+</table>
+
+<p id = "time"></p>
+<p id = "PointCloud"></p>
+<p id = "H0"></p>
+<p id = "H1"></p>
+<p id = "H2"></p>
+<p id = "H3"></p>
+
+
+
+
+<script>
+    document.getElementById("dcutoff").value = "100";
+    document.getElementById("homdim").value = "1";
+    
+    var dgms = {};
+    var Ps = [];
+    var fileInput = document.getElementById('pcInput');
+    
+	fileInput.addEventListener('change', function(e) {
+		var file = fileInput.files[0];
+		var textType = /text.*/;
+
+		if (file.type.match(textType)) {
+			var reader = new FileReader();
+			reader.onload = function(e) {
+				//console.log(reader.result);
+				var lines = reader.result.split(/[\r\n]+/g);
+				Ps = [];
+				for (var i = 0; i < lines.length; i++) {
+				    if (lines[i].length == 0) {
+				        break;
+				    }
+				    fields = lines[i].split(" ");
+				    for (var k = 0; k < fields.length; k++) {
+				        fields[k] = parseFloat(fields[k]);
+				    }
+				    Ps.push(fields);
+				}
+				//Plot point cloud
+				if (Ps[0].length == 2) {
+				    plotPC2D(Ps, "PointCloud");
+				}
+				else if (Ps[0].length == 3) {
+				    plotPC3D(Ps, "PointCloud");
+				}
+				dgms = doComputation(Ps);
+			}
+			reader.readAsText(file);	
+		} else {
+			result.innerHTML = "File not supported!"
+		}
+	});
+	
+	function recompute() {
+	    doComputation(Ps);
+	}
+</script>
+
+
+<!-- Start of StatCounter Code -->
+<script type="text/javascript">
+var sc_project=7309088; 
+var sc_invisible=1; 
+var sc_security="f655b56d"; 
+</script>
+<script type="text/javascript"
+src="http://www.statcounter.com/counter/counter.js"></script>
+<noscript><div class="statcounter"><a title="free hit counter"
+href="http://statcounter.com/" target="_blank"><img class="statcounter"
+src="http://c.statcounter.com/7309088/0/f655b56d/1/" alt="free hit counter"></a></div></noscript>
+<!-- End of StatCounter Code -->
+
+</body>
+</html>

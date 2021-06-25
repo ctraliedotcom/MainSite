@@ -1,0 +1,90 @@
+<!--Programmer: Chris Tralie!-->
+<!--Purpose: To create a "wheel of fortune" app to randomly call on students!-->
+<html>
+<head>
+<script src = "WheelOfFortune.js"></script>
+<style>
+button {
+  outline: none;
+  background-color: #bfbfbf;
+  border: 2px solid #000;
+  color: #000;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 6px;
+  cursor: pointer;
+  border-radius: 10px;
+}
+input {
+  width: 50;
+  border-radius: 5px;
+}
+</style>
+<body>
+
+    <table>
+        <tr>
+            <td><button type = "button" onclick = "doSpin()">Spin</button></td>
+            <td>
+                <table>
+                    <tr><td>Minimum Time <input type="text" id = "minTime"></input> second(s)</td></tr>
+                    <tr></tr><td>Maximum Time <input type="text" id = "maxTime"></input> second(s)</td></tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+
+<canvas id = "wof" width = "800" height = "800" style="border:1px solid #000000;">
+</canvas><BR>
+<table>
+    <tr>
+        <td><h3>Student Names (One Per Line)</h3></td>
+        <td><button type = "button" onclick = "updateNames()">Update Names</button>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <textarea id="names" cols="40" rows = "30"></textarea>
+        </td>
+    </tr>
+</table>
+
+
+<script>
+var minTimeInput = document.getElementById("minTime");
+minTimeInput.value = "1";
+var maxTimeInput = document.getElementById("maxTime");
+maxTimeInput.value = "3";
+document.getElementById("names").value = "Hannah Abbot\nSusan Bones\nCho Chang\nMichael Corner\nColin Creevey\nSeamus Finnigan\nMarcus Flint\nGregory Goyle\nAnthony Goldstein\nHermione Granger\nAngelina Johnson\nLee Jordan\nNeville Longbottom\nLuna Lovegood\nDraco Malfoy\nPansy Parkinson\nPadma Patil\nParvati Patil\nHarry Potter\nZacharius Smith\nRomilda Vane\nFred Weasley\nGeorge Weasley\nGinny Weasley\nRon Weasley\nOliver Wood\nBlaise Zabini";
+updateNames();
+
+
+requestAnimationFrame(drawWheel);
+
+
+function doSpin(evt) {
+    angle0 = angle % (2*Math.PI);
+    var minTime = parseInt(minTimeInput.value);
+    var maxTime = parseInt(maxTimeInput.value);
+    var student = Math.random()*names.length;
+    
+    //Given a final angle on which to land and a target time during which to do it
+    //Need to solve for initial angular velocity and constant angular acceleration
+    var NSpins = 1 + Math.round(Math.random()*maxTime);//Choose a random number of spins between 1 and 3x the maximum nubmer of seconds
+    finalAngle = 2*Math.PI*(NSpins + (student + 0.5)/names.length);
+    targetTime = minTime + (maxTime-minTime)*Math.random();//And a random time interval between 5-10 seconds
+    
+    omega0 = 2*(finalAngle - angle0)/targetTime;
+    alpha = omega0/targetTime;
+    
+    spinning = true;
+	startTime = Date.now();
+	requestAnimationFrame(drawWheel);
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,291 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<!-- Header !-->
+	<head>
+		<title>Christopher J. Tralie, Ph.D.</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<!--[if lte IE 8]><script src="../../assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="../../assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="../../assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="../../assets/css/ie8.css" /><![endif]-->
+        <style>
+        .image_off, #home:hover .image_on{
+           display:none
+        }
+        .image_on, #home:hover .image_off{
+           display:block
+        }
+        </style>
+	</head>
+	<body>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								<header id="header">
+									<a href="../../index.html" class="logo"><strong>Christopher J. Tralie, Ph.D.</strong></a>
+								</header>
+<!-- End Header !-->
+
+							<!-- Content -->
+							    <SCRIPT SRC="../../jsMath/easy/load.js"></SCRIPT>
+								<section>
+                                    <h1>Seam Carving</h1>
+
+                                    <ul>
+                                    <li><a href = "#purpose">Purpose</a></li>
+                                    <li><a href = "#implementation">Implementation Details</a></li>
+                                    <li><a href = "#results">Results</a></li>
+                                    <li><a href = "#extension">Remove Feature Extension</a></li>
+                                    <li><a href = "#toofar">Pushing It Too Far</a></li>
+                                    <li><a href = "#code">Code Summary</a></li>
+                                    </ul>
+
+                                    <h2><a name = "purpose">Purpose / Algorithm</a></h2>
+
+                                    <p>Simply scaling an image down will blur important areas just as much as unimportant areas (e.g. a huge sky background with little variation will be blurred just the same as someone's face in the foreground).  The seam carving algorithm is a "content aware image resizer"; that is, it tries to do a better job than just uniform scale by choosing to erase areas of the image that are "less noticeable."  It removes a "seam" from an image, which is a line of connected pixels from top to bottom or left to right whose presence is the least noticeable if removed.  This "least noticeable" effect is determined by applying an objective function to every possible seam.  The choice of objective function in this assignment is the absolute sum of both gradient components.  Minimizing this ensures that regions with the least energy/detail get removed first.
+
+                                    <BR><BR>
+                                    <h2><a name = "implementation">Implementation Details</a></h2>
+                                    <ul>
+                                    <li>The first step in the algorithm is to calculate the gradient of the image.  This is done with a gaussian just as in the <a href = "../EdgeCornerBlob/index.html#cannyalgorithm">canny edge detector</a> tutorial.  Then, an "energy image" (the objective function at each pixel) is created by taking abs(F<SUB>x</SUB>) + abs(F<SUB>y</SUB>).  This image is then normalized.
+
+                                    </li>
+
+                                    <li>The next step of the algorithm is to take this image and to find the path of minimum cost in the energy image either from top to bottom or from left to right (the seam).  Each pixel in this path must be connected to a pixel either directly below it, directly below and to the left, or directly below and to the right.  This means a method of dynamic programming can be used instead of BFS or DFS.  That is, for each pixel in each row, the min cost path to get to that pixel is that pixel's weight plus the minimum of the three pixels above it.  Back tracing can then be done starting at the minimum weight pixel at the bottom, to determine what the seam path was.<BR>
+                                    <img src = "seamexample.jpg">
+                                    <BR>
+                                    <ul><li>
+                                    I first wrote the code to calculate a vertical seam with dynamic programming.  After this, all I had to do to find horizontal seams was to send the transpose of my image to the vertical seam function.</li>
+                                    <li>When retargeting an image, I calculate the min horizontal seam AND the min vertical seam at each step, and I compare their weights.  I always remove the min cost seam between the two so that the most energy is preserved</li>
+                                    <li>NOTE ALSO: The seam calculation process is extremely expensive in matlab since it requires making nested for loops (matlab doesn't deal well with for loops in general).  On larger images, it can take over a second per step since it has to calculate both the vertical and horizontal seams.
+
+                                    </ul></li>
+
+                                    <li>Once the min seam has been found, the final step is to remove it.  This requires shifting all pixels to the right of it over one to the left, and then deleting the final row.  I do this to the grayscale image and the color image in parallel</li>
+                                    </ul>
+
+                                    <BR><BR>
+                                    <h2><a name = "results">Results</a></h2>
+                                    First, here is an example of the energy image and the minimum vertical and horizontal seams for an image:<BR>
+
+                                    <table border = "1" cellpadding = "5">
+                                    <tr><td><img src = "me.jpg"></td><td><img src = "energy.png"></td></tr>
+                                    <tr><td><center>Original Image (<b>Dimension 640x480,</b>)</center></td><td><center>Objective energy function</center></td></tr>
+                                    </table>
+
+                                    <table border = "1" cellpadding = "5">
+                                    <tr><td><img src = "verticalseam.png"></td><td><img src = "horizontalseam.png"></td></tr>
+                                    <tr><td><center>Vertical Seam</center></td><td><center>Horizontal Seam</center></td></tr>
+                                    </table><BR>
+
+                                    Here is an example of the image sized by 25% down in both the horizontal and vertical directions<BR><BR>
+
+                                    <table border = "1">
+                                    <tr><td><img src = "me480x480.png"></td><td><img src = "me640x360.png"></td></tr>
+                                    <tr><td>Sized down to 75% horizontally (new resolution 480x480).  Note how well all of the important features and sizes are preserved.  My face has barely changed in size, and all of the pictures in the background are still in tact, since the seams mostly only removed sections of the couch and the blank wall in the background that are unimportant.</td><td>Sized down to 75% in vertical direction (new resolution 640 x 360).  NOTE that my hair is a bit distorted here since there are many fewer horizontal seams than vertical seams (so distortion is inevitable).  But the sizes of all of the rest of the features turned out well.</td></tr>
+                                    </table>
+
+                                    <BR><BR><hr>
+                                    Here is another example:<BR>
+                                    <table border = "1">
+                                    <tr><td><img src = "aperture.jpg"></td><td><img src = "apertureresize.png"></td></tr>
+                                    <tr><td>Original image (672x420)</td><td>Retargeted image (500x400)</td></tr>
+                                    </table>
+                                    NOTE: The seam carving techique did a great job at retaining the important parts of the image here; notice how the items on the desk (the computer, keyboard, mouse, and clipboard) have moved closer together, but that they have barely changed in size.  Also note how the specks on the wall have moved closer together as a result of moving minimum cost seams, and how the calendar has been preserved between the two images.  <BR><BR>
+
+                                    <BR><BR><hr>
+                                    Here is another example:<BR>
+                                    <table border = "1">
+                                    <tr><td><img src = "brickwall.jpg"></td><td><img src = "brickwallresize.png"></td></tr>
+                                    <tr><td>Original image (615x372)</td><td>Retargeted image (450x350)</td></tr>
+                                    </table>
+                                    I was starting to really push the boundaries here, but it still worked without too many artifacts
+
+                                    <BR><BR><hr>
+                                    One last example:<BR>
+                                    <table border = "1">
+                                    <tr><td><img src = "waterfall.jpg"></td><td><img src = "waterfallresize.png"></td></tr>
+                                    <tr><td>Original image (576x432)</td><td>Retargeted image (400x400)</td></tr>
+                                    </table>
+                                    This one worked extremely well, and it's perhaps one of the best.  In general, it seems that the nature scenese work out the best since there is so much detail to begin with, moving seams in areas of less detail is that much less noticeable in the overall effect.  So the trees got a little thinner...I would argue the image on the right still looks very realistic.
+
+                                    <BR><BR>
+                                    <h2><a name = "extension">Remove Feature Extension</a></h2>
+                                    One trick that can be played with seam carving is to intentionally zero regions of the objective energy function so certain regions of the image get removed first.  I extended my seam carver so that the user can supply an extra black/white image, where black regions will be marked to zero in the energy image.  Here are a few examples with this extension:<BR><BR>
+
+                                    <table border = "1">
+                                    <tr><td><img src = "beachhouses.jpg"></td><td><img src = "beachhousesremove.jpg"></td></tr>
+                                    <tr><td>Original Image</td><td>House marked for removal</td></tr>
+                                    <tr><td><img src = "beachhousestrim.png"></td></tr>
+                                    <tr><td>Result of resizing</td></tr>
+                                    </table>
+
+                                    This result shows one of the dangers of using this trick.  Note that since there is a lot of variation in the clouds, a noticeable artifact has been introduced there (not the case with the sand since it is more homogenous throughout the image).  If there are regions of high variation like that and the objective energy function is tweaked, then the chances of distorting the image will increase.<BR><BR>
+
+                                    Here is a slightly better result:<BR>
+                                    <table border = "1">
+                                    <tr><td><img src = "sand.jpg"></td><td><img src = "sandremove.jpg"></td></tr>
+                                    <tr><td>Original Image</td><td>Person marked for removal</td></tr>
+                                    <tr><td><img src = "sandtrim.png"></td></tr>
+                                    <tr><td>Result of resizing</td></tr>
+                                    </table><BR>
+                                    This example worked much better, since the sky, the water, and the sand are all very homogeneous and removing seams that go through the child standing there is much less noticeable.
+
+                                    <BR><BR>
+                                    <h2><a name = "toofar">Pushing It Too Far</a></h2>
+                                    This algorithm works very well in general, especially for large images with lots of seams.  However, if you try to push it too far (by say, resizing the image to a third of its original dimensions), you'll end up getting some pretty weird (and hilarious) results.  I devoted an entire Facebook album to using this algorithm to create demented images of my friends.  I've posted some of them below for your viewing pleasure.  If you look closely you can see which features had the highest energy seams (for some the nose stayed, for some the lips stayed, for some the hair stayed).  Enjoy!<BR>
+                                    <table cellpadding = "10">
+                                    <tr><td><img src = "toofar/adjani.jpg"></td>
+                                    <td><img src = "toofar/anna.jpg"></td>
+                                    <td><img src = "toofar/carlton.jpg"></td>
+                                    <td><img src = "toofar/chipser.jpg"></td></tr>
+                                    <tr><td><img src = "toofar/jason.jpg"></td>
+                                    <td><img src = "toofar/johannes.jpg"></td>
+                                    <td><img src = "toofar/lisa.jpg"></td>
+                                    <td><img src = "toofar/me.jpg"></td></tr>
+                                    <tr><td><img src = "toofar/soha.jpg"></td>
+                                    <td><img src = "toofar/vinayak.jpg"></td>
+                                    <td><img src = "toofar/will.jpg"></td></tr>
+                                    <tr><td><img src = "toofar/alexha.jpg"></td>
+                                    <td><img src = "toofar/jknutson.jpg"></td></tr>
+                                    <tr><td><img src = "toofar/wlivengo.jpg"></td>
+                                    <tr><td><img src = "toofar/chipser_serene.jpg"></td></tr>
+                                    </table>
+
+                                    <BR><BR>
+                                    <h2><a name = "code">Code Summary</a></h2>
+                                    <!--I've made my code to do this available online.  <a href = "src.zip">Click here</a> to download the MATLAB code described below:<BR><BR>!-->
+                                    <table border = "1"><tr><td>Filename</td><td>Description</td></tr>
+
+                                    <tr><td>EnergyImg.m</td><td>Calculates the objective function for a grayscale image, using the gradient method discussed above</td></tr>
+
+                                    <tr><td>find_vertical_seam.m</td><td>Finds the minimum cost vertical seam using dynamic programming</td></tr>
+
+                                    <tr><td>find_horizontal_seam.m</td><td>Finds the minimum cost horizontal seam by calling the vertical seam function with the transpose of the grayscale image</td></tr>
+
+                                    <tr><td>markSeam.m</td><td>Marks a horizontal or vertical seam in red in the color image</td></tr>
+
+                                    <tr><td>remove_horizontal_seam.m</td><td>Removes a horizontal seam from an image and shifts all of the pixels below it up, then removes the last row</td></tr>
+
+                                    <tr><td>remove_vertical_seam.m</td><td>Removes a vertical seam from an image and shifts all of the pixels to the right of it to the left, then removes the last column</td></tr>
+
+                                    <tr><td>seam_carve_extended.m</td><td>Takes a filename for the image, a filename for the regions to be removed (the extra step I did), and a target number of rows and columns.  This will resize the image to the target size by removing horizontal and vertical seams one by one</td></tr>
+
+                                    <tr><td>seam_carve.m</td><td>An overloaded version of the seam carver that doesn't take a remove image.</td></tr>
+
+                                    </table><BR>
+
+
+                                    <!-- BEGIN DISQUS -->
+                                    <BR><BR><BR>
+                                    <div id="disqus_thread"></div>
+                                    <script type="text/javascript">
+                                        var disqus_shortname = 'ctralieteaching';
+                                        var disqus_identifier = 'SeamCarving';
+                                        var disqus_url = 'http://ctralie.com/Teaching/SeamCarving/index.html';
+
+                                        (function() {
+                                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                                            dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                                        })();
+                                    </script>
+                                    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                                    <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+                                    <!-- END DISQUS -->
+
+								</section>
+
+						</div>
+					</div>
+
+<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+							<!-- Menu -->
+								<nav id="menu">
+									<header class="major">
+										<h2>Menu</h2>
+									</header>
+									<ul>
+										<li><a href="../../index.html">Homepage</a></li>
+										<li><a href = "../../ctralie_cv.pdf">CV</a></li>
+										<li>
+											<span class="opener">Research</span>
+											<ul>
+												<li><a href="../../Research/index.html">Projects</a></li>
+												<li><a href="../../Research/statement.pdf">Research Statement</a></li>
+												<li><a href = "../../Research/ctralie_dissertation.pdf">Dissertation</a></li>
+											</ul>
+										</li>
+										<li><a href="../../Software">Software</a></li>
+										<li><a href = "../../Teaching/index.html">Teaching</a></li>
+										<li>
+											<span class="opener">Archives</span>
+											<ul>
+												<li><a href="../../Teaching/Tutorials.html">Tutorials</a></li>
+												<li><a href="../../Coursework/index.html">Graduate Classes</a></li>
+												<li><a href="../../PrincetonUGRAD">Princeton Undergraduate Portfolio</a></li>
+											</ul>
+										</li>
+									</ul>
+								</nav>
+
+							<!-- Section -->
+								<section>
+									<div class="mini-posts">
+									
+									
+									 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+									<a class="twitter-timeline" data-width="314" data-height="350" data-link-color="#f56a6a" data-chrome="transparent" data-dnt="true" href="https://twitter.com/ctralie/timelines/1012673261124145153?ref_src=twsrc%5Etfw">Tweets by ctralie</a>
+									
+                                    </div>
+								</section>
+
+
+							<!-- Footer -->
+								<footer id="footer">
+									<p class="copyright">&copy; Christopher J. Tralie. All rights reserved.  Contact chris.tralie@gmail.com. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+								</footer>
+
+						</div>
+					</div>
+
+			</div>
+			
+            <!-- Start of StatCounter Code -->
+            <script type="text/javascript">
+            var sc_project=7309088; 
+            var sc_invisible=1; 
+            var sc_security="f655b56d"; 
+            </script>
+            <script type="text/javascript"
+            src="http://www.statcounter.com/counter/counter.js"></script>
+            <noscript><div class="statcounter"><a title="free hit counter"
+            href="http://statcounter.com/" target="_blank"><img class="statcounter"
+            src="http://c.statcounter.com/7309088/0/f655b56d/1/" alt="free hit
+            counter"></a></div></noscript>
+            <!-- End of StatCounter Code -->
+<!-- End Sidebar !-->
+
+<!-- Scripts -->
+			<script src="../../assets/js/jquery.min.js"></script>
+			<script src="../../assets/js/skel.min.js"></script>
+			<script src="../../assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="../../assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="../../assets/js/main.js"></script>
+<!-- End Scripts -->
+	</body>
+</html>
