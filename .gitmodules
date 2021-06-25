@@ -9,4 +9,4 @@
 	url = https://github.com/ctralie/DREiMac.git
 [submodule "smokeStack"]
 	path = smokeStack
-	url = https://github.com/ctralie/smokeStack.git
+	url = https://github.com/SKutai/smokeStack.git
