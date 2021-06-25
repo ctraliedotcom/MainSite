@@ -10,3 +10,12 @@
 [submodule "smokeStack"]
 	path = smokeStack
 	url = https://github.com/SKutai/smokeStack.git
+[submodule "Research/SSMTW"]
+	path = Research/SSMTW
+	url = https://github.com/ctraliedotcom/SSMTW.git
+[submodule "Research/SWVQuasi"]
+	path = Research/SWVQuasi
+	url = https://github.com/ctraliedotcom/SWVQuasi.git
+[submodule "Research/SloMoLoops"]
+	path = Research/SloMoLoops
+	url = https://github.com/ctraliedotcom/SloMoLoops.git

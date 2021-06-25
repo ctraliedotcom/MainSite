@@ -1,0 +1,315 @@
+<html>
+
+<head>
+<!--External Libraries!-->
+<script src="http://connect.soundcloud.com/sdk.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="libs/json2.js"></script>
+<script type="text/javascript" src="libs/gl-matrix-min.js"></script>
+<script type="text/javascript" src="libs/webgl-utils.js"></script>
+<script type="text/javascript" src="libs/numeric-1.2.6.min.js"></script>
+<script type="text/javascript" src="libs/SCapi.js"></script>
+
+<!--D3 stuff!-->
+<script src="libs/d3-collection.v0.1.min.js"></script>
+<script src="libs/d3-dispatch.v0.3.min.js"></script>
+<script src="libs/d3-dsv.v0.2.min.js"></script>
+<script src="libs/d3-request.min.js"></script>
+<script src="libs/d3.min.js"></script>
+
+<!--My Scripts!-->
+<script src="Cameras3D.js"></script>
+<script src="LoopDittyGL.js"></script>
+</head>
+
+<body onload="webGLStart();">
+
+<h1>Geometric Models for Musical Audio Data</h1>
+
+<h2>Paul Bendich, Ellen Gasparovic, John Harer, and Christopher Tralie</h2>
+
+<table><tr><td>
+<table><tr><td>
+<canvas id="LoopDittyGLCanvas" style="border: none;" width="800" height="600"></canvas>
+</td></tr>
+<tr><td bgcolor = "black" width = 800>
+<input type="range" id="timeSlider" min = "0" max = "1000" value = "0" step = "1" style="width:760px">
+</td></tr>
+<tr><td width = 800 bgcolor = "black">
+
+<table>
+<tr>
+<td><button type = "button" onclick = "playAudioButton()">Play</button></td>
+<td><button type = "button" onclick = "pauseAudio()">Pause</button></td>
+<td><div id = "pagestatus"><h3><font color = "red">Waiting for Input...</font></h3></td>
+</tr>
+</table>
+
+</td></tr>
+</table>
+
+
+</td>
+<td>
+
+<h2><u>Song Information</u></h2>
+<table>
+<tr><td><h3><u>Variance Explained<u>:</h3></td><td><h3><div id = "varExplainedText"></div></h3></td></tr>
+<tr><td><h3><u>Cluster</u> </h3></td><td><h3><div id = "centerNumText"></div></h3></td></tr>
+<tr><td><h3><u>Dimension</u> </h3></td><td><h3><div id = "dimensionText"></div></h3></td></tr>
+</table>
+<HR>
+<table>
+<tr><td>Display Time Edges</td><td>
+<input type="checkbox" id="timeEdgesCheckbox" />
+</td>
+</tr>
+<tr><td>Display Scaffolding Edges</td><td>
+<input type="checkbox" id="scaffoldingEdgesCheckbox"/>
+</td>
+</table>
+
+
+</td>
+</tr></table>
+
+<table>
+<tr><td width = "800">
+<h2>Directions</h2>
+<ul>
+<li>Select one of the precomputed examples below to load in PCA of the sliding window embedding with the geometric model imposed on top of it</li>
+<li>To view the point cloud from a different point of view, left click and drag your mouse.  To zoom, right click and drag.  To translate, center click and drag</li>
+<li>Click play/pause to play the or pause the song synchronized with the point cloud, and click along the slider to jump around in the song. Information will be displayed in the right panel about the cluster to which the current sliding window of the song belongs
+</ul>
+
+<h2>Precomputed Examples</h2>
+<button type = "button" onclick = "playMJ()">Michael Jackson "Bad"</button><BR>
+<button type = "button" onclick = "playBeatles()">The Beatles "Lucy in The Sky with Diamonds"</button>
+
+<h2>Upload Custom Example</h2>
+<table>
+<tr><td><h3>Audio File</h3></td><td><input type = "file" id = "audioInput"></td></tr>
+<tr><td><h3>Geometric Model File</h3></td><td><input type="file" id="geomModelInput"></td></tr>
+</table>
+
+</td></tr>
+</table>
+
+<script>
+    var waitingDisp = document.getElementById("pagestatus");
+    var loading = false;
+    var source = null;
+    var analyser = null;
+    var context = new (window.AudioContext || window.webkitAudioContext)();
+    var buffer = null;
+    var fileInput = document.getElementById('geomModelInput');
+    var result = document.getElementById('text');
+    
+    var displayTimeEdges = true;
+    var displayScaffoldingEdges = true;
+
+    function disconnect() {
+        source.stop();
+        source.disconnect(0);
+        analyser.disconnect(0);
+    }
+    
+    function parseText(fields) {
+        var varExplainedText = document.getElementById('varExplainedText');
+        var v = Math.round(1000*parseFloat(fields[0]));                
+        varExplainedText.innerHTML = "" + v/10 + "%";
+        var NCenters = parseInt(fields[1]);
+        var idx = 2;
+        var i = 0;
+        centers = [];
+        dims = [];
+        for (i = 0; i < NCenters; i++) {
+            centers.push(parseInt(fields[idx]));
+            idx++;
+            dims.push(parseInt(fields[idx]));
+            idx++;
+        }
+        var NEdges = parseInt(fields[idx]);
+        idx++;
+        edges = numeric.rep([NEdges, 2]);
+        var e1, e2;
+        for (i = 0; i < NEdges; i++) {
+            e1 = parseInt(fields[idx]);
+            idx++;
+            e2 = parseInt(fields[idx]);
+            idx++;
+            edges[i] = [e1, e2];
+        }
+        var N = parseInt(fields[idx]);
+        idx++;
+        var X = numeric.rep([N, 5]);
+        for (i = 0; i < N; i++) {
+            X[i][0] = parseFloat(fields[idx]);idx++;
+            X[i][1] = parseFloat(fields[idx]);idx++;
+            X[i][2] = parseFloat(fields[idx]);idx++;
+            X[i][3] = parseFloat(fields[idx]);idx++;
+            X[i][4] = parseInt(fields[idx]);idx++;
+        }
+        initGLBuffers(X);
+    }
+    
+    var ndots = 0;
+    function changeLoad() {
+        if (!loading) {
+            return;
+        }
+        var s = "<h3><font color = \"yellow\">Loading";
+        for (var i = 0; i < ndots; i++) {
+            s += ".";
+        }
+        s += "</font></h3>"
+        waitingDisp.innerHTML = s;
+        if (loading) {
+            ndots = (ndots + 1)%6;
+            setTimeout(changeLoad, 500);
+        }
+    }
+    
+    function loadSong(fields, songfilename) {        
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', songfilename, true);
+        xhr.responseType = 'arraybuffer';
+        xhr.onload = function(err) {
+            context.decodeAudioData(this.response, function(buff) {
+            buffer = buff;
+            parseText(fields);      
+            loading = false;
+            waitingDisp.innerHTML = "<h3><font color = \"#00ff00\">Ready</font></h3>";
+            }, function(e) {
+                console.log(e);
+            });
+        };
+        loading = true;
+        ndots = 0;
+        changeLoad();
+        xhr.send();
+    }
+
+    fileInput.addEventListener('change', function(e) {
+        var file = fileInput.files[0];
+        var textType = /text.*/;
+
+        if (file.type.match(textType)) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var fields = reader.result.split(",");
+                parseText(fields);
+            }
+            reader.readAsText(file);
+            requestAnimFrame(function(){repaint});
+        } else {
+            result.innerHTML = "File not supported!"
+        }
+    });
+    
+    function playAudioButton() {
+        if (!playing) {
+            //Prevent the user from accidentally playing multiple audio streams
+            playAudio();
+        }
+    }
+    
+    function playAudio() {
+        if (context === null) {
+            return;
+        }
+        playing = true;
+        console.log("Playing audio, offsetTime = " + offsetTime);
+        source = context.createBufferSource();
+        source.buffer = buffer;
+        analyser = context.createAnalyser();
+        source.connect(analyser);
+        analyser.connect(context.destination);
+
+        startTime = context.currentTime;
+
+        //setTimeout(disconnect, source.buffer.duration * 1000 +1000);
+        
+        source.start(context.currentTime, offsetTime, buffer.duration - offsetTime);
+        
+        playIdx = 0;
+        requestAnimFrame(function(){repaintWithContext(context)});
+    }
+    
+    function pauseAudio() {
+        console.log("Pausing");
+        if (source === null) {
+            return;
+        }
+        playing = false;
+        source.stop();
+        offsetTime = context.currentTime - startTime + offsetTime;
+    }
+    
+    var audioInput = document.getElementById('audioInput');
+    audioInput.addEventListener('change', function(e) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var data = e.target.result;            
+            if(context.decodeAudioData) {
+                context.decodeAudioData(data, function(buff) {
+                buffer = buff;
+                }, function(e) {
+                    console.log(e);
+                });
+            } else {
+                buffer = context.createBuffer(data, false /*mixToMono*/);
+                playAudio();
+            }    
+        }        
+        reader.readAsArrayBuffer(audioInput.files[0]);
+    });
+    
+    var timeSlider = document.getElementById('timeSlider');
+    timeSlider.addEventListener('change', function(e) {
+        if (buffer === null) {
+            return;
+        }
+        offsetTime = buffer.duration*parseFloat(timeSlider.value)/1000.0;
+        playIdx = 0;
+        requestAnimFrame(function(){repaintWithContext(context)});
+        if (playing) {
+            source.stop();
+            playAudio();
+        }
+    });
+    
+    var timeEdgesCheckbox = document.getElementById('timeEdgesCheckbox');
+    timeEdgesCheckbox.addEventListener('change', function(e) {
+        displayTimeEdges = timeEdgesCheckbox.checked;
+        requestAnimFrame(function(){repaintWithContext(context)});
+    });
+    timeEdgesCheckbox.checked = true;
+    
+    var scaffoldingEdgesCheckbox = document.getElementById('scaffoldingEdgesCheckbox');
+    scaffoldingEdgesCheckbox.addEventListener('change', function(e) {
+        displayScaffoldingEdges = scaffoldingEdgesCheckbox.checked;
+        requestAnimFrame(function(){repaintWithContext(context)});
+    });
+    scaffoldingEdgesCheckbox.checked = true;
+    
+    function playMJ() {
+        d3.text("W3.8dim4.1.txt", function(error, data) {
+          if (error) throw error;
+          var fields = data.split(",");
+          loadSong(fields, "MJ.ogg");
+        });  
+    }
+    
+    function playBeatles() {
+        d3.text("LucyW4dim5.txt", function(error, data) {
+          if (error) throw error;
+          var fields = data.split(",");
+          loadSong(fields, "Lucy.ogg");
+        });     
+    }
+</script>
+
+
+</body>
+</html>

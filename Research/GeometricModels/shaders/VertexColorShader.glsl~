@@ -1,0 +1,11 @@
+attribute vec3 vPos;
+uniform mat4 uMVMatrix;
+uniform mat4 uPMatrix;
+uniform vec4 offset;
+varying vec4 fColor;
+
+void main(void) {
+	vec4 mvPosition = uMVMatrix*(vec4(vPos, 1.0)+offset);
+    gl_Position = uPMatrix * mvPosition;
+    fColor = vec4(1.0, 1.0, 1.0, 1.0);
+}
