@@ -19,3 +19,6 @@
 [submodule "Research/SloMoLoops"]
 	path = Research/SloMoLoops
 	url = https://github.com/ctraliedotcom/SloMoLoops.git
+[submodule "PrincetonUGRAD"]
+	path = PrincetonUGRAD
+	url = https://github.com/ctraliedotcom/PrincetonUGRAD.git
