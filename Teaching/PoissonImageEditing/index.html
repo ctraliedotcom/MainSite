@@ -39,7 +39,7 @@
 <!-- End Header !-->
 
 							<!-- Content -->
-							    <SCRIPT SRC="../../jsMath/easy/load.js"></SCRIPT>
+                                <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 								<section>
                                     <h1>Poisson Image Editing</h1>
                                         
@@ -104,10 +104,10 @@
                                     <h2>
                                     \[ H_{(x, y)} = A_{(x,y)} \forall  (x, y) \in \partial B \]
                                     </h2>
-                                    So we already know the exact solution to all pixels on the boundary of H (which is also the boundary of B).  Now we need to solve for the pixels in the interior of H.  We want the gradient of the pixels on the interior of H to equal the gradient of the pixels on the interior of B.  A simple way to define a gradient of an image at a spot is the sum of the differences between that pixel and all of its neighbors:<BR>
+                                    So we already know the exact solution to all pixels on the boundary of H (which is also the boundary of B).  Now we need to solve for the pixels in the interior of H.  We want the gradient of the pixels on the interior of H to equal the gradient of the pixels on the interior of B.  To turn this gradient matching into a system of linear equations, we're going to sum up local information about a gradient using what's known as a "<a href = "https://en.wikipedia.org/wiki/Finite_difference_method#Example:_The_Laplace_operator">finite difference scheme of the laplace operator</a>."  It is simply the sum of the differences between that pixel and all of its neighbors; or, in other words, it's a sum of the "flow" of the function out of each pixel.  Here's how it is defined for the image we are pasting in<BR>
 
                                     <h2>
-                                    \[ | \nabla B_{(x, y)} | = 4B(x, y) - B(x-1, y) - B(x+1, y) - B(x, y-1) - B(x, y+1) \]
+                                    \[ \Delta B_{(x, y)} = 4B(x, y) - B(x-1, y) - B(x+1, y) - B(x, y-1) - B(x, y+1) \]
                                     </h2>
 
                                     If one of the neighbors happens to be a boundary pixel, then its value is fixed.  If one of the neighbors happens to be out of bounds of the selection, then it should be excluded.  This is summarized for all cases for every point in H by the following difference equation (lifted from the paper and rearranged in a way that I think makes more sense):
