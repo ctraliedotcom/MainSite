@@ -191,6 +191,7 @@
                                     </table>
                                     Here's what I would consider to be the first failure case.  There are a few problems here.  First of all, there isn't much contrast between the lion and his background.  So when we put him in an environment where the grass is much brighter green and we would expect a contrast, the algorithm tries to preserve the original contrast between the lion and his background so he ends up light green.  Also, the grass is much different in the two images, so even though it changes to the correct color there is a visible seam.  In more technical computational photography terms, even though colors match up at the boundary, there is a "texture discontinuity" there.  Poisson Image Editing only solves the color discontinuity problem so this is a problem we're stuck with.
 
+                                    <!--
                                     <BR><BR>
                                     <h2><b>Example 4</b></h2>
                                     <table border = "1"><tr><td><center>Image A</center></td><td><center>Image B</center></td></tr>
@@ -200,9 +201,10 @@
                                     <tr><td><img src = "Examples/melilwayne_before.png"></td><td><img src = "Examples/melilwayne_after.png"></td></tr>
                                     </table>
                                     I was really impressed with this case because I started off with a grayscale image of Lil Wayne, and the colors on the boundary of my face were interpolated perfectly to fill his face in.  I've found that the reverse doesn't always work as well (i.e. putting color on a black and white image doesn't usually end up black and white...it often still has some color left).
+                                    !-->
 
                                     <BR><BR>
-                                    <h2><b>Example 5</b></h2>
+                                    <h2><b>Example 4</b></h2>
                                     <table border = "1"><tr><td><center>Image A</center></td><td><center>Image B</center></td></tr>
                                     <tr><td><img src = "Examples/fatzombie.jpg"></td><td><img src = "Examples/carlton.jpg"></td></tr>
                                     </table>
@@ -213,25 +215,25 @@
 
 
                                     <BR><BR>
-                                    <h2><b>Example 6</b></h2>
+                                    <h2><b>Example 5</b></h2>
                                     <table border = "1"><tr><td><center>Image A</center></td><td><center>Image B</center></td></tr>
                                     <tr><td><img src = "Examples/MichaelJackson_Bad.jpg"></td><td><img src = "Examples/carlton.jpg"></td></tr>
                                     </table>
                                     <table border = "1"><tr><td><center>Before Blending</center></td><td><center>After Blending</center></td></tr>
                                     <tr><td><img src = "Examples/asianmichaeljackson_before.png"></td><td><img src = "Examples/asianmichaeljackson_after.png"></td></tr>
                                     </table>
-                                    This has a similar problem to example 5, in that part of Carlton's face on the right got matched with Michael Jackson's hair, so some darkness got blended in from the right.
+                                    This has a similar problem to example 4, in that part of Carlton's face on the right got matched with Michael Jackson's hair, so some darkness got blended in from the right.
 
                                     <BR><BR>
-                                    <h2><b>Example 7</b></h2>
+                                    <h2><b>Example 6</b></h2>
                                     <table border = "1"><tr><td><center>Before Blending</center></td><td><center>After Blending</center></td></tr>
                                     <tr><td><img src = "Examples/willtattoo_before.png"></td><td><img src = "Examples/willtattoo_after.png"></td></tr>
                                     </table>
-                                    Not much to say here, other than suddenly my friend Will is hard as f*** (that's a new one for us)
+                                    Not much to say here
 
 
                                     <BR><BR>
-                                    <h2><b>Example 8</b></h2>
+                                    <h2><b>Example 7</b></h2>
                                     <table border = "1"><tr><td><center>Image A</center></td><td><center>Image B</center></td></tr>
                                     <tr><td><img src = "Examples/oranges.jpg"></td><td><img src = "Examples/willuncle.jpg"></td></tr>
                                     </table>
@@ -242,7 +244,7 @@
 
 
                                     <BR><BR>
-                                    <h2><b>Example 9</b></h2>
+                                    <h2><b>Example 8</b></h2>
                                     <table border = "1"><tr><td><center>Image A</center></td><td><center>Image B</center></td></tr>
                                     <tr><td><img src = "Examples/apples.jpg"></td><td><img src = "Examples/wedding.jpg"></td></tr>
                                     </table>
