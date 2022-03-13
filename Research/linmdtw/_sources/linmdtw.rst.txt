@@ -4,22 +4,6 @@ linmdtw package
 Submodules
 ----------
 
-linmdtw.alignmenttools module
------------------------------
-
-.. automodule:: linmdtw.alignmenttools
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-linmdtw.audiotools module
--------------------------
-
-.. automodule:: linmdtw.audiotools
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 linmdtw.dtw module
 ------------------
 
@@ -36,21 +20,23 @@ linmdtw.dtwapprox module
    :undoc-members:
    :show-inheritance:
 
-linmdtw.dtwgpu module
----------------------
 
-.. automodule:: linmdtw.dtwgpu
+linmdtw.alignmenttools module
+-----------------------------
+
+.. automodule:: linmdtw.alignmenttools
    :members:
    :undoc-members:
    :show-inheritance:
 
-linmdtw.dynseqalign module
---------------------------
+linmdtw.audiotools module
+-------------------------
 
-.. automodule:: linmdtw.dynseqalign
+.. automodule:: linmdtw.audiotools
    :members:
    :undoc-members:
    :show-inheritance:
+
 
 
 Module contents

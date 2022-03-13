@@ -33,5 +33,3 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`genindex`
 * :ref:`search`
-
-.. include:: README.rst
