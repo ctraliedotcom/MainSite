@@ -7,9 +7,6 @@
 [submodule "Software/jsTDA/DREiMac"]
 	path = Software/jsTDA/DREiMac
 	url = https://github.com/ctralie/DREiMac.git
-[submodule "smokeStack"]
-	path = smokeStack
-	url = https://github.com/SKutai/smokeStack.git
 [submodule "Research/SSMTW"]
 	path = Research/SSMTW
 	url = https://github.com/ctraliedotcom/SSMTW.git
