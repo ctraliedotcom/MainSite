@@ -22,3 +22,6 @@
 [submodule "Research/SlidingWindowVideo-SOCG2016"]
 	path = Research/SlidingWindowVideo-SOCG2016
 	url = https://github.com/ctraliedotcom/SlidingWindowVideo-SOCG2016.git
+[submodule "VirtualCities"]
+	path = VirtualCities
+	url = https://github.com/NiftyVirtualCities/VirtualCities.git
