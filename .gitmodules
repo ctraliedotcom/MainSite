@@ -25,3 +25,6 @@
 [submodule "VirtualCities"]
 	path = VirtualCities
 	url = https://github.com/NiftyVirtualCities/VirtualCities.git
+[submodule "TheConcatenator/supplementary"]
+	path = TheConcatenator/supplementary
+	url = https://github.com/TheConcatenator/supplementary.git
