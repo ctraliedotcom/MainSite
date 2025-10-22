@@ -1,0 +1,84 @@
+<h2>Amplification of Hidden Periodic Motions in 3D Videos</h2>
+<h3>Chris Tralie</h3>
+
+Ordinary webcam videos capture a surprising amount of information, even if it is visually imperceptible.  Some recent work [1, 2] showed that incredibly simple techniques based on the Fourier transform can be used to visualize of repetitive hidden motions in these videos, such as color changes and arterial contraction/expansion during bloodflow, breathing in neo-natal units, and mechanical vibrations (<a href = "http://people.csail.mit.edu/mrub/vidmag/">Click here</a> and <a href = "http://people.csail.mit.edu/nwadhwa/phase-video/">here</a> to see examples from this work).
+
+Even more recently, RGBD (color + depth) 3D cameras are becoming ubiquitous in phones and other devices (e.g. the <a href = "https://en.wikipedia.org/wiki/Kinect">PrimeSense Kinect</a> and the <a href = "https://en.wikipedia.org/wiki/Tango_(platform)">Tango Tablet</a>).  The PI (Chris Tralie) has undertaken initial experiments which have revealed that the same subtle changes are present geometrically in this 3D streaming data, as shown below
+
+
+<h3>3D Heartbeat Experiment</h3>
+
+<p>
+    Below is a video in which the PI is sitting still not breathing.  So little is happening that it almost appears to be a still image:
+</p>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/AEU-BwR5QR0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<p>
+    However, there is more happening than meets the eye.  Below is the same video after the phase-based video magnification techniques of [2] have been applied.  The PI's heartbeat is clearly visible as motion around the clavicle and neck.
+</p>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/4UtXkLW9ZWI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
+<p>
+    Below is a 3D version of the same video resulting from the depth stream of the <a href = "https://www.intelrealsense.com/stereo-depth/">Intel RealSense sensor</a>.  As in the ordinary video, very little motion is present, other than some noise of the sensor:
+</p>
+
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/exqRINgGx20" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/-AXHQG59iwE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
+<h3>Reptile Breathing Experiment</h3>
+
+<p>
+    Below is an ordinary video of a <a href = "https://en.wikipedia.org/wiki/Pogona">bearded dragon</a> sitting very still.  Again, it almost appears as a still frame
+</p>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/v65txQDOLFg" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<p>
+    The same can be said of the corresponding 3D depth video
+</p>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/3Dya1_H9jB8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<p>
+    However, when amplyfing the depth video, it is possible to see the lizard's belly expanding and contracting during breathing
+</p>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/FxqV9XtAM40" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
+
+
+<pre>
+[1] Wu, H. Y., Rubinstein, M., Shih, E., Guttag, J., Durand, F., & Freeman, W. (2012). Eulerian video magnification for revealing subtle changes in the world.
+
+
+[2] Wadhwa, N., Rubinstein, M., Durand, F., & Freeman, W. T. (2013). Phase-based video motion processing. ACM Transactions on Graphics (TOG), 32(4), 80.
+</pre>
+
+
+<HR>
+<h3>The Project</h3>
+<p>
+    The goal of the REU will be to develop a functioning prototype of a system which takes as input 3D data in the form of streaming depth images, and which outputs a video of a 3D model with hidden periodic motions accentuated geometrically.  Applications of such a technology could include, for instance, health monitoring (e.g. monitoring bloodflow in contracting/expanding arteries) and integrity checks of mechanical systems (e.g. hidden oscillations that could grow into unstable chaotic motion).  
+</p>
+
+<p>
+    The bulk of the work will be programming in the Python language, but students will also learn myriad math concepts which enable this technology.  Students will start by learning the Discrete Fourier Transform and multiresolution image pyramids to replicate the video-based results in [1].   Students will then apply these techniques to depth videos to replicate the PI's examples on videos of mostly still objects, using naive amplification of raw 3D position.  They will build on the PI's techniques by exploring other geometric tools for amplification, including curvature amplification and multiresolution smoothing to avoid amplifying noise.  Finally, students will work to extend the tool to factor out global nonrigid motion [3, 4], so that it is possible for subjects of the 3D videos to move around during a scan.
+</p>
+
+<p>
+    Though it is expected that students will have taken 1-2 computer science courses at the college level before embarking on this REU, no prior knowledge of Python will be assumed, and students will learn the basics of numerical analysis in <a href = "https://numpy.org/">numpy</a> "on the job."
+</p>
+
+<pre>
+[3] Newcombe, R. A., Fox, D., & Seitz, S. M. (2015). Dynamicfusion: Reconstruction and tracking of non-rigid scenes in real-time. In Proceedings of the IEEE conference on computer vision and pattern recognition (pp. 343-352).
+
+[4] Slavcheva, M., Baust, M., & Ilic, S. (2018). SobolevFusion: 3D reconstruction of scenes undergoing free non-rigid motion. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (pp. 2646-2655).
+</pre>
