@@ -28,3 +28,6 @@
 [submodule "TheConcatenator/supplementary"]
 	path = TheConcatenator/supplementary
 	url = https://github.com/TheConcatenator/supplementary.git
+[submodule "Research/GASPGroup/web-audio-research"]
+	path = Research/GASPGroup/web-audio-research
+	url = https://github.com/BonelessPi/web-audio-research.git
